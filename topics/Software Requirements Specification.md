@@ -24,7 +24,6 @@ This SRS document is structured as follows:
 4. **As a Lecturer**, I want to receive notifications about my reserved parking spot to avoid any inconvenience.
 5. **As a Parking Attendant**, I want to monitor parking lot occupancy and manage reservations to ensure optimal utilization of the parking spaces.
 6. **As a System Administrator**, I want to ensure the security of user data and maintain the system's performance to provide a reliable service.
-7. **As a City Planner**, I want to integrate the parking system with other smart city initiatives to improve urban mobility and efficiency.
 
 ##### 2.2 User Characteristics
 1. **Residents**
@@ -49,7 +48,3 @@ This SRS document is structured as follows:
 6. **System Administrators**
     - Highly proficient in IT and system management.
     - Responsible for maintaining system security, performance, and reliability.
-
-7. **City Planners**
-    - Focused on integration with broader urban management systems.
-    - Require detailed reports and data analytics to support decision-making.
