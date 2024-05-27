@@ -81,6 +81,3 @@
         - [Parking Lot Dataset](https://www.kaggle.com/datasets/blanderbuss/parking-lot-dataset)
         - [Parking Dataset](https://www.kaggle.com/datasets/astrollama/parking-dataset)
         - [Find a Car Park](https://www.kaggle.com/datasets/daggysheep/find-a-car-park)
-
-### Conclusion
-The Smart Parking System aims to revolutionize urban parking by leveraging advanced technologies like AI, IoT, and machine learning. By addressing core requirements and considering optional features, the system is designed to be scalable, secure, and user-friendly, ultimately enhancing the parking experience for all users.
