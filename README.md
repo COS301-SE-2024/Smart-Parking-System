@@ -33,6 +33,7 @@ Finding parking on a daily basis is a significant hassle for drivers. Precious t
 | **Project Documentation** | <a href="https://github.com/COS301-SE-2024/Smart-Parking-System/tree/main/docs/System-docs">Requirement Specifications</a> |
 | **Project Management** | <a href="https://github.com/COS301-SE-2024/Smart-Parking-System/projects/1">Project Board</a> |
 | **User Manual** | <a href="https://github.com/COS301-SE-2024/Smart-Parking-System/blob/main/docs/">User Manual</a> |
+| **Drive** | <a href="https://drive.google.com/drive/u/0/folders/1EVvKYJ5GjyLS5JommbtDldIFYj2v0EPS?ths=true">Google Drive</a> |
 
 <br>
 
