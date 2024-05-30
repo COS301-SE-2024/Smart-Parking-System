@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (alreadyHaveOne)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Color(0xFF613EEA),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (!alreadyHaveOne)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Color(0xFF613EEA),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
