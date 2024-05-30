@@ -2,7 +2,7 @@
   <img src="https://github.com/COS301-SE-2024/Smart-Parking-System/blob/main/images/DaVinci/DaVinci_bg_removed.PNG" width="400">
 </p>
 
-<h1 align="center">DaVinci Code - Smart Parking System for EPI-USE LABS</h1>
+<h1 align="center">DaVinci Code - Smart Parking System (EPI-USE LABS)</h1>
 
 <div align="center">
 
