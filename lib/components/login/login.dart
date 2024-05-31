@@ -216,23 +216,25 @@ class _LoginPageState extends State<LoginPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
                       ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width/ 2.5,
+                        vertical: 18,
+                      ),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _signup();
                       }
                     },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 130.0,
-                        vertical: 15,
-                      ), // Add padding to the left and right
-                      child: _isLoading
+                    child: _isLoading
                           ? CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : Text('Next'),
-                    ),
+                          : Text('Next', style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 18
+                              ),),
+                    
                   ),
                 if (!alreadyHaveOne)
                   ElevatedButton(
@@ -242,23 +244,24 @@ class _LoginPageState extends State<LoginPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
                       ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width/ 2.5,
+                        vertical: 18,
+                      ),
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         await _login();
                       }
                     },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 130.0,
-                        vertical: 15,
-                      ), // Add padding to the left and right
-                      child: _isLoading
+                    child: _isLoading
                           ? CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : Text('Login'),
-                    ),
+                          : Text('Login', style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 18
+                              ),),
                   ),
                 SizedBox(height: 35),
                 if (alreadyHaveOne)

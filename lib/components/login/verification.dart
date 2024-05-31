@@ -24,7 +24,7 @@ class VerificationPage extends StatefulWidget {
 
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _codeController = TextEditingController();
+  final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
   late String _verificationCode;
 
   @override
@@ -36,7 +36,7 @@ class _VerificationPageState extends State<VerificationPage> {
 
   String _generateVerificationCode() {
     final Random _random = Random();
-    const int length = 5;
+    const int length = 4;
     return String.fromCharCodes(
       List.generate(length, (index) => _random.nextInt(10) + 48), // Generates digits (0-9)
     );
@@ -63,7 +63,8 @@ class _VerificationPageState extends State<VerificationPage> {
 
   void _verifyCode() {
     if (_formKey.currentState!.validate()) {
-      if (_codeController.text == _verificationCode) {
+      String enteredCode = _codeControllers.map((controller) => controller.text).join();
+      if (enteredCode == _verificationCode) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => SignupPage(name: widget.name, surname: widget.surname, email: widget.email, phoneNumber: widget.phoneNumber),
@@ -83,31 +84,98 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Email Verification'),
-      ),
-      body: Padding(
+      body:  SingleChildScrollView(
+        child: Padding(
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SizedBox(height: 50),
+              Image.asset('assets/logo.png', height: 150), // Ensure you have the logo image in your assets folder
+              SizedBox(height: 30),
+              Container(
+                width: 300, // Specify the desired width
+                child: Text(
+                  'Interactively expedite revolutionary ROI after bricks-and-clicks alignments.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  return Container(
+                    width: 50,
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: TextFormField(
+                      controller: _codeControllers[index],
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                        ),
+                        counterText: '', // Removes the character counter
+                      ),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '';
+                        }
+                        return null;
+                      },
+                    ),
+
+                  );
+                }),
+              ),
+              SizedBox(height: 30),
               Text(
-                'A verification code has been sent to ${widget.email}. Please enter the code below to verify your account.',
+                'Automatically displayed OTP',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                  ),
+              ),
+              SizedBox(height: 30),
+              Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 230, 230, 230),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    'Waiting for\nthe OTP',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Color.fromARGB(255, 97, 97, 97), fontSize: 15),
+                  ),
+                ),
               ),
               SizedBox(height: 20),
-              TextFormField(
-                controller: _codeController,
-                decoration: InputDecoration(labelText: 'Verification Code'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter the verification code';
-                  }
-                  return null;
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Didn't receive OTP?",
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                    ),
+                  TextButton(
+                    onPressed: _sendVerificationEmail,
+                    child: Text('Resend'),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -130,6 +198,7 @@ class _VerificationPageState extends State<VerificationPage> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
