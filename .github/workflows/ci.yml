@@ -1,4 +1,4 @@
-name: Continuous Integration Workflow
+name: Continuous Integration
 
 on:
   pull_request:
@@ -33,6 +33,7 @@ jobs:
     strategy:
       matrix:
         flutter_version: [3.22.1]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -67,63 +68,3 @@ jobs:
 
       - name: Test
         run: flutter test
-
-  build_backend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-  lint_backend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Lint
-        run: npm run lint
-
-  test_backend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Test
-        run: npm test
