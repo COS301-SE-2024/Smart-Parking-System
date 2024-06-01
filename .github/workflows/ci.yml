@@ -1,0 +1,129 @@
+name: Continuous Integration Workflow
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  
+
+jobs:
+  build_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build
+        run: flutter build apk --debug
+
+  lint_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Lint
+        run: flutter analyze
+
+  test_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Test
+        run: flutter test
+
+  build_backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [14, 16] # Adjust based on your Node.js version
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  lint_backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [14, 16] # Adjust based on your Node.js version
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+  test_backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [14, 16] # Adjust based on your Node.js version
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test
+        run: npm test
