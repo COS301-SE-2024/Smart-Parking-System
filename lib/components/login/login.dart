@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/login'),
+      Uri.parse('http://192.168.42.36:3000/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     final String email = _emailController.text;
 
     final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/emailChecker'),
+      Uri.parse('http://192.168.42.36:3000/emailChecker'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
