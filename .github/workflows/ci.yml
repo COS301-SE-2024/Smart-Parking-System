@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
+        node_version: [16] # Adjust based on your Node.js version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
+        node_version: [16] # Adjust based on your Node.js version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [14, 16] # Adjust based on your Node.js version
+        node_version: [16] # Adjust based on your Node.js version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
