@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
+import 'package:smart_parking_system/components/home/home.dart';
 import 'dart:convert';
 
 import 'package:smart_parking_system/components/login/verification.dart';
@@ -53,11 +53,7 @@ Future<void> _login() async {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-<<<<<<< HEAD
-          builder: (context) => const BookingPage(),
-=======
           builder: (_) => const HomePage(),
->>>>>>> 58b1814e0d8cad0886abae0ea54d36fbb2daf5dd
         ),
       );
     } else {
