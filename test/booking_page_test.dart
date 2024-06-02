@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_parking_system/components/bookings/make_booking.dart';// Adjust the import path as necessary
-import 'package:smart_parking_system/components/bookings/bookspace.dart'; // Adjust the import path as necessary
 
 void main() {
   testWidgets('BookingPage displays initial elements correctly', (WidgetTester tester) async {
