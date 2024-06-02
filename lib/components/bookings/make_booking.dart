@@ -15,9 +15,9 @@ class _BookingPageState extends State<BookingPage> {
   // String _selectedZone = '';
   bool hasLevel = false;
   bool hasZone = false;
-  int numberOfLevels = 5;
-  int numberOfZones = 7;
-  int numberOfRows = 11;
+  int numberOfLevels = 6;
+  int numberOfZones = 6;
+  int numberOfRows = 8;
   
   
   // bool _agreeToReserve = false;
