@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/view_bookings.dart';
+import 'package:smart_parking_system/components/bookings/bookspace.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
@@ -477,7 +477,7 @@ class _BookingPageState extends State<BookingPage> {
               onPressed: _selectedRow.isEmpty? null : () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const BookingScreen(),
+                    builder: (context) => const BookSpaceScreen(),
                   ),
                 );
                 
