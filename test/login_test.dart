@@ -1,13 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
 import 'package:smart_parking_system/components/login/login.dart';
-import 'dart:convert';
 
-import 'package:smart_parking_system/components/login/verification.dart';
 
 // Mock the http.Client with a custom implementation for testing
 void main() {
@@ -32,12 +26,9 @@ void main() {
 
     
     testWidgets('login failed', (WidgetTester tester) async {
-      final mockClient = MockClient((request) async {
-        return http.Response('Unauthorized', 401);
-      });
 
       await tester.pumpWidget(MaterialApp(
-        home: LoginPage(),
+        home: const LoginPage(),
         builder: (context, child) {
           return Material(
             child: Builder(

@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
-
-import 'dart:convert';
 
 void main() {
   // Mock the HTTP client
-  final client = MockClient((request) async {
-    if (request.url.toString() == 'http://192.168.42.36:3000/signup' && request.method == 'POST') {
-      final body = jsonDecode(request.body);
-      if (body['password'] == 'correct_password') {
-        return http.Response('{"message": "Signup successful"}', 201);
-      } else {
-        return http.Response('{"message": "Signup failed"}', 400);
-      }
-    }
-    return http.Response('Not Found', 404);
-  });
 
   testWidgets('SignupPage renders correctly', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: SignupPage(
         name: 'Test',
         surname: 'User',
@@ -36,7 +21,7 @@ void main() {
   });
 
   testWidgets('Password and confirm password validation works', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: SignupPage(
         name: 'Test',
         surname: 'User',
@@ -54,7 +39,7 @@ void main() {
   }); 
 
    testWidgets('Signup process shows error message on failure', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: SignupPage(
         name: 'Test',
         surname: 'User',
