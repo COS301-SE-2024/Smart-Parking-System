@@ -82,107 +82,110 @@ class _BookingPageState extends State<BookingPage> {
             if(!hasZone)
             const Text("Zones:", style: TextStyle(fontSize: 18)),
             if(!hasZone)
-            Container(
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ListView.builder(
-                itemCount: numberOfLevels,
-                itemBuilder: (context, index) {
-                  int zone = index + 1;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            if((zone + index) <= numberOfZones)
-                            
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedZone = 'Zone ${String.fromCharCode(65 + index + index)}';
-                                  });
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 150,
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index)}'
-                                    ? const Color(0xFF4C4981)
-                                        : Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    'Zone ${String.fromCharCode(65 + index + index)}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index)}'
-                                      ? Colors.white
-                                        : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            
-                            const SizedBox(width: 20),
-                            if((zone + index + 1) <= numberOfZones)
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedZone = 'Zone ${String.fromCharCode(65 + index + index + 1)}';
-                                  });
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 200,
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index + 1)}'
-                                    ? const Color(0xFF4C4981)
-                                        : Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    'Zone ${String.fromCharCode(65 + index + index + 1)}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index + 1)}'
-                                      ? Colors.white
-                                        : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+            SingleChildScrollView(
+              child: Container(
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
                     ),
-                  );
-                },
-              )
+                  ],
+                ),
+                child: ListView.builder(
+                  itemCount: numberOfLevels,
+                  itemBuilder: (context, index) {
+                    int zone = index + 1;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              if((zone + index) <= numberOfZones)
+                              
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedZone = 'Zone ${String.fromCharCode(65 + index + index)}';
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 150,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index)}'
+                                      ? const Color(0xFF4C4981)
+                                          : Colors.white,
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      'Zone ${String.fromCharCode(65 + index + index)}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index)}'
+                                        ? Colors.white
+                                          : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              
+                              const SizedBox(width: 20),
+                              if((zone + index + 1) <= numberOfZones)
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedZone = 'Zone ${String.fromCharCode(65 + index + index + 1)}';
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 200,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index + 1)}'
+                                      ? const Color(0xFF4C4981)
+                                          : Colors.white,
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      'Zone ${String.fromCharCode(65 + index + index + 1)}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: _selectedZone == 'Zone ${String.fromCharCode(65 + index + index + 1)}'
+                                        ? Colors.white
+                                          : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              ),
             ),
+            
 
             if(hasLevel)
             Text(_selectedZone, style: const TextStyle(fontSize: 18),),
@@ -190,7 +193,7 @@ class _BookingPageState extends State<BookingPage> {
             const Text("Levels:", style: TextStyle(fontSize: 18)),
             if(hasLevel)
             Container(
-              height: 400,
+              height: 300,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -301,7 +304,7 @@ class _BookingPageState extends State<BookingPage> {
             const Text('Row:', style: TextStyle(fontSize: 18),),
             if (hasZone && !hasLevel)
             Container(
-              height: 400,
+              height: 300,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
