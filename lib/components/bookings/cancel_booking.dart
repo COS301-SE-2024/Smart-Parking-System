@@ -50,6 +50,7 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 _cancelBooking(index);
               },
               child: const Text('Yes'),
@@ -83,31 +84,34 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
         children: [
           const SizedBox(height: 40.0), // 添加一些顶部间距
           Center(
-            child: Container(
-              width: 200.0, // 调整宽度
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal:  16.0, vertical: 20),
               decoration: BoxDecoration(
-                color: Colors.white, // 背景颜色
-                borderRadius: BorderRadius.circular(20.0), // 圆角
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
+                    spreadRadius: 2,
                     blurRadius: 5,
                     offset: const Offset(0, 3),
                   ),
                 ],
               ),
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: const Text(
-                'Bookings',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              child: const Center(
+                child: Text(
+                  'Bookings',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
+          ),
           ),
           const SizedBox(height: 20.0),
           ...bookings.asMap().entries.map((entry) {
