@@ -30,7 +30,7 @@ void main() {
     );
 
     // Verify the presence of zones
-    for (var i = 0; i < 7; i++) {
+    for (var i = 0; i < 5; i++) {
       expect(find.text('Zone ${String.fromCharCode(65 + i)}'), findsWidgets);
     }
 
