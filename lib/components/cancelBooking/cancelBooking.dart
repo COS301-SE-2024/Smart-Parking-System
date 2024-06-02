@@ -51,7 +51,19 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                BookingCard(),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: BookingDetailsDialog(),
+                        );
+                      },
+                    );
+                  },
+                  child: BookingCard(),
+                ),
                 SizedBox(height: 20.0),
                 FloatingActionButton(
                   onPressed: () {
@@ -95,13 +107,13 @@ class BookingCard extends StatelessWidget {
                   SizedBox(height: 5.0),
                   Row(
                     children: <Widget>[
-                      Text('Start: 14:35'),
+                      Text('14:35'),
                       VerticalDivider(
                         width: 20.0,
                         thickness: 1.0,
                         color: Colors.black,
                       ),
-                      Text('End: 16:55'),
+                      Text('16:55'),
                     ],
                   ),
                 ],
@@ -130,6 +142,99 @@ class BookingCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class BookingDetailsDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Sandton Mall',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Icon(Icons.calendar_today),
+            SizedBox(width: 10.0),
+            Text('25th June 2024'),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Icon(Icons.access_time),
+            SizedBox(width: 10.0),
+            Text('2 Hours'),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Icon(Icons.directions_car),
+            SizedBox(width: 10.0),
+            Text('Level 1 Row 2'),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Icon(Icons.edit),
+            SizedBox(width: 10.0),
+            Text('Booking reference: 2KJ234'),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 10.0),
+            Text('Paid'),
+          ],
+        ),
+        SizedBox(height: 20.0),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Handle change booking action
+                },
+                child: Text('Change booking'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF4C4981),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Handle cancel booking action
+                },
+                child: Text('Cancel booking'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF4C4981),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
