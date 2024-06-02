@@ -1,7 +1,8 @@
+
+# Ignore the.dart_tool and build folders
 .dart_tool/
 build/
 android/
-
 # Miscellaneous
 *.class
 *.log
@@ -45,3 +46,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
