@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 
 
 class BookSpaceScreen extends StatefulWidget {
+  const BookSpaceScreen({super.key});
+
   @override
-  _BookSpaceScreenState createState() => _BookSpaceScreenState();
+  State<BookSpaceScreen> createState() => _BookSpaceScreenState();
 }
 
 class _BookSpaceScreenState extends State<BookSpaceScreen> {
   double _estimatedDuration = 2;
-  TimeOfDay? _checkInTime = TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay? _checkInTime = const TimeOfDay(hour: 0, minute: 0);
   bool _isDisabledParking = false;
   bool _isCarWashing = false;
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _checkInTime ?? TimeOfDay(hour: 0, minute: 0),
+      initialTime: _checkInTime ?? const TimeOfDay(hour: 0, minute: 0),
     );
     if (picked != null && picked != _checkInTime) {
       setState(() {
@@ -35,28 +37,28 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle,
                 color: Colors.green,
                 size: 60,
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Space Successfully Booked',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
 
                 ),
-                child: Text(
+                child: const Text(
                   'View Booking Details',
                   style: TextStyle(
                     fontSize: 16,
@@ -81,10 +83,10 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.black),
+          icon: const Icon(Icons.menu, color: Colors.black),
           onPressed: () {},
         ),
-        actions: [
+        actions: const [
           CircleAvatar(
             backgroundImage: NetworkImage('https://example.com/profile_image.png'),
           ),
@@ -123,16 +125,16 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
                 ),
               )
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Space 2C',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Estimate Duration',
               style: TextStyle(fontSize: 16),
             ),
@@ -148,30 +150,30 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
                 });
               },
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Check-in Time:',
               style: TextStyle(fontSize: 16),
             ),
             Row(
               children: [
                 Text(
-                  '${_checkInTime?.format(context) ?? 'Select time'}',
-                  style: TextStyle(fontSize: 16),
+                  _checkInTime?.format(context) ?? 'Select time',
+                  style: const TextStyle(fontSize: 16),
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                   onPressed: () => _selectTime(context),
                 ),
               ],
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Specifications',
               style: TextStyle(fontSize: 16),
             ),
             SwitchListTile(
-              title: Text('Disabled Parking'),
+              title: const Text('Disabled Parking'),
               value: _isDisabledParking,
               onChanged: (value) {
                 setState(() {
@@ -180,7 +182,7 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
               },
             ),
             SwitchListTile(
-              title: Text('Request Car Washing (R100)'),
+              title: const Text('Request Car Washing (R100)'),
               value: _isCarWashing,
               onChanged: (value) {
                 setState(() {
@@ -188,16 +190,16 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
                 });
               },
             ),
-            Spacer(),
+            const Spacer(),
             ElevatedButton(
               onPressed: () {
                 _showBookingConfirmation(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text(
+              child: const Text(
                 'Book Space',
                 style: TextStyle(
                   fontSize: 16,
