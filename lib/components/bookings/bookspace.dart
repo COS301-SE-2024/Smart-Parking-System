@@ -24,6 +24,55 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
     }
   }
 
+  void _showBookingConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 60,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Space Successfully Booked',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+
+                ),
+                child: Text(
+                  'View Booking Details',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,7 +190,9 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
             ),
             Spacer(),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _showBookingConfirmation(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
                 padding: EdgeInsets.symmetric(vertical: 16),
