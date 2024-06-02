@@ -11,7 +11,7 @@ class VerificationPage extends StatefulWidget {
   final String email;
   final String phoneNumber;
 
-  VerificationPage({
+  const VerificationPage({super.key, 
     required this.name,
     required this.surname,
     required this.email,
@@ -19,7 +19,7 @@ class VerificationPage extends StatefulWidget {
   });
 
   @override
-  _VerificationPageState createState() => _VerificationPageState();
+  State<VerificationPage> createState() => _VerificationPageState();
 }
 
 class _VerificationPageState extends State<VerificationPage> {
@@ -35,16 +35,16 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   String _generateVerificationCode() {
-    final Random _random = Random();
+    final Random random = Random();
     const int length = 4;
     return String.fromCharCodes(
-      List.generate(length, (index) => _random.nextInt(10) + 48), // Generates digits (0-9)
+      List.generate(length, (index) => random.nextInt(10) + 48), // Generates digits (0-9)
     );
   }
 
   Future<void> _sendVerificationEmail() async {
     final response = await http.post(
-      Uri.parse('http://192.168.42.36:3000/verification'), // Replace with your server URL
+      Uri.parse('http://192.168.3.20:3000/verification'), // Replace with your server URL
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -53,30 +53,33 @@ class _VerificationPageState extends State<VerificationPage> {
         'code': _verificationCode,
       }),
     );
-
-    if (response.statusCode != 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send verification code')),
-      );
+    if(mounted){
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to send verification code')),
+        );
+      }
     }
   }
 
   void _verifyCode() {
-    if (_formKey.currentState!.validate()) {
-      String enteredCode = _codeControllers.map((controller) => controller.text).join();
-      if (enteredCode == _verificationCode) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => SignupPage(name: widget.name, surname: widget.surname, email: widget.email, phoneNumber: widget.phoneNumber),
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Verified!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid verification code')),
-        );
+    if(mounted){
+      if (_formKey.currentState!.validate()) {
+        String enteredCode = _codeControllers.map((controller) => controller.text).join();
+        if (enteredCode == _verificationCode) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => SignupPage(name: widget.name, surname: widget.surname, email: widget.email, phoneNumber: widget.phoneNumber),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Verified!')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid verification code')),
+          );
+        }
       }
     }
   }
@@ -86,16 +89,16 @@ class _VerificationPageState extends State<VerificationPage> {
     return Scaffold(
       body:  SingleChildScrollView(
         child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Image.asset('assets/logo.png', height: 150), // Ensure you have the logo image in your assets folder
-              SizedBox(height: 30),
-              Container(
+              const SizedBox(height: 30),
+              const SizedBox(
                 width: 300, // Specify the desired width
                 child: Text(
                   'Interactively expedite revolutionary ROI after bricks-and-clicks alignments.',
@@ -106,19 +109,19 @@ class _VerificationPageState extends State<VerificationPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(4, (index) {
                   return Container(
                     width: 50,
-                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     child: TextFormField(
                       controller: _codeControllers[index],
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                          borderSide: const BorderSide(color: Colors.grey, width: 1.0),
                         ),
                         counterText: '', // Removes the character counter
                       ),
@@ -136,8 +139,8 @@ class _VerificationPageState extends State<VerificationPage> {
                   );
                 }),
               ),
-              SizedBox(height: 30),
-              Text(
+              const SizedBox(height: 30),
+              const Text(
                 'Automatically displayed OTP',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -145,15 +148,15 @@ class _VerificationPageState extends State<VerificationPage> {
                   color: Colors.grey,
                   ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Container(
                 height: 150,
                 width: 150,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 230, 230, 230),
                   shape: BoxShape.circle,
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Waiting for\nthe OTP',
                     textAlign: TextAlign.center,
@@ -161,11 +164,11 @@ class _VerificationPageState extends State<VerificationPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     "Didn't receive OTP?",
                     style: TextStyle(
                       color: Colors.grey,
@@ -173,21 +176,21 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                   TextButton(
                     onPressed: _sendVerificationEmail,
-                    child: Text('Resend'),
+                    child: const Text('Resend'),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF613EEA),
+                  backgroundColor: const Color(0xFF613EEA),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                 ),
                 onPressed: _verifyCode,
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 130.0,
                     vertical: 15,
