@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/home/home.dart';
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 
 import 'package:smart_parking_system/components/login/verification.dart';
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => const BookingPage(),
         ),
       );
     } else {
