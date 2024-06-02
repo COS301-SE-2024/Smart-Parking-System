@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
-
-import 'package:smart_parking_system/components/home/home.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -71,7 +70,7 @@ class _SignupPageState extends State<SignupPage> {
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const HomePage(),
+            builder: (context) => const BookingPage(),
           ),
         );
       } else {
