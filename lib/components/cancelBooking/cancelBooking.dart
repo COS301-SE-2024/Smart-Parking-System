@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
           CircleAvatar(
             radius: 20.0,
             backgroundImage: NetworkImage(
-                'https://example.com/path_to_profile_image.jpg'), // 替换为你的头像图片URL
+                'https://example.com/path_to_profile_image.jpg'),
           ),
           SizedBox(width: 10.0),
         ],
@@ -85,100 +85,105 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0), // 圆角
+        borderRadius: BorderRadius.circular(30.0),
       ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 2, // 左边部分占据2/3
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Sandton Mall',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+      child: IntrinsicHeight(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Sandton Mall',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10.0),
-                  Text(
-                    '25th June 2024',
-                    style: TextStyle(
-                      fontSize: 16.0,
+                    SizedBox(height: 10.0),
+                    Text(
+                      '25th June 2024',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
                     ),
+                    SizedBox(height: 20.0),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          '14:35',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        SizedBox(width: 20.0),
+                        Container(
+                          height: 40.0,
+                          child: VerticalDivider(
+                            width: 1.0,
+                            thickness: 1.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(width: 20.0),
+                        Text(
+                          '16:55',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1, // 右边部分占据1/3
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF4C4981), // 使用指定的紫色
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
                   ),
-                  SizedBox(height: 20.0),
-                  Row(
+                ),
+                padding: EdgeInsets.all(16.0),
+                child: Center( // 使用Center确保内容居中
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        '14:35',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                        ),
+                      Icon(
+                        Icons.directions_car,
+                        color: Colors.white,
+                        size: 40.0, // 放大图标
                       ),
-                      SizedBox(width: 20.0),
-                      Container(
-                        height: 40.0,
-                        child: VerticalDivider(
-                          width: 1.0,
-                          thickness: 1.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(width: 20.0),
+                      SizedBox(height: 10.0),
                       Text(
-                        '16:55',
+                        'Level 1\nRow 2',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontSize: 20.0, // 放大文字
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1, // 右边部分占据1/3
-            child: Container(
-              decoration: BoxDecoration(
-                color: Color(0xFF4C4981), // 使用指定的紫色
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
                 ),
               ),
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.directions_car,
-                    color: Colors.white,
-                    size: 40.0, // 放大图标
-                  ),
-                  SizedBox(height: 10.0),
-                  Text(
-                    'Level 1\nRow 2',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0, // 放大文字
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+
 
 
 class BookingDetailsDialog extends StatelessWidget {
