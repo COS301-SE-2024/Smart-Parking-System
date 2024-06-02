@@ -295,7 +295,7 @@ class BookingDetailsDialog extends StatelessWidget {
           children: <Widget>[
             Icon(Icons.directions_car),
             SizedBox(width: 10.0),
-            Text('Level 1 Row 2'),
+            Text('Zone B Level 1 Row 2'),
           ],
         ),
         const SizedBox(height: 10.0),
