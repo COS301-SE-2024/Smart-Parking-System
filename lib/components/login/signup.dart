@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
-
+import 'package:smart_parking_system/components/home/home.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -65,24 +64,6 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {
       _isLoading = false;
     });
-<<<<<<< HEAD
-
-    if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Signup successful')),
-      );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const BookingPage(),
-        ),
-      );
-    } else {
-      print("The error is::::");
-      print(response.reasonPhrase);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Signup failed')),
-      );
-=======
     if(mounted){
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -98,7 +79,6 @@ class _SignupPageState extends State<SignupPage> {
           const SnackBar(content: Text('Signup failed')),
         );
       }
->>>>>>> 58b1814e0d8cad0886abae0ea54d36fbb2daf5dd
     }
   }
 
