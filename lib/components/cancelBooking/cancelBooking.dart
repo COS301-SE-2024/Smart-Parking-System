@@ -85,13 +85,14 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(20.0), // 圆角
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Expanded(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 2, // 左边部分占据2/3
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -102,49 +103,83 @@ class BookingCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5.0),
-                  Text('25th June 2024'),
-                  SizedBox(height: 5.0),
+                  SizedBox(height: 10.0),
+                  Text(
+                    '25th June 2024',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
                   Row(
                     children: <Widget>[
-                      Text('14:35'),
-                      VerticalDivider(
-                        width: 20.0,
-                        thickness: 1.0,
-                        color: Colors.black,
+                      Text(
+                        '14:35',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
                       ),
-                      Text('16:55'),
+                      SizedBox(width: 20.0),
+                      Container(
+                        height: 40.0,
+                        child: VerticalDivider(
+                          width: 1.0,
+                          thickness: 1.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: 20.0),
+                      Text(
+                        '16:55',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-            Container(
-              color: Colors.blue,
-              padding: EdgeInsets.all(10.0),
+          ),
+          Expanded(
+            flex: 1, // 右边部分占据1/3
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF4C4981), // 使用指定的紫色
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                ),
+              ),
+              padding: EdgeInsets.all(16.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
                     Icons.directions_car,
                     color: Colors.white,
+                    size: 40.0, // 放大图标
                   ),
-                  SizedBox(height: 5.0),
+                  SizedBox(height: 10.0),
                   Text(
                     'Level 1\nRow 2',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 20.0, // 放大文字
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
 
 class BookingDetailsDialog extends StatelessWidget {
   @override
