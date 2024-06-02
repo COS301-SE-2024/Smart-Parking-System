@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/booking/bookspace.dart';
+import 'package:smart_parking_system/components/bookings/bookspace.dart';
 
 class HomePage extends StatelessWidget {
   @override
