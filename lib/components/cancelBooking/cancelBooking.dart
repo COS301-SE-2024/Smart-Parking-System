@@ -32,31 +32,35 @@ class MyHomePage extends StatelessWidget {
           CircleAvatar(
             radius: 20.0,
             backgroundImage: NetworkImage(
-                'https://example.com/path_to_profile_image.jpg'), // 替换为你的头像图片URL
+                'https://example.com/path_to_profile_image.jpg'),
           ),
           SizedBox(width: 10.0),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Bookings',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
+      body: Column(
+        children: [
+          SizedBox(height: 40.0),
+          Center(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Bookings',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                FloatingActionButton(
+                  onPressed: () {
+                    // Handle add booking action
+                  },
+                  child: Icon(Icons.add),
+                ),
+              ],
             ),
-            SizedBox(height: 20.0),
-            FloatingActionButton(
-              onPressed: () {
-                // Handle add booking action
-              },
-              child: Icon(Icons.add),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
