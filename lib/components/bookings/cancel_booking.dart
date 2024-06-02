@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -136,6 +137,11 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
           FloatingActionButton(
             onPressed: () {
               // Handle add booking action
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const BookingPage(),
+                  ),
+                );
             },
             child: const Icon(Icons.add),
           ),
@@ -231,7 +237,7 @@ class BookingCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    'Level 1\nRow 2',
+                    'Zone B\nLevel 1\nRow 2',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

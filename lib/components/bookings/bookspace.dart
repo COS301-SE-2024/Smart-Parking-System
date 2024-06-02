@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/view_bookings.dart';
+import 'package:smart_parking_system/components/bookings/cancel_booking.dart';
 
 
 class BookSpaceScreen extends StatefulWidget {
@@ -56,7 +56,7 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => const BookingScreen(),
+                      builder: (context) => const CancelBookingPage(),
                     ),
                   );
                 },
