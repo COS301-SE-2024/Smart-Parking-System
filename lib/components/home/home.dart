@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Two Buttons Page'),
+        title: const Text('Two Buttons Page'),
       ),
       body: Center(
         child: Column(
@@ -13,7 +15,7 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF613EEA),
+                backgroundColor: const Color(0xFF613EEA),
                 foregroundColor: Colors.white,   // Text color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -22,7 +24,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // Do nothing
               },
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 50.0,
                   vertical: 15,
@@ -30,10 +32,10 @@ class HomePage extends StatelessWidget {
                 child: Text('Button 1'),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF613EEA),
+                backgroundColor: const Color(0xFF613EEA),
                 foregroundColor: Colors.white,   // Text color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -42,7 +44,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // Do nothing
               },
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 50.0,
                   vertical: 15,
