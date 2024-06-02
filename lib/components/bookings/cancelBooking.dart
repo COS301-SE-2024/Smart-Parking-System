@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Smart Parking System',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: CancelBookingPage(),
-    );
-  }
-}
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Smart Parking System',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: CancelBookingPage(),
+//     );
+//   }
+// }
 
 class CancelBookingPage extends StatefulWidget {
   @override
