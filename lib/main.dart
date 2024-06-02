@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'components/login/login.dart';
-import 'components/bookings/cancelBooking.dart';
 
 void main() {
   runApp(const MyApp());
