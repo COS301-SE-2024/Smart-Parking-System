@@ -41,7 +41,8 @@ class _BookingPageState extends State<BookingPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           children: [
             const SizedBox(height: 30),
             Container(
@@ -84,7 +85,7 @@ class _BookingPageState extends State<BookingPage> {
             if(!hasZone)
             SingleChildScrollView(
               child: Container(
-                height: 300,
+                height: 400,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -193,7 +194,7 @@ class _BookingPageState extends State<BookingPage> {
             const Text("Levels:", style: TextStyle(fontSize: 18)),
             if(hasLevel)
             Container(
-              height: 300,
+              height: 400,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -304,7 +305,7 @@ class _BookingPageState extends State<BookingPage> {
             const Text('Row:', style: TextStyle(fontSize: 18),),
             if (hasZone && !hasLevel)
             Container(
-              height: 300,
+              height: 400,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -490,6 +491,7 @@ class _BookingPageState extends State<BookingPage> {
               
             
           ],
+        ),
         ),
       ),
     );

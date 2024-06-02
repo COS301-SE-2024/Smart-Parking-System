@@ -95,7 +95,7 @@ class _BookSpaceScreenState extends State<BookSpaceScreen> {
         ),
         actions: const [
           CircleAvatar(
-            backgroundImage: NetworkImage('https://example.com/profile_image.png'),
+            backgroundImage: AssetImage('assets/profile.png'),
           ),
           SizedBox(width: 16),
         ],
