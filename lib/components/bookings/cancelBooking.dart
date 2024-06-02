@@ -12,12 +12,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: CancelBookingPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class CancelBookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
           CircleAvatar(
             radius: 20.0,
             backgroundImage: NetworkImage(
-                'https://example.com/path_to_profile_image.jpg'),
+                'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
           ),
           SizedBox(width: 10.0),
         ],
@@ -41,44 +41,59 @@ class MyHomePage extends StatelessWidget {
         children: [
           SizedBox(height: 40.0), // 添加一些顶部间距
           Center(
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Bookings',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+            child: Container(
+              width: 470.0, // 调整宽度
+              decoration: BoxDecoration(
+                color: Colors.white, // 背景颜色
+                borderRadius: BorderRadius.circular(15.0), // 圆角
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
                   ),
+                ],
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                'Bookings',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.black,
                 ),
-                SizedBox(height: 20.0),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: BookingDetailsDialog(),
-                        );
-                      },
-                    );
-                  },
-                  child: BookingCard(),
-                ),
-                SizedBox(height: 20.0),
-                FloatingActionButton(
-                  onPressed: () {
-                    // Handle add booking action
-                  },
-                  child: Icon(Icons.add),
-                ),
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
+          ),
+          SizedBox(height: 20.0),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: BookingDetailsDialog(),
+                  );
+                },
+              );
+            },
+            child: BookingCard(),
+          ),
+          SizedBox(height: 20.0),
+          FloatingActionButton(
+            onPressed: () {
+              // Handle add booking action
+            },
+            child: Icon(Icons.add),
           ),
         ],
       ),
     );
   }
 }
+
+
 
 class BookingCard extends StatelessWidget {
   @override
@@ -115,7 +130,7 @@ class BookingCard extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                          '14:35',
+                          'Start: 14:35',
                           style: TextStyle(
                             fontSize: 16.0,
                           ),
@@ -131,7 +146,7 @@ class BookingCard extends StatelessWidget {
                         ),
                         SizedBox(width: 20.0),
                         Text(
-                          '16:55',
+                          'End: 16:55',
                           style: TextStyle(
                             fontSize: 16.0,
                           ),
@@ -143,10 +158,10 @@ class BookingCard extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 1, // 右边部分占据1/3
+              flex: 1,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF4C4981), // 使用指定的紫色
+                  color: Color(0xFF4C4981),
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(30.0),
                     bottomRight: Radius.circular(30.0),
@@ -160,7 +175,7 @@ class BookingCard extends StatelessWidget {
                       Icon(
                         Icons.directions_car,
                         color: Colors.white,
-                        size: 40.0, // 放大图标
+                        size: 40.0,
                       ),
                       SizedBox(height: 10.0),
                       Text(
@@ -168,7 +183,7 @@ class BookingCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20.0, // 放大文字
+                          fontSize: 20.0,
                         ),
                       ),
                     ],
@@ -238,23 +253,6 @@ class BookingDetailsDialog extends StatelessWidget {
             Icon(Icons.check_circle, color: Colors.green),
             SizedBox(width: 10.0),
             Text('Paid'),
-          ],
-        ),
-        SizedBox(height: 20.0),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle change booking action
-                },
-                child: Text('Change booking'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4C4981),
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
           ],
         ),
         SizedBox(height: 10.0),
