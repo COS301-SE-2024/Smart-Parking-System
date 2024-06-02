@@ -1,22 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/bookspace.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Two Buttons Page'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => BookSpaceScreen()),
-            );
-          },
-          child: Text('Book Space'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF613EEA),
+                foregroundColor: Colors.white,   // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              onPressed: () {
+                // Do nothing
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 50.0,
+                  vertical: 15,
+                ),
+                child: Text('Button 1'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF613EEA),
+                foregroundColor: Colors.white,   // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              onPressed: () {
+                // Do nothing
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 50.0,
+                  vertical: 15,
+                ),
+                child: Text('Button 2'),
+              ),
+            ),
+          ],
         ),
       ),
     );
