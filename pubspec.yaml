@@ -9,7 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.2.1
+  http: ^0.13.6
+  flutter_svg: ^1.0.3
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +22,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/profile.png

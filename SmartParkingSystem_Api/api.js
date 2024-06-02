@@ -4,10 +4,11 @@ const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const os = require('os');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 const port = 3000;
 
 // MongoDB URI

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/home/home.dart';
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 
 import 'package:smart_parking_system/components/login/verification.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -20,46 +22,48 @@ class _LoginPageState extends State<LoginPage> {
   bool alreadyHaveOne = false;
   bool _isLoading = false;
 
-  Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
+Future<void> _login() async {
+  setState(() {
+    _isLoading = true;
+  });
 
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
+  final String email = _emailController.text;
+  final String password = _passwordController.text;
 
-    final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-      }),
-    );
+  final response = await http.post(
+    Uri.parse('http://192.168.3.20:3000/login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': email,
+      'password': password,
+    }),
+  );
 
-    setState(() {
-      _isLoading = false;
-    });
+  setState(() {
+    _isLoading = false;
+  });
 
+  if (mounted) { // Add this check
     if (response.statusCode == 200) {
       // If the server returns a successful response, show a snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful')),
+        const SnackBar(content: Text('Login successful')),
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (_) => const BookingPage(),
         ),
       );
     } else {
       // If the server returns an error response, show a snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed')),
+        const SnackBar(content: Text('Login failed')),
       );
     }
   }
+}
 
   Future<void> _signup() async {
     setState(() {
@@ -77,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
 
+    if(mounted){
     if (response.statusCode == 201){
         final String name = _nameController.text;
         final String surname = _surnameController.text;
@@ -93,8 +98,9 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // If the server returns an error response, show a snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email already has an account')),
+        const SnackBar(content: Text('Email already has an account')),
       );
+    }
     }
  
     setState(() {
@@ -107,32 +113,32 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 100),
+                const SizedBox(height: 100),
                 Image.asset(
                   'assets/logo.png',
                   height: 150, // Set the height to make it small
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 if (alreadyHaveOne)
-                  Text(
+                  const Text(
                     'Enter your details',
                     style: TextStyle(
                       fontSize: 18,
-                      color: const Color.fromARGB(255, 119, 119, 119),
+                      color: Color.fromARGB(255, 119, 119, 119),
                     ),
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 if (alreadyHaveOne)
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(labelText: 'Name'),
+                    decoration: const InputDecoration(labelText: 'Name'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -141,11 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                if (alreadyHaveOne) SizedBox(height: 20),
+                if (alreadyHaveOne) 
+                const SizedBox(height: 20),
                 if (alreadyHaveOne)
                   TextFormField(
                     controller: _surnameController,
-                    decoration: InputDecoration(labelText: 'Surname'),
+                    decoration: const InputDecoration(labelText: 'Surname'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -154,10 +161,10 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -166,11 +173,11 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                if (alreadyHaveOne) SizedBox(height: 20),
+                if (alreadyHaveOne) const SizedBox(height: 20),
                 if (alreadyHaveOne)
                   TextFormField(
                     controller: _noController,
-                    decoration: InputDecoration(labelText: 'Phone Number'),
+                    decoration: const InputDecoration(labelText: 'Phone Number'),
                     // obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -179,11 +186,12 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                if (!alreadyHaveOne) SizedBox(height: 20),
+                if (!alreadyHaveOne) 
+                const SizedBox(height: 20),
                 if (!alreadyHaveOne)
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -201,17 +209,17 @@ class _LoginPageState extends State<LoginPage> {
                           alreadyHaveOne = !alreadyHaveOne;
                         });
                       },
-                      child: Text(
+                      child: const Text(
                         'Forgot Password',
                         textAlign: TextAlign.right,
                       ),
                     ),
                   ),
-                SizedBox(height: 35),
+                const SizedBox(height: 35),
                 if (alreadyHaveOne)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF613EEA),
+                      backgroundColor: const Color(0xFF613EEA),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
@@ -227,10 +235,10 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: _isLoading
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : Text('Next', style: TextStyle(
+                          : const Text('Next', style: TextStyle(
                                 // fontWeight: FontWeight.bold,
                                 fontSize: 18
                               ),),
@@ -239,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (!alreadyHaveOne)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF613EEA),
+                      backgroundColor: const Color(0xFF613EEA),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
@@ -255,15 +263,15 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: _isLoading
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             )
-                          : Text('Login', style: TextStyle(
+                          : const Text('Login', style: TextStyle(
                                 // fontWeight: FontWeight.bold,
                                 fontSize: 18
                               ),),
                   ),
-                SizedBox(height: 35),
+                const SizedBox(height: 35),
                 if (alreadyHaveOne)
                   TextButton(
                     onPressed: () {
@@ -271,7 +279,7 @@ class _LoginPageState extends State<LoginPage> {
                         alreadyHaveOne = !alreadyHaveOne;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       'Already have an account?\nLogin',
                       textAlign: TextAlign.center,
                     ),
@@ -283,7 +291,7 @@ class _LoginPageState extends State<LoginPage> {
                         alreadyHaveOne = !alreadyHaveOne;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       'or Signup',
                       textAlign: TextAlign.center,
                     ),
