@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/login/login.dart';
+import 'package:smart_parking_system/components/login/signup.dart';
 
 
 class LoginMainPage extends StatelessWidget {
@@ -32,6 +34,11 @@ class LoginMainPage extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () {
                     // Handle login action
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white, side: const BorderSide(color: Colors.white, width: 2),
@@ -54,7 +61,11 @@ class LoginMainPage extends StatelessWidget {
                 // Sign Up Button
                 OutlinedButton(
                   onPressed: () {
-                    // Handle sign-up action
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const SignupPage(),
+                      ),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white, side: const BorderSide(color: Colors.white, width: 2),
