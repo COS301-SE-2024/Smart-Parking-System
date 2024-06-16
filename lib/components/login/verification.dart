@@ -44,7 +44,7 @@
 
 //   Future<void> _sendVerificationEmail() async {
 //     final response = await http.post(
-//       Uri.parse('http://192.168.3.20:3000/verification'), // Replace with your server URL
+//       Uri.parse('http://192.168.11.121:3000/verification'), // Replace with your server URL
 //       headers: <String, String>{
 //         'Content-Type': 'application/json; charset=UTF-8',
 //       },

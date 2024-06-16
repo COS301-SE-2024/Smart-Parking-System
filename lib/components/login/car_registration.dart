@@ -3,106 +3,68 @@ import 'package:http/http.dart' as http;
 import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smart_parking_system/components/login/signup.dart';
 
-import 'package:smart_parking_system/components/login/verification.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CarRegistration extends StatefulWidget {
+  const CarRegistration({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CarRegistration> createState() => _CarRegistrationState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _CarRegistrationState extends State<CarRegistration> {
+  final TextEditingController _makeController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colourController = TextEditingController();
+  final TextEditingController _regController = TextEditingController();
   bool _isLoading = false;
+   
+   
+  Future<void> _register() async {
+    setState(() {
+      _isLoading = true;
+    });
 
-Future<void> _login() async {
-  setState(() {
-    _isLoading = true;
-  });
+    final String make = _makeController.text;
+    final String model = _modelController.text;
+    final String colour = _colourController.text;
+    final String reg = _regController.text;
 
-  final String email = _emailController.text;
-  final String password = _passwordController.text;
+    final response = await http.post(
+      Uri.parse('http://192.168.11.121:3000/registercar'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'make': make,
+        'model': model,
+        'colour': colour,
+        'registration_number': reg,
+      }),
+    );
 
-  final response = await http.post(
-    Uri.parse('http://192.168.11.121:3000/login'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': email,
-      'password': password,
-    }),
-  );
-
-  setState(() {
-    _isLoading = false;
-  });
-
-  if (mounted) { // Add this check
-    if (response.statusCode == 200) {
-      // If the server returns a successful response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login successful')),
-      );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const BookingPage(),
-        ),
-      );
-    } else {
-      // If the server returns an error response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login failed')),
-      );
+    setState(() {
+      _isLoading = false;
+    });
+    if(mounted){
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Car registered successful')),
+        );
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const BookingPage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Car registration failed')),
+        );
+      }
     }
   }
-}
 
-  // Future<void> _signup() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   final String email = _emailController.text;
-
-  //   final response = await http.post(
-  //     Uri.parse('http://192.168.11.121:3000/emailChecker'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(<String, String>{
-  //       'email': email,
-  //     }),
-  //   );
-
-  //   if(mounted){
-  //   if (response.statusCode == 201){
-
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       // Navigator.of(context).pushReplacement(
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => VerificationPage(name: name, surname: surname, email: email, phoneNumber: phoneNumber,),
-  //       //   ),
-  //       // );
-  //   } else {
-  //     // If the server returns an error response, show a snackbar
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Email already has an account')),
-  //     );
-  //   }
-  //   }
- 
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
-
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -111,7 +73,7 @@ Future<void> _login() async {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.cover,
           ),
           // Foreground elements
           Column(
@@ -121,39 +83,38 @@ Future<void> _login() async {
               Image.asset(
                 'assets/logo_small.jpg',
                 height: 200, // Adjust the height as needed
-                width: 200,  // Adjust the width as needed
-              ),
+                width: 200,  // Adjust the width as needed 
+              ), 
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
-                height: MediaQuery.of(context).size.height * 0.60,
+                height: MediaQuery.of(context).size.height * 0.62,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40),
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                     // Space before the Login text
+                    const SizedBox(height: 30),  // Space before the Login text
                     const Text(
-                      'Log in',
+                      'Add Your Car',
                       style: TextStyle(
                         fontSize: 43,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    const SizedBox(height: 50), // Space between the Login text and text boxes
-                    // Email Text Field
+                    const SizedBox(height: 25), // Space between the Login text and text boxes
                     TextField(
-                      controller: _emailController,
+                      controller: _makeController,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'Make',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -188,12 +149,11 @@ Future<void> _login() async {
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
                     ),
-                    const SizedBox(height: 25),
-                    // Password Text Field
+                    const SizedBox(height: 20,),
                     TextField(
-                      controller: _passwordController,
+                      controller: _modelController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Model',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -227,13 +187,91 @@ Future<void> _login() async {
                       style: TextStyle(
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
-                      obscureText: true,
                     ),
-                    const SizedBox(height: 30),
-                    // Login Button
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _colourController,
+                      decoration: InputDecoration(
+                        labelText: 'Colour',
+                        labelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Darker grey for label text
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Color for floating label when focused
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when enabled
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when focused
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: Colors.grey.shade800, // Dark grey input text color
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _regController,
+                      decoration: InputDecoration(
+                        labelText: 'License Plate Number',
+                        labelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Darker grey for label text
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Color for floating label when focused
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when enabled
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when focused
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: Colors.grey.shade800, // Dark grey input text color
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    // Add Car Button
                     ElevatedButton(
                       onPressed: () {
-                        // Handle login action
+                        // Handle add car action
+                        _register();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -241,16 +279,16 @@ Future<void> _login() async {
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 100,
-                          vertical: 12,
+                          vertical: 20,
                         ),
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
                       child: const Text(
-                        'Log in',
+                        'Add Car',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
-                    const SizedBox(height: 40), // Space between login button and Login with section
+                    const SizedBox(height: 10), // Space between login button and Login with section
                     const Row(
                       children: <Widget>[
                         Expanded(
@@ -262,7 +300,7 @@ Future<void> _login() async {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text(
-                            'Or Login with',
+                            'Skip for now',
                             style: TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
                           ),
                         ),
@@ -275,21 +313,6 @@ Future<void> _login() async {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const Text('Google Logo, Github Logo'),
-                    const SizedBox(height: 20), // Space between login button and Login with section
-                    InkWell(
-                      onTap: () {
-                        // Navigate to SignupPage
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const SignupPage()),
-                        );
-                      },
-                      child: const Text(
-                        "Don't have an account? Sign up",
-                        style: TextStyle(fontSize: 16, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
-                      ),
-                    ),
                   ],
                 ),
               ),

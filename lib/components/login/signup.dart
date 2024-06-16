@@ -4,6 +4,7 @@ import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/login.dart';
+import 'package:smart_parking_system/components/login/car_registration.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _SignupPageState extends State<SignupPage> {
     final String phoneNumber = _noController.text;
 
     final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/signup'),
+      Uri.parse('http://192.168.11.121:3000/signup'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -275,6 +276,12 @@ class _SignupPageState extends State<SignupPage> {
                     ElevatedButton(
                       onPressed: () {
                         // Handle login action
+
+                        // Navigate to SignupPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CarRegistration()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
