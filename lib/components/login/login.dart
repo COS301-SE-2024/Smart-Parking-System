@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
 
-import 'package:smart_parking_system/components/login/verification.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -62,45 +60,6 @@ Future<void> _login() async {
   }
 }
 
-  // Future<void> _signup() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   final String email = _emailController.text;
-
-  //   final response = await http.post(
-  //     Uri.parse('http://192.168.3.20:3000/emailChecker'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(<String, String>{
-  //       'email': email,
-  //     }),
-  //   );
-
-  //   if(mounted){
-  //   if (response.statusCode == 201){
-
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       // Navigator.of(context).pushReplacement(
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => VerificationPage(name: name, surname: surname, email: email, phoneNumber: phoneNumber,),
-  //       //   ),
-  //       // );
-  //   } else {
-  //     // If the server returns an error response, show a snackbar
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Email already has an account')),
-  //     );
-  //   }
-  //   }
- 
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
 
  @override
   Widget build(BuildContext context) {
@@ -123,7 +82,7 @@ Future<void> _login() async {
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
               ),
-              SizedBox(height: 20), // Space between logo and container
+              const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.60,
@@ -132,15 +91,15 @@ Future<void> _login() async {
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40),
+                    topRight: Radius.elliptical(100, 40), 
                   ),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                      // Space before the Login text
-                    Text(
+                    const Text(
                       'Log in',
                       style: TextStyle(
                         fontSize: 43,
@@ -148,7 +107,7 @@ Future<void> _login() async {
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    SizedBox(height: 50), // Space between the Login text and text boxes
+                    const SizedBox(height: 50), // Space between the Login text and text boxes
                     // Email Text Field
                     TextField(
                       controller: _emailController,
@@ -163,23 +122,23 @@ Future<void> _login() async {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -188,7 +147,7 @@ Future<void> _login() async {
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
                     ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     // Password Text Field
                     TextField(
                       controller: _passwordController,
@@ -203,23 +162,23 @@ Future<void> _login() async {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -229,23 +188,32 @@ Future<void> _login() async {
                       ),
                       obscureText: true,
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        // Handle login action
+                        _login();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 100,
                           vertical: 12,
                         ),
-                        backgroundColor: Color(0xFF58C6A9),
+                        backgroundColor: const Color(0xFF58C6A9),
                       ),
-                      child: Text(
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.0,
+                              ),
+                            )
+                          : const Text(
                         'Log in',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
@@ -275,14 +243,14 @@ Future<void> _login() async {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Text('Google Logo, Github Logo'),
+                    const Text('Google Logo, Github Logo'),
                     const SizedBox(height: 20), // Space between login button and Login with section
                     InkWell(
                       onTap: () {
                         // Navigate to SignupPage
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
+                          MaterialPageRoute(builder: (context) => const SignupPage()),
                         );
                       },
                       child: const Text(
