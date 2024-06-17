@@ -78,7 +78,7 @@ Future<void> _login() async {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/logo_small.jpg',
+                'assets/logo_small.png',
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
               ),

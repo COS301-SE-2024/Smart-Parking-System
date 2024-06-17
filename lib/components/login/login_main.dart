@@ -25,7 +25,7 @@ class LoginMainPage extends StatelessWidget {
               children: <Widget>[
                 // Logo in the middle
                 Image.asset(
-                  'assets/logo_small.jpg',
+                  'assets/logo_small.png',
                   height: 250, // Adjust the height as needed
                   width: 250,  // Adjust the width as needed
                 ),

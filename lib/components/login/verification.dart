@@ -248,7 +248,7 @@ class _VerificationPageState extends State<VerificationPage> {
                           ),
                           TextButton(
                             onPressed: _sendVerificationEmail,
-                            child: const Text('Resend'),
+                            child: const Text('Resend', style: TextStyle(color:Color(0xFF58C6A9))),
                           ),
                         ],
                       ),
