@@ -62,8 +62,8 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -295,7 +295,7 @@ class _SignupPageState extends State<SignupPage> {
                       },
                       child: const Text(
                         "Have an account? Login",
-                        style: TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
+                        style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9)),
                       ),
                     ),
                   ],

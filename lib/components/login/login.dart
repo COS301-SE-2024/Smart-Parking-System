@@ -90,8 +90,8 @@ Future<void> _login() async {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40), 
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25), 
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
@@ -255,7 +255,7 @@ Future<void> _login() async {
                       },
                       child: const Text(
                         "Don't have an account? Sign up",
-                        style: TextStyle(fontSize: 16, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
