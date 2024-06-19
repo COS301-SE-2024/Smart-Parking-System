@@ -22,4 +22,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/logo.jpg
+    - assets/logo_small.png
     - assets/profile.png
+    - assets/Background - Small.svg
+    - assets/Background - Large.svg
+    - assets/Successmark.png
