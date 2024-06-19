@@ -20,7 +20,7 @@ class AddCardPage extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
                     onPressed: () {
-                      Navigator.pop(context); // Go back when the button is pressed
+                      
                     },
                   ),
                 ),
