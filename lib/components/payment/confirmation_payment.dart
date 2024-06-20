@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/payment/offers.dart';
 
-class PaymentMethodPage extends StatefulWidget {
-  const PaymentMethodPage({super.key});
+class ConfirmPaymentPage extends StatefulWidget {
+  const ConfirmPaymentPage({super.key});
 
   @override
-  State<PaymentMethodPage> createState() => _PaymentMethodPageState();
+  State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
-class _PaymentMethodPageState extends State<PaymentMethodPage> {
+class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   int _selectedCard = 1;
-  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 80),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -28,13 +28,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   onPressed: () {
                     // Add your onPressed logic here
                   },
-                  icon: const Icon(Icons.menu,
+                  icon: const Icon(Icons.arrow_back_ios,
                     color: Colors.white,
                     size: 30,
                   ),
                 ),
                 const Text(
-                  'Payment Method',
+                  'Confirm Payment',
                   style: TextStyle(
                     fontSize: 24, 
                     fontWeight: FontWeight.w500,
@@ -44,19 +44,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 const SizedBox(width: 48), // Adjust the width as needed
               ],
             ),
-            const SizedBox(height: 50),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'Credit',
-                style: TextStyle(
-                  fontSize: 28, 
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF58C6A9),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 35),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -71,45 +59,166 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   ),
                 ],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Row(
-                    children: [
-                      Icon(Icons.account_balance_wallet, color: Colors.white),
-                      SizedBox(width: 20),
-                      Text('ZAR 60.00', 
-                        style: TextStyle(
-                          fontSize: 25, 
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF58C6A9),  
-                        )
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Insert here what Top Up does
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.add,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          SizedBox(width: 10),
-                          Text('Top Up',
-                            style: TextStyle(
-                              color: Colors.white
-                            ),
-                          ),
-                        ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child:Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 100, // Adjust the width as needed
+                    height: 100, // Adjust the height as needed
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/car.png'),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
+                  const SizedBox(width: 25),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: const TextSpan(
+                          style: TextStyle(color: Colors.white),
+                          children: [
+                            TextSpan(
+                              text: 'Plate : ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w200,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'EG123GP',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold, 
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 1),
+                      RichText(
+                        text: const TextSpan(
+                          style: TextStyle(color: Colors.white),
+                          children: [
+                            TextSpan(
+                              text: 'Car Modal : ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w200,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Honda CVR',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold, 
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Address:',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 1),
+                      RichText(
+                        text: const TextSpan(
+                          style: TextStyle(color: Colors.white),
+                          children: [
+                            TextSpan(
+                              text: 'Zone 1',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '32A- Sandton city',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold, 
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      const Text(
+                        'Hourly parking ticket',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w200
+                        ),
+                      ),
+                      const SizedBox(height: 5), // Spacer
+                      const Text(
+                        'Parking Time:',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500
+                        ),
+                      ),
+                      const SizedBox(height: 10), 
+                      Row(
+                        children: [
+                          Image.asset('assets/Line-7.png', height: 70), // Image
+                          const SizedBox(width: 8), // Spacer
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              
+                              RichText(
+                                text: const TextSpan(
+                                  style: TextStyle(color: Colors.white),
+                                  children: [
+                                    TextSpan(
+                                      text: '15:06         ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '03:06:2024',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w200, 
+                                        fontSize: 14
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 25),
+                              RichText(
+                                text: const TextSpan(
+                                  style: TextStyle(color: Colors.white),
+                                  children: [
+                                    TextSpan(
+                                      text: '15:41         ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '03:06:2024',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                        fontSize: 14
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
+              ),
               ),
             ),
             const SizedBox(height: 20),
@@ -117,7 +226,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
               title: const Text('Offers', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const OfferPage(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             const Padding(
@@ -125,7 +240,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: Text(
                 'Credits & Debit Cards',
                 style: TextStyle(
-                  fontSize: 28, 
+                  fontSize: 20, 
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF58C6A9),
                 ),
@@ -148,7 +263,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Card(
                     elevation: 0, // Set elevation to 0
                     color: Colors.transparent, // Set color to transparent
@@ -177,7 +292,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 5),
                   Card(
                     elevation: 0, // Set elevation to 0
                     color: Colors.transparent, // Set color to transparent
@@ -206,7 +321,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 5),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
@@ -233,64 +348,55 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF2C2C54),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, -3),
+            const SizedBox(height: 40),
+            Row(
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(color: Colors.white),
+                    children: [
+                      TextSpan(
+                        text: 'Total\n',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'ZAR 20.00',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400, 
+                          fontSize: 20
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 180),
+                ElevatedButton(
+                  onPressed: () {
+                    
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 5,
+                    ),
+                    backgroundColor: const Color(0xFF58C6A9),
+                  ),
+                  child: const Text(
+                    'Pay',
+                    style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.w300),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          backgroundColor: const Color(0xFF2C2C54), // To ensure the Container color is visible
-          currentIndex: _selectedIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings, size: 30),
-              label: '',
-            ),
-          ],
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          selectedItemColor: const Color(0xFF58C6A9),
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.send,
-          color: Colors.white,
-        ), 
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

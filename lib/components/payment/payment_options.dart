@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/payment/offers.dart';
 
 class PaymentMethodPage extends StatefulWidget {
   const PaymentMethodPage({super.key});
@@ -9,7 +10,7 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedCard = 1;
-  int _selectedIndex = 1;
+  // int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +118,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
               title: const Text('Offers', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const OfferPage(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             const Padding(
@@ -237,60 +244,60 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF2C2C54),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: const Color(0xFF2C2C54), // To ensure the Container color is visible
-          currentIndex: _selectedIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings, size: 30),
-              label: '',
-            ),
-          ],
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          selectedItemColor: const Color(0xFF58C6A9),
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.send,
-          color: Colors.white,
-        ), 
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: Container(
+      //   decoration: BoxDecoration(
+      //     color: const Color(0xFF2C2C54),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black.withOpacity(0.6),
+      //         spreadRadius: 1,
+      //         blurRadius: 8,
+      //         offset: const Offset(0, -3),
+      //       ),
+      //     ],
+      //   ),
+      //   child: BottomNavigationBar(
+      //     backgroundColor: const Color(0xFF2C2C54), // To ensure the Container color is visible
+      //     currentIndex: _selectedIndex,
+      //     items: const [
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.home, size: 30),
+      //         label: '',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.account_balance_wallet, size: 30),
+      //         label: '',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.history, size: 30),
+      //         label: '',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.settings, size: 30),
+      //         label: '',
+      //       ),
+      //     ],
+      //     onTap: (index) {
+      //       setState(() {
+      //         _selectedIndex = index;
+      //       });
+      //     },
+      //     selectedItemColor: const Color(0xFF58C6A9),
+      //     unselectedItemColor: Colors.grey,
+      //     showUnselectedLabels: false,
+      //     showSelectedLabels: false,
+      //   ),
+      // ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   backgroundColor: const Color(0xFF58C6A9),
+      //   shape: const CircleBorder(),
+      //   child: const Icon(
+      //     Icons.send,
+      //     color: Colors.white,
+      //   ), 
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
