@@ -1,5 +1,4 @@
 name: Continuous Integration
-
 #trigger on push to main
 on:
   push:
@@ -71,3 +70,4 @@ jobs:
 
       - name: Test
         run: flutter test
+

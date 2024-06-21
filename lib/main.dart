@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'components/login/login.dart';
-import 'components/main_page.dart';  // Import the main_page.dart file
-import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:smart_parking_system/components/login/login_main.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  MainPage(),
+      home: const LoginMainPage(),
+
     );
   }
 }
