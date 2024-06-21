@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
-import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/login.dart';
-import 'package:smart_parking_system/components/login/car_registration.dart';
+import 'package:smart_parking_system/components/login/verification.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -19,52 +16,21 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _noController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  bool _isLoading = false;
    
-   
-  Future<void> _signup() async {
-    setState(() {
-      _isLoading = true;
-    });
-
+  Future<void> verification() async {
     final String password = _passwordController.text;
     final String name = _nameController.text;
     final String email = _emailController.text;
     final String phoneNumber = _noController.text;
 
-    final response = await http.post(
-      Uri.parse('http://192.168.11.121:3000/signup'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'name': name,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'password': password,
-      }),
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => VerificationPage(fullname: name, email: email, phoneNumber: phoneNumber, password: password,),
+      ),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
-    if(mounted){
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup successful')),
-        );
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const BookingPage(),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup failed')),
-        );
-      }
-    }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +41,7 @@ class _SignupPageState extends State<SignupPage> {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -83,29 +49,29 @@ class _SignupPageState extends State<SignupPage> {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/logo_small.jpg',
+                'assets/logo_small.png',
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
                 
               ),
-              SizedBox(height: 20), // Space between logo and container
+              const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.62,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                      // Space before the Login text
-                    Text(
+                    const Text(
                       'Sign up',
                       style: TextStyle(
                         fontSize: 43,
@@ -113,7 +79,7 @@ class _SignupPageState extends State<SignupPage> {
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    SizedBox(height: 8), // Space between the Login text and text boxes
+                    const SizedBox(height: 8), // Space between the Login text and text boxes
                     TextField(
                       controller: _nameController,
                       decoration: InputDecoration(
@@ -127,23 +93,23 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -152,7 +118,7 @@ class _SignupPageState extends State<SignupPage> {
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
                     ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     TextField(
                       controller: _noController,
                       decoration: InputDecoration(
@@ -166,23 +132,23 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -191,7 +157,7 @@ class _SignupPageState extends State<SignupPage> {
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -205,23 +171,23 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -230,7 +196,7 @@ class _SignupPageState extends State<SignupPage> {
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     // Password Text Field
                     TextField(
                       controller: _passwordController,
@@ -245,23 +211,23 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.grey.shade700, // Color for floating label when focused
                         ),
                         filled: true,
-                        fillColor: Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when enabled
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
@@ -271,34 +237,28 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       obscureText: true,
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        // Handle login action
-
-                        // Navigate to SignupPage
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CarRegistration()),
-                        );
+                        verification();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 100,
                           vertical: 12,
                         ),
-                        backgroundColor: Color(0xFF58C6A9),
+                        backgroundColor: const Color(0xFF58C6A9),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Signup',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
-                    SizedBox(height: 10), // Space between login button and Login with section
+                    const SizedBox(height: 10), // Space between login button and Login with section
                     const Row(
                       children: <Widget>[
                         Expanded(
@@ -322,20 +282,20 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    Text('Google Logo, Github Logo'),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                    const Text('Google Logo, Github Logo'),
+                    const SizedBox(height: 20),
                     InkWell(
                       onTap: () {
                         // Navigate to SignupPage
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Have an account? Login",
-                        style: TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
+                        style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9)),
                       ),
                     ),
                   ],

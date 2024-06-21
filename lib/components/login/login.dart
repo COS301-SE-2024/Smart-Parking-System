@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
-
-import 'package:smart_parking_system/components/login/verification.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,7 +26,7 @@ Future<void> _login() async {
   final String password = _passwordController.text;
 
   final response = await http.post(
-    Uri.parse('http://192.168.11.121:3000/login'),
+    Uri.parse('http://192.168.3.20:3000/login'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -50,7 +48,7 @@ Future<void> _login() async {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => const BookingPage(),
+          builder: (_) => MainPage(),
         ),
       );
     } else {
@@ -62,45 +60,6 @@ Future<void> _login() async {
   }
 }
 
-  // Future<void> _signup() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   final String email = _emailController.text;
-
-  //   final response = await http.post(
-  //     Uri.parse('http://192.168.11.121:3000/emailChecker'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: jsonEncode(<String, String>{
-  //       'email': email,
-  //     }),
-  //   );
-
-  //   if(mounted){
-  //   if (response.statusCode == 201){
-
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       // Navigator.of(context).pushReplacement(
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => VerificationPage(name: name, surname: surname, email: email, phoneNumber: phoneNumber,),
-  //       //   ),
-  //       // );
-  //   } else {
-  //     // If the server returns an error response, show a snackbar
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Email already has an account')),
-  //     );
-  //   }
-  //   }
- 
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
 
  @override
   Widget build(BuildContext context) {
@@ -111,7 +70,7 @@ Future<void> _login() async {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -119,7 +78,7 @@ Future<void> _login() async {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/logo_small.jpg',
+                'assets/logo_small.png',
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
               ),
@@ -127,12 +86,12 @@ Future<void> _login() async {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.60,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.elliptical(100, 40),
-                    topRight: Radius.elliptical(100, 40),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25), 
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
@@ -233,7 +192,7 @@ Future<void> _login() async {
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        // Handle login action
+                        _login();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -245,7 +204,16 @@ Future<void> _login() async {
                         ),
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
-                      child: const Text(
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.0,
+                              ),
+                            )
+                          : const Text(
                         'Log in',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
@@ -287,7 +255,7 @@ Future<void> _login() async {
                       },
                       child: const Text(
                         "Don't have an account? Sign up",
-                        style: TextStyle(fontSize: 16, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
