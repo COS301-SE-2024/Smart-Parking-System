@@ -61,6 +61,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
             ),
             const SizedBox(height: 10),
             Container(
+              width: 380,
               decoration: BoxDecoration(
                 color: const Color(0xFF35344A),
                 borderRadius: BorderRadius.circular(8),
