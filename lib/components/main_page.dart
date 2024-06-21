@@ -1,6 +1,143 @@
 import 'package:flutter/material.dart';
 
-class MainPage extends StatelessWidget {
+void main() {
+  runApp(MaterialApp(
+    home: MainPage(),
+  ));
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  late FocusNode _focusNode;
+  bool _isModalVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {
+        _isModalVisible = _focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _showParkingInfo() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () {}, // Consume tap events to prevent dismissing the modal
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 170,
+                  left: 20,
+                  right: 20,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF35344A),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                    ),
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            Text(
+                              'R20',
+                              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              '/Hr',
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                            Spacer(),
+                            Text(
+                              'Sandton City Park A',
+                              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Divider(color: Colors.white54),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Spaces Available:',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            Text(
+                              '5 slots',
+                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Distance to Venue:',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            Text(
+                              '3 mins drive',
+                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 100,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF58C6A9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      ),
+                      child: Text('View Car Park', style: TextStyle(fontSize: 16, color: Colors.white)), // Changed text color to white
+                      onPressed: () {
+                        Navigator.pop(context); // Close the bottom sheet
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,47 +146,87 @@ class MainPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Container(
-          margin: EdgeInsets.only(top: 20.0), // Adjust this value to move the icon down
+          margin: EdgeInsets.only(top: 20.0),
           child: IconButton(
-            icon: Icon(Icons.menu, color: Colors.black, size: 30.0), // Increase the size of the menu icon
-            onPressed: () {
-              // Handle menu action
-            },
+            icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
+            onPressed: () {},
           ),
         ),
       ),
       body: Stack(
         children: <Widget>[
-          // Background image of a map
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('../assets/map.webp'), // Update the path to your background image
+                image: AssetImage('../assets/map.webp'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Positioned(
-            top: 80.0, // Move the box down
+            top: 80.0,
             left: 20.0,
             right: 20.0,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              height: 50.0, // Adjust the height to make the box smaller
-              decoration: BoxDecoration(
-                color: Color(0xFF35344A),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Where are you going?',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.white),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF35344A),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  child: Center(
+                    child: TextField(
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        hintText: 'Where are you going?',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.white),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-              ),
+                Visibility(
+                  visible: _isModalVisible,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF35344A),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: Icon(Icons.location_on, color: Colors.white),
+                          title: Text('',
+                              style: TextStyle(color: Colors.white, fontSize: 16)),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close, color: Colors.white),
+                            onPressed: () {
+                              setState(() {
+                                _isModalVisible = false;
+                                _focusNode.unfocus();
+                              });
+                            },
+                          ),
+                        ),
+                        Divider(color: Colors.white),
+                        ListTile(
+                          leading: Icon(Icons.circle, color: Colors.white, size: 12),
+                          title: Text(
+                            'Sandton City, Johannesburg, South Africa',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          onTap: _showParkingInfo,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -128,9 +305,7 @@ class MainPage extends StatelessWidget {
             bottom: 40,
             left: MediaQuery.of(context).size.width / 2 - 28,
             child: GestureDetector(
-              onTap: () {
-                // Handle image button press
-              },
+              onTap: () {},
               child: Container(
                 width: 56,
                 height: 56,
@@ -149,10 +324,4 @@ class MainPage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: MainPage(),
-  ));
 }
