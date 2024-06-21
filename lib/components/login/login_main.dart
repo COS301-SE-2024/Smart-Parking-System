@@ -16,7 +16,7 @@ class LoginMainPage extends StatelessWidget {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Center(

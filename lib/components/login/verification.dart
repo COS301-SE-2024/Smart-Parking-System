@@ -136,7 +136,7 @@ class _VerificationPageState extends State<VerificationPage> {
         children: [
           SvgPicture.asset(
             'assets/Background - Small.svg', // Ensure you have the SVG background image in your assets folder
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             width: double.infinity,
             height: double.infinity,
           ),

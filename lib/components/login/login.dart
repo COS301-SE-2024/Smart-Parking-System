@@ -70,7 +70,7 @@ Future<void> _login() async {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
