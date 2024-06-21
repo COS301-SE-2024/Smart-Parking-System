@@ -4,7 +4,6 @@ import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class CarRegistration extends StatefulWidget {
   const CarRegistration({super.key});
 
@@ -15,20 +14,14 @@ class CarRegistration extends StatefulWidget {
 class _CarRegistrationState extends State<CarRegistration> {
   final TextEditingController _makeController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _colourController = TextEditingController();
-  final TextEditingController _regController = TextEditingController();
-  bool _isLoading = false;
-   
-   
-  Future<void> _register() async {
-    setState(() {
-      _isLoading = true;
-    });
+  final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
 
+  Future<void> _register() async {
     final String make = _makeController.text;
     final String model = _modelController.text;
-    final String colour = _colourController.text;
-    final String reg = _regController.text;
+    final String plate = _plateController.text;
+    final String license = _licenseController.text;
 
     final response = await http.post(
       Uri.parse('http://192.168.11.121:3000/registercar'),
@@ -38,18 +31,15 @@ class _CarRegistrationState extends State<CarRegistration> {
       body: jsonEncode(<String, String>{
         'make': make,
         'model': model,
-        'colour': colour,
-        'registration_number': reg,
+        'car_plate': plate,
+        'license_number': license,
       }),
     );
 
-    setState(() {
-      _isLoading = false;
-    });
-    if(mounted){
+    if (mounted) {
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Car registered successful')),
+          const SnackBar(content: Text('Car registered successfully')),
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -81,10 +71,10 @@ class _CarRegistrationState extends State<CarRegistration> {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/logo_small.jpg',
+                'assets/car_temp.png',
                 height: 200, // Adjust the height as needed
-                width: 200,  // Adjust the width as needed 
-              ), 
+                width: 200,  // Adjust the width as needed
+              ),
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
@@ -93,28 +83,28 @@ class _CarRegistrationState extends State<CarRegistration> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const SizedBox(height: 30),  // Space before the Login text
+                    const SizedBox(height: 30),  // Space before the "Add Your Car" text
                     const Text(
-                      'Add Your Car',
+                      'Add Car',
                       style: TextStyle(
-                        fontSize: 43,
+                        fontSize: 30,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    const SizedBox(height: 25), // Space between the Login text and text boxes
+                    const SizedBox(height: 25), // Space between the "Add Car" text and text boxes
                     TextField(
                       controller: _makeController,
                       decoration: InputDecoration(
-                        labelText: 'Make',
+                        labelText: 'Car Brand',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -153,7 +143,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                     TextField(
                       controller: _modelController,
                       decoration: InputDecoration(
-                        labelText: 'Model',
+                        labelText: 'Car Model',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -190,9 +180,9 @@ class _CarRegistrationState extends State<CarRegistration> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _colourController,
+                      controller: _plateController,
                       decoration: InputDecoration(
-                        labelText: 'Colour',
+                        labelText: 'Car Plate',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -229,9 +219,9 @@ class _CarRegistrationState extends State<CarRegistration> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _regController,
+                      controller: _licenseController,
                       decoration: InputDecoration(
-                        labelText: 'License Plate Number',
+                        labelText: 'Licence Number',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -270,8 +260,13 @@ class _CarRegistrationState extends State<CarRegistration> {
                     // Add Car Button
                     ElevatedButton(
                       onPressed: () {
+                        // Validate car details
+                        bool bValid = true;
+
                         // Handle add car action
-                        _register();
+                        if (bValid) {
+                          _register();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -284,7 +279,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
                       child: const Text(
-                        'Add Car',
+                        'Save',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
