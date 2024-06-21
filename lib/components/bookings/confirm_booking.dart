@@ -9,6 +9,7 @@ class ConfirmBookingPage extends StatefulWidget {
 
 class _ConfirmBookingState extends State<ConfirmBookingPage> {
   double _currentSliderValue = 1;
+  final double _currentPrice = 10;
   bool _disabledParking = false;
   bool _carWashing = false;
   final String _checkInTime = "12:00 am";
@@ -84,58 +85,59 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '2 hours - R20',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      '$_currentSliderValue hours - R${_currentPrice.toInt() * _currentSliderValue.toInt()}',
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
-                  SizedBox(height: 16),
-
-                  // Slider
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Estimate Duration',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                   Slider(
                     value: _currentSliderValue,
                     min: 1,
                     max: 24,
                     divisions: 23,
-                    
-                    label: '${_currentSliderValue.toInt()} hour(s)',
+                    activeColor: const Color(0xFF58C6A9),
+                    inactiveColor: Colors.white.withOpacity(0.5),
+                    label: '${_currentSliderValue.toInt()} hour(s) - R${_currentSliderValue.toInt() * _currentPrice.toInt()}',
                     onChanged: (double value) {
                       setState(() {
                         _currentSliderValue = value;
                       });
                     },
                   ),
-                  SizedBox(height: 16),
-
-                  // Check-in time
+                  const SizedBox(height: 16),
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'Check-in Time:',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      SizedBox(width: 8),
-                      Text(
-                        _checkInTime,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(
+                      const SizedBox(width: 120),
+                      const Icon(
                         Icons.edit,
                         color: Colors.white,
                         size: 20,
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _checkInTime,
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                      ), 
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Divider line
-                  Divider(color: Colors.white, thickness: 1),
+                  const Divider(color: Colors.white, thickness: 1),
 
                   // Disabled Parking option
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
+                     const Row(
                         children: [
                           Icon(
                             Icons.accessible,
@@ -155,17 +157,17 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                             _disabledParking = value;
                           });
                         },
-                        activeColor: Colors.green,
+                        activeColor: const Color(0xFF58C6A9),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Request Car Washing option
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
+                      const Row(
                         children: [
                           Icon(
                             Icons.directions_car,
@@ -185,7 +187,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                             _carWashing = value;
                           });
                         },
-                        activeColor: Colors.green,
+                        activeColor: const Color(0xFF58C6A9),
                       ),
                     ],
                   ),
