@@ -58,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.62,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
