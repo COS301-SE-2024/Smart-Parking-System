@@ -55,7 +55,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => MainPage(),
+                        builder: (_) => const MainPage(),
                       ),
                     );
                   },
