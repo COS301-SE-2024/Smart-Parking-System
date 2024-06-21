@@ -75,9 +75,9 @@ MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
   app.post('/signup', async (req, res) => {
     console.log(req.body);
-    const { name, surname, phoneNumber, email, password } = req.body;
+    const { name, phoneNumber, email, password } = req.body;
   
-    if (!name || !surname || !phoneNumber || !email || !password) {
+    if (!name || !phoneNumber || !email || !password) {
       console.log('Error is 400 because you are missing values');
       return res.status(400).send('Name, Surname, Phone Number, Email, and Password are required.');
     }
@@ -99,7 +99,6 @@ MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
       // Insert the new user into the database
       await db.collection('users').insertOne({
         name: name,
-        surname: surname,
         phoneNumber: phoneNumber,
         email: email,
         password: hashedPassword
