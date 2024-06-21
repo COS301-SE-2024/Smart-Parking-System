@@ -31,6 +31,10 @@ flutter:
     - assets/profile.png
     - assets/Background - Small.svg
     - assets/Background - Large.svg
+    - assets/car_temp.png
+    - assets/getting_started.png
+    - assets/how_to_invest.png
+    - assets/payment.png
     - assets/Successmark.png
     - assets/visa.png
     - assets/mastercard.png
