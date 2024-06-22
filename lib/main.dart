@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
 
 void main() {
   runApp(const MyApp());

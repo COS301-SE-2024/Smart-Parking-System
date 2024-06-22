@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatelessWidget {
+  const SideMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       width: 240, // Set the width of the sidebar
       child: Container(
-        color: Color(0xFF35344A), // Updated background color
+        color: const Color(0xFF35344A), // Updated background color
         child: Column(
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
               child: Column(
@@ -19,21 +21,21 @@ class SideMenu extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.white,
                         child: Icon(Icons.person, size: 40, color: Colors.grey),
                       ),
                       IconButton(
-                        icon: Icon(Icons.close, color: Colors.white),
+                        icon: const Icon(Icons.close, color: Colors.white),
                         onPressed: () {
                           Navigator.of(context).pop(); // Close the drawer
                         },
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     'John Doe',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
@@ -45,33 +47,33 @@ class SideMenu extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   ListTile(
-                    leading: Icon(Icons.payment, color: Colors.white),
-                    title: Text('Payment methods', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.payment, color: Colors.white),
+                    title: const Text('Payment methods', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.history, color: Colors.white),
-                    title: Text('Parking History', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.history, color: Colors.white),
+                    title: const Text('Parking History', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.local_offer, color: Colors.white),
-                    title: Text('Promotion code', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.local_offer, color: Colors.white),
+                    title: const Text('Promotion code', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.notifications, color: Colors.white),
-                    title: Text('Notification', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.notifications, color: Colors.white),
+                    title: const Text('Notification', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.support, color: Colors.white),
-                    title: Text('Support', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.support, color: Colors.white),
+                    title: const Text('Support', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                   ListTile(
-                    leading: Icon(Icons.settings, color: Colors.white),
-                    title: Text('Settings', style: TextStyle(color: Colors.white)),
+                    leading: const Icon(Icons.settings, color: Colors.white),
+                    title: const Text('Settings', style: TextStyle(color: Colors.white)),
                     onTap: () {},
                   ),
                 ],
@@ -85,8 +87,8 @@ class SideMenu extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.logout, color: Colors.white),
-              title: Text('Logout', style: TextStyle(color: Colors.white)),
+              leading: const Icon(Icons.logout, color: Colors.white),
+              title: const Text('Logout', style: TextStyle(color: Colors.white)),
               onTap: () {},
             ),
           ],

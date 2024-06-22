@@ -667,13 +667,13 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      drawer: SideMenu(),
+      drawer: const SideMenu(),
     );
   }
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: MainPage(),
   ));
 }
