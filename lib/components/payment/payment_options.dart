@@ -270,7 +270,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.wallet_travel_outlined, size: 30),
+              icon: Icon(Icons.wallet, size: 30),
               label: '',
             ),
             BottomNavigationBarItem(

@@ -254,7 +254,7 @@ class _MainPageState extends State<MainPage> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.wallet_travel_outlined, size: 30),
+              icon: Icon(Icons.wallet, size: 30),
               label: '',
             ),
             BottomNavigationBarItem(
