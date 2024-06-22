@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -48,7 +48,7 @@ Future<void> _login() async {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => const BookingPage(),
+          builder: (_) => const MainPage(),
         ),
       );
     } else {
@@ -242,9 +242,37 @@ Future<void> _login() async {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    const Text('Google Logo, Github Logo'),
-                    const SizedBox(height: 20), // Space between login button and Login with section
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/F_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            // Add functionality to signup with Google
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Image.asset(
+                              'assets/G_Logo.png',
+                              height: 50, // Adjust the height as needed
+                              width: 50,  // Adjust the width as needed
+                            ),
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/A_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 5), // Space between login button and Login with section
                     InkWell(
                       onTap: () {
                         // Navigate to SignupPage

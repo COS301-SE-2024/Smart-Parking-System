@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -172,6 +173,7 @@ class _MainPageState extends State<MainPage> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Center(
+
                     child: TextField(  
                       onTap: () {
                         setState(() {

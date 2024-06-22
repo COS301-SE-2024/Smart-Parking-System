@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 
 class SuccessionPage extends StatefulWidget {
@@ -34,7 +35,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
                 Image.asset('assets/Successmark.png', height: 100), // Ensure you have the image in your assets folder
                 const SizedBox(height: 30),
                 const Text(
-                  'Registed Successfully',
+                  'Registered Successfully',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -52,7 +53,11 @@ class _SuccessionPageState extends State<SuccessionPage> {
                 const SizedBox(height: 60),
                  ElevatedButton(
                   onPressed: () {
-                    
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => const MainPage(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
