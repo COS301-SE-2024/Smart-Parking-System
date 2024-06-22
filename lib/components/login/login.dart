@@ -251,12 +251,17 @@ Future<void> _login() async {
                           height: 50, // Adjust the height as needed
                           width: 50,  // Adjust the width as needed
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: Image.asset(
-                            'assets/G_Logo.png',
-                            height: 50, // Adjust the height as needed
-                            width: 50,  // Adjust the width as needed
+                        GestureDetector(
+                          onTap: () {
+                            // Add functionality to signup with Google
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Image.asset(
+                              'assets/G_Logo.png',
+                              height: 50, // Adjust the height as needed
+                              width: 50,  // Adjust the width as needed
+                            ),
                           ),
                         ),
                         Image.asset(

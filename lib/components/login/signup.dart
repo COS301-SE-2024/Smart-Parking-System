@@ -48,11 +48,38 @@ class _SignupPageState extends State<SignupPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // Logo above the white container
-              Image.asset(
-                'assets/logo_small.png',
-                height: 200, // Adjust the height as needed
-                width: 200,  // Adjust the width as needed
-                
+              Stack(
+                children: [
+                  // Profile Image
+                  GestureDetector(
+                    onTap: () {
+                      // Add picture and show picture
+                    },
+                    child: const CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Color(0xFFD9D9D9),
+                      child: Icon(
+                        Icons.person,
+                        size: 70,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Edit Icon
+                  const Positioned(
+                    right: 0,
+                    bottom: 100,
+                    child: CircleAvatar(
+                      radius: 15,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.edit,
+                        size: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
@@ -291,12 +318,17 @@ class _SignupPageState extends State<SignupPage> {
                           height: 50, // Adjust the height as needed
                           width: 50,  // Adjust the width as needed
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: Image.asset(
-                            'assets/G_Logo.png',
-                            height: 50, // Adjust the height as needed
-                            width: 50,  // Adjust the width as needed
+                        GestureDetector(
+                          onTap: () {
+                            // Add functionality to signup with Google
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Image.asset(
+                              'assets/G_Logo.png',
+                              height: 50, // Adjust the height as needed
+                              width: 50,  // Adjust the width as needed
+                            ),
                           ),
                         ),
                         Image.asset(
