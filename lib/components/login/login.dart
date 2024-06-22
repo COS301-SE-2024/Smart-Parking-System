@@ -242,7 +242,7 @@ Future<void> _login() async {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -267,7 +267,7 @@ Future<void> _login() async {
                       ],
                     ),
 
-                    const SizedBox(height: 20), // Space between login button and Login with section
+                    const SizedBox(height: 5), // Space between login button and Login with section
                     InkWell(
                       onTap: () {
                         // Navigate to SignupPage
