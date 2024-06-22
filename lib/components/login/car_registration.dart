@@ -179,45 +179,45 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: _plateController,
-                      decoration: InputDecoration(
-                        labelText: 'Car Plate',
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade700, // Darker grey for label text
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: Colors.grey.shade700, // Color for floating label when focused
-                        ),
-                        filled: true,
-                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color when enabled
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color when focused
-                          ),
-                        ),
-                      ),
-                      style: TextStyle(
-                        color: Colors.grey.shade800, // Dark grey input text color
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // TextField(
+                    //   controller: _plateController,
+                    //   decoration: InputDecoration(
+                    //     labelText: 'Car Plate',
+                    //     labelStyle: TextStyle(
+                    //       color: Colors.grey.shade700, // Darker grey for label text
+                    //       fontWeight: FontWeight.w500,
+                    //       fontSize: 20,
+                    //     ),
+                    //     floatingLabelStyle: TextStyle(
+                    //       color: Colors.grey.shade700, // Color for floating label when focused
+                    //     ),
+                    //     filled: true,
+                    //     fillColor: const Color(0xFFD9D9D9), // Light grey background color
+                    //     contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(30.0),
+                    //       borderSide: const BorderSide(
+                    //         color: Color(0xFFD9D9D9), // Border color
+                    //       ),
+                    //     ),
+                    //     enabledBorder: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(30.0),
+                    //       borderSide: const BorderSide(
+                    //         color: Color(0xFFD9D9D9), // Border color when enabled
+                    //       ),
+                    //     ),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(30.0),
+                    //       borderSide: const BorderSide(
+                    //         color: Color(0xFFD9D9D9), // Border color when focused
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   style: TextStyle(
+                    //     color: Colors.grey.shade800, // Dark grey input text color
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 20),
                     TextField(
                       controller: _licenseController,
                       decoration: InputDecoration(
