@@ -16,6 +16,7 @@ dependencies:
   latlong2: ^0.8.1
   google_maps_flutter: ^2.1.0
   cupertino_icons: ^1.0.6
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
@@ -43,3 +44,4 @@ flutter:
     - assets/mastercard.png
     - assets/car.png
     - assets/Line-7.png
+    - assets/map.webp

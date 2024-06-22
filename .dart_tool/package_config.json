@@ -452,10 +452,11 @@
       "languageVersion": "3.4"
     }
   ],
+
   "generated": "2024-06-22T19:47:33.816338Z",
   "generator": "pub",
   "generatorVersion": "3.4.1",
   "flutterRoot": "file:///Users/shizaamir/Documents/flutter",
   "flutterVersion": "3.22.1",
   "pubCache": "file:///Users/shizaamir/.pub-cache"
-}
+
