@@ -35,7 +35,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
                 Image.asset('assets/Successmark.png', height: 100), // Ensure you have the image in your assets folder
                 const SizedBox(height: 30),
                 const Text(
-                  'Registed Successfully',
+                  'Registered Successfully',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,

@@ -242,9 +242,37 @@ Future<void> _login() async {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    const Text('Google Logo, Github Logo'),
-                    const SizedBox(height: 20), // Space between login button and Login with section
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/F_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            // Add functionality to signup with Google
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Image.asset(
+                              'assets/G_Logo.png',
+                              height: 50, // Adjust the height as needed
+                              width: 50,  // Adjust the width as needed
+                            ),
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/A_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 5), // Space between login button and Login with section
                     InkWell(
                       onTap: () {
                         // Navigate to SignupPage

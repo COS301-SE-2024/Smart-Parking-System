@@ -25,6 +25,7 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
   late String _verificationCode;
   bool _isLoading = false;
 
@@ -67,6 +68,11 @@ class _VerificationPageState extends State<VerificationPage> {
     setState(() {
       _isLoading = true;
     });
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const SuccessionPage(),
+      ),
+    );
     if(mounted){
       if (_formKey.currentState!.validate()) {
         String enteredCode = _codeControllers.map((controller) => controller.text).join();
@@ -97,7 +103,7 @@ class _VerificationPageState extends State<VerificationPage> {
     final String name = widget.fullname;
     final String email = widget.email;
     final String phoneNumber = widget.phoneNumber;
-
+    
     final response = await http.post(
       Uri.parse('http://192.168.3.20:3000/signup'),
       headers: <String, String>{
@@ -173,12 +179,13 @@ class _VerificationPageState extends State<VerificationPage> {
                         children: List.generate(4, (index) {
                           return SizedBox(
                             width: 80,
-                            height: 100, // Set the height here
                             child: Container(
                             margin: const EdgeInsets.symmetric(horizontal: 5),
                             child: TextFormField(
                               controller: _codeControllers[index],
+                              focusNode: _focusNodes[index],
                               decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(vertical: 22),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: const BorderSide(color: Colors.grey, width: 1.0),
@@ -194,6 +201,13 @@ class _VerificationPageState extends State<VerificationPage> {
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               maxLength: 1,
+                              onChanged: (value) {
+                                if (value.length == 1 && index < 3) {
+                                  FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+                                } else if (value.length == 1 && index == 3) {
+                                  _focusNodes[index].unfocus();
+                                }
+                              },
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return '';
