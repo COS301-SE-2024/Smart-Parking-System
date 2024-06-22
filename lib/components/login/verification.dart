@@ -67,6 +67,11 @@ class _VerificationPageState extends State<VerificationPage> {
     setState(() {
       _isLoading = true;
     });
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const SuccessionPage(),
+      ),
+    );
     if(mounted){
       if (_formKey.currentState!.validate()) {
         String enteredCode = _codeControllers.map((controller) => controller.text).join();
@@ -97,7 +102,7 @@ class _VerificationPageState extends State<VerificationPage> {
     final String name = widget.fullname;
     final String email = widget.email;
     final String phoneNumber = widget.phoneNumber;
-
+    
     final response = await http.post(
       Uri.parse('http://192.168.3.20:3000/signup'),
       headers: <String, String>{
@@ -136,7 +141,7 @@ class _VerificationPageState extends State<VerificationPage> {
         children: [
           SvgPicture.asset(
             'assets/Background - Small.svg', // Ensure you have the SVG background image in your assets folder
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             width: double.infinity,
             height: double.infinity,
           ),

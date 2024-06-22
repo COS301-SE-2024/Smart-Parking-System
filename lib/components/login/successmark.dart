@@ -23,7 +23,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
         children: [
           SvgPicture.asset(
             'assets/Background - Small.svg', // Ensure you have the SVG background image in your assets folder
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             width: double.infinity,
             height: double.infinity,
           ),
@@ -34,7 +34,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
                 Image.asset('assets/Successmark.png', height: 100), // Ensure you have the image in your assets folder
                 const SizedBox(height: 30),
                 const Text(
-                  'Registed Successfully',
+                  'Registered Successfully',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
