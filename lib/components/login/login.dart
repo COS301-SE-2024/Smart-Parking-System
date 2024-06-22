@@ -70,7 +70,7 @@ Future<void> _login() async {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -86,7 +86,7 @@ Future<void> _login() async {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.60,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -243,7 +243,30 @@ Future<void> _login() async {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const Text('Google Logo, Github Logo'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/F_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          child: Image.asset(
+                            'assets/G_Logo.png',
+                            height: 50, // Adjust the height as needed
+                            width: 50,  // Adjust the width as needed
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/A_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                      ],
+                    ),
+
                     const SizedBox(height: 20), // Space between login button and Login with section
                     InkWell(
                       onTap: () {
