@@ -14,13 +14,13 @@ class CarRegistration extends StatefulWidget {
 class _CarRegistrationState extends State<CarRegistration> {
   final TextEditingController _makeController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
 
   Future<void> _register() async {
     final String make = _makeController.text;
     final String model = _modelController.text;
-    final String plate = _plateController.text;
+    final String color = _colorController.text;
     final String license = _licenseController.text;
 
     final response = await http.post(
@@ -31,7 +31,7 @@ class _CarRegistrationState extends State<CarRegistration> {
       body: jsonEncode(<String, String>{
         'make': make,
         'model': model,
-        'car_plate': plate,
+        'color': color,
         'license_number': license,
       }),
     );
@@ -179,49 +179,49 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // TextField(
-                    //   controller: _plateController,
-                    //   decoration: InputDecoration(
-                    //     labelText: 'Car Plate',
-                    //     labelStyle: TextStyle(
-                    //       color: Colors.grey.shade700, // Darker grey for label text
-                    //       fontWeight: FontWeight.w500,
-                    //       fontSize: 20,
-                    //     ),
-                    //     floatingLabelStyle: TextStyle(
-                    //       color: Colors.grey.shade700, // Color for floating label when focused
-                    //     ),
-                    //     filled: true,
-                    //     fillColor: const Color(0xFFD9D9D9), // Light grey background color
-                    //     contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //       borderSide: const BorderSide(
-                    //         color: Color(0xFFD9D9D9), // Border color
-                    //       ),
-                    //     ),
-                    //     enabledBorder: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //       borderSide: const BorderSide(
-                    //         color: Color(0xFFD9D9D9), // Border color when enabled
-                    //       ),
-                    //     ),
-                    //     focusedBorder: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(30.0),
-                    //       borderSide: const BorderSide(
-                    //         color: Color(0xFFD9D9D9), // Border color when focused
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   style: TextStyle(
-                    //     color: Colors.grey.shade800, // Dark grey input text color
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 20),
+                    TextField(
+                      controller: _colorController,
+                      decoration: InputDecoration(
+                        labelText: 'Colour',
+                        labelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Darker grey for label text
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: Colors.grey.shade700, // Color for floating label when focused
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when enabled
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9D9D9), // Border color when focused
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: Colors.grey.shade800, // Dark grey input text color
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     TextField(
                       controller: _licenseController,
                       decoration: InputDecoration(
-                        labelText: 'Licence Number',
+                        labelText: 'License Number',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
