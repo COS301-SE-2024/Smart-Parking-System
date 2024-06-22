@@ -16,7 +16,10 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: Center(
+      child: Container(
+        width: 500,
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,6 +247,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           ],
         ),
       ),
+    ),
+    ),
       // bottomNavigationBar: Container(
       //   decoration: BoxDecoration(
       //     color: const Color(0xFF2C2C54),
