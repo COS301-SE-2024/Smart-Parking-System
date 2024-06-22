@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: MainPage(),
-  ));
-}
-
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
-  _MainPageState createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
@@ -41,7 +37,7 @@ class _MainPageState extends State<MainPage> {
         return GestureDetector(
           onTap: () {}, // Consume tap events to prevent dismissing the modal
           child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
             child: Stack(
               children: [
                 Positioned(
@@ -49,12 +45,12 @@ class _MainPageState extends State<MainPage> {
                   left: 20,
                   right: 20,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFF35344A),
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
                     ),
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
+                    padding: const EdgeInsets.all(16.0),
+                    child: const Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -117,13 +113,13 @@ class _MainPageState extends State<MainPage> {
                   child: Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF58C6A9),
+                        backgroundColor: const Color(0xFF58C6A9),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                       ),
-                      child: Text('View Car Park', style: TextStyle(fontSize: 16, color: Colors.white)), // Changed text color to white
+                      child: const Text('View Car Park', style: TextStyle(fontSize: 16, color: Colors.white)), // Changed text color to white
                       onPressed: () {
                         Navigator.pop(context); // Close the bottom sheet
                       },
@@ -146,9 +142,9 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Container(
-          margin: EdgeInsets.only(top: 20.0),
+          margin: const EdgeInsets.only(top: 20.0),
           child: IconButton(
-            icon: Icon(Icons.menu, color: Colors.black, size: 30.0),
+            icon: const Icon(Icons.menu, color: Colors.black, size: 30.0),
             onPressed: () {},
           ),
         ),
@@ -156,7 +152,7 @@ class _MainPageState extends State<MainPage> {
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('../assets/map.webp'),
                 fit: BoxFit.cover,
@@ -170,41 +166,41 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: Color(0xFF35344A),
+                    color: const Color(0xFF35344A),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Center(
                     child: TextField(
                       focusNode: _focusNode,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Where are you going?',
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.white),
                       ),
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
                 Visibility(
                   visible: _isModalVisible,
                   child: Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    margin: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
-                      color: Color(0xFF35344A),
+                      color: const Color(0xFF35344A),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Column(
                       children: [
                         ListTile(
-                          leading: Icon(Icons.location_on, color: Colors.white),
-                          title: Text('',
+                          leading: const Icon(Icons.location_on, color: Colors.white),
+                          title: const Text('',
                               style: TextStyle(color: Colors.white, fontSize: 16)),
                           trailing: IconButton(
-                            icon: Icon(Icons.close, color: Colors.white),
+                            icon: const Icon(Icons.close, color: Colors.white),
                             onPressed: () {
                               setState(() {
                                 _isModalVisible = false;
@@ -213,10 +209,10 @@ class _MainPageState extends State<MainPage> {
                             },
                           ),
                         ),
-                        Divider(color: Colors.white),
+                        const Divider(color: Colors.white),
                         ListTile(
-                          leading: Icon(Icons.circle, color: Colors.white, size: 12),
-                          title: Text(
+                          leading: const Icon(Icons.circle, color: Colors.white, size: 12),
+                          title: const Text(
                             'Sandton City, Johannesburg, South Africa',
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
@@ -236,7 +232,7 @@ class _MainPageState extends State<MainPage> {
             child: Container(
               height: 54,
               decoration: BoxDecoration(
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: AssetImage('../assets/navabr.png'),
                   fit: BoxFit.cover,
                 ),
@@ -245,7 +241,7 @@ class _MainPageState extends State<MainPage> {
                     color: Colors.black.withOpacity(0.06),
                     spreadRadius: 0,
                     blurRadius: 14,
-                    offset: Offset(0, -4),
+                    offset: const Offset(0, -4),
                   ),
                 ],
               ),
@@ -255,7 +251,7 @@ class _MainPageState extends State<MainPage> {
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('../assets/home.png'),
@@ -266,7 +262,7 @@ class _MainPageState extends State<MainPage> {
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('../assets/wallet.png'),
@@ -274,11 +270,11 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 60),
+                  const SizedBox(width: 60),
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('../assets/history.png'),
@@ -289,7 +285,7 @@ class _MainPageState extends State<MainPage> {
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('../assets/settings.png'),
@@ -309,7 +305,7 @@ class _MainPageState extends State<MainPage> {
               child: Container(
                 width: 56,
                 height: 56,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: AssetImage('../assets/map.png'),
