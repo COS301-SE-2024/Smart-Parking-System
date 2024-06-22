@@ -48,7 +48,7 @@ Future<void> _login() async {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => MainPage(),
+          builder: (_) => const MainPage(),
         ),
       );
     } else {
