@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:smart_parking_system/components/bookings/make_booking.dart';
 
 class AddCardPage extends StatelessWidget {
   const AddCardPage({super.key});
@@ -155,24 +156,33 @@ class AddCardPage extends StatelessWidget {
                 onTap: () {
                   // Add your skip logic here
                 },
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Divider(
                         color: Colors.white,
                         thickness: 1,
                         endIndent: 10,
                       ),
                     ),
-                    Text(
-                      'Skip for now',
-                      style: TextStyle(
-                        color:  Color(0xFF58C6A9),
-                        decoration: TextDecoration.underline,
+                    GestureDetector(
+                        onTap: () {
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => const BookingPage(),
+                          //   ),
+                          // );
+                        },
+                        child: const Text(
+                        'Skip for now',
+                        style: TextStyle(
+                          color:  Color(0xFF58C6A9),
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
-                    Expanded(
+                    const Expanded(
                       child: Divider(
                         color: Colors.white,
                         thickness: 1,
