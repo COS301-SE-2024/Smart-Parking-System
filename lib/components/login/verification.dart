@@ -25,7 +25,7 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
-  List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
   late String _verificationCode;
   bool _isLoading = false;
 
@@ -180,7 +180,7 @@ class _VerificationPageState extends State<VerificationPage> {
                               controller: _codeControllers[index],
                               focusNode: _focusNodes[index],
                               decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(vertical: 22),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 22),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: const BorderSide(color: Colors.grey, width: 1.0),
