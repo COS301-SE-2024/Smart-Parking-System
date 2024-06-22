@@ -252,7 +252,7 @@ Future<void> _login() async {
                           width: 50,  // Adjust the width as needed
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Image.asset(
                             'assets/G_Logo.png',
                             height: 50, // Adjust the height as needed

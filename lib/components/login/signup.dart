@@ -283,7 +283,29 @@ class _SignupPageState extends State<SignupPage> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const Text('Google Logo, Github Logo'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/F_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          child: Image.asset(
+                            'assets/G_Logo.png',
+                            height: 50, // Adjust the height as needed
+                            width: 50,  // Adjust the width as needed
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/A_Logo.png',
+                          height: 50, // Adjust the height as needed
+                          width: 50,  // Adjust the width as needed
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     InkWell(
                       onTap: () {
