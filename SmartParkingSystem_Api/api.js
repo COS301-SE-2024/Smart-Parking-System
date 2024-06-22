@@ -12,7 +12,7 @@ app.use(cors());
 const port = 3000;
 
 // MongoDB URI
-const uri = "mongodb://localhost:27017";
+const uri = "mongodb://127.0.0.1:27017";
 const databaseName = 'Smart_Parking_System';
 
 let db;
@@ -34,12 +34,50 @@ MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   })
   .catch(error => console.error('Error connecting to MongoDB:', error));
 
+  
+  app.post('/registercar', async (req, res) => {
+    console.log(req.body);
+    const { make, model, colour, registration_number } = req.body;
+  
+    if (!make || !model || !colour || !registration_number) {
+      console.log('Error is 400 because you are missing values');
+      return res.status(400).send('Make, Model, Colour, Registration Number are required.');
+    }
+
+    //Now do checks whether the Make, Model, Colour, Registration Number is correct/etc
+  
+    try {
+      // Check if the user already exists
+      const car = await db.collection('cars').findOne({ registration_number: registration_number });
+      if (car) {
+        console.log('Error is 400 car already exsists');
+        return res.status(400).send('Car with this registration number already exists.');  /////
+      }
+  
+      // Hash the regNum
+      const salt = await bcrypt.genSalt(10);
+      const hashedReg = await bcrypt.hash(registration_number, salt);
+  
+      // Insert the new user into the database
+      await db.collection('cars').insertOne({
+        make: make,
+        model: model,
+        colour: colour,
+        registration_number: registration_number
+      });
+  
+      return res.status(201).send('Car registered successfully.');
+    } catch (error) {
+      console.error('Error registering car:', error);
+      return res.status(500).send('Internal server error.');
+    }
+  });
 
   app.post('/signup', async (req, res) => {
     console.log(req.body);
-    const { name, surname, phoneNumber, email, password } = req.body;
+    const { name, phoneNumber, email, password } = req.body;
   
-    if (!name || !surname || !phoneNumber || !email || !password) {
+    if (!name || !phoneNumber || !email || !password) {
       console.log('Error is 400 because you are missing values');
       return res.status(400).send('Name, Surname, Phone Number, Email, and Password are required.');
     }
@@ -61,7 +99,6 @@ MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
       // Insert the new user into the database
       await db.collection('users').insertOne({
         name: name,
-        surname: surname,
         phoneNumber: phoneNumber,
         email: email,
         password: hashedPassword
