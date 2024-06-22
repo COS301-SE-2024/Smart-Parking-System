@@ -7,7 +7,10 @@ class AddCardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: Center(
+        child: SizedBox(
+        width: 550,
+        child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +56,7 @@ class AddCardPage extends StatelessWidget {
             ),
             const SizedBox(height: 40.0),
             const TextField(
-              decoration: InputDecoration(
+              decoration: InputDecoration( 
                 filled: true,
                 fillColor: Colors.transparent,
                 labelText: 'Card Number',
@@ -184,6 +187,8 @@ class AddCardPage extends StatelessWidget {
           ],
         ),
       ),
+    ),
+    ),
     );
   }
 }
