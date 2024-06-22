@@ -156,7 +156,7 @@ class _MainPageState extends State<MainPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('../assets/map.webp'),
+                image: AssetImage('assets/map.webp'),
                 fit: BoxFit.cover,
               ),
             ),
