@@ -41,7 +41,7 @@ class _SignupPageState extends State<SignupPage> {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -58,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.62,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -295,7 +295,7 @@ class _SignupPageState extends State<SignupPage> {
                       },
                       child: const Text(
                         "Have an account? Login",
-                        style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9)),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF58C6A9)),
                       ),
                     ),
                   ],

@@ -70,7 +70,7 @@ Future<void> _login() async {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -86,7 +86,7 @@ Future<void> _login() async {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.60,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
