@@ -14,13 +14,13 @@ class CarRegistration extends StatefulWidget {
 class _CarRegistrationState extends State<CarRegistration> {
   final TextEditingController _makeController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
 
   Future<void> _register() async {
     final String make = _makeController.text;
     final String model = _modelController.text;
-    final String plate = _plateController.text;
+    final String color = _colorController.text;
     final String license = _licenseController.text;
 
     final response = await http.post(
@@ -31,7 +31,7 @@ class _CarRegistrationState extends State<CarRegistration> {
       body: jsonEncode(<String, String>{
         'make': make,
         'model': model,
-        'car_plate': plate,
+        'color': color,
         'license_number': license,
       }),
     );
@@ -63,7 +63,7 @@ class _CarRegistrationState extends State<CarRegistration> {
           // Background image
           SvgPicture.asset(
             'assets/Background - Small.svg',
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
           // Foreground elements
           Column(
@@ -79,7 +79,7 @@ class _CarRegistrationState extends State<CarRegistration> {
               // Container for login form
               Container(
                 height: MediaQuery.of(context).size.height * 0.62,
-                width: double.infinity,
+                width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -93,7 +93,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                   children: <Widget>[
                     const SizedBox(height: 30),  // Space before the "Add Your Car" text
                     const Text(
-                      'Add Car',
+                      'Add Your Car',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w500,
@@ -180,9 +180,9 @@ class _CarRegistrationState extends State<CarRegistration> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _plateController,
+                      controller: _colorController,
                       decoration: InputDecoration(
-                        labelText: 'Car Plate',
+                        labelText: 'Colour',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -221,7 +221,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                     TextField(
                       controller: _licenseController,
                       decoration: InputDecoration(
-                        labelText: 'Licence Number',
+                        labelText: 'License Number',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
