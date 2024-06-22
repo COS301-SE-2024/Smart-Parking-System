@@ -93,7 +93,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                   children: <Widget>[
                     const SizedBox(height: 30),  // Space before the "Add Your Car" text
                     const Text(
-                      'Add Car',
+                      'Add Your Car',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w500,
