@@ -165,10 +165,10 @@ class _VerificationPageState extends State<VerificationPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        'Enter the verification code we just sent on your email address.',
+                      Text(
+                        'Enter the verification code we just sent on your email address. $_verificationCode',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
                         ),

@@ -1,0 +1,73 @@
+name: Continuous Integration
+#trigger on push to main
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+    - develop
+
+jobs:
+  build_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build
+        run: flutter build apk --debug
+
+  lint_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Lint
+        run: flutter analyze
+
+  test_flutter:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter_version: [3.22.1]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_version }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Test
+        run: flutter test
+

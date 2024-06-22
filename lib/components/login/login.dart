@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -48,7 +48,7 @@ Future<void> _login() async {
       );
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => const BookingPage(),
+          builder: (_) => const MainPage(),
         ),
       );
     } else {
