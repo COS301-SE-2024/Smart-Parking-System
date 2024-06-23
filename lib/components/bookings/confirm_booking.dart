@@ -9,17 +9,27 @@ class ConfirmBookingPage extends StatefulWidget {
   State<ConfirmBookingPage> createState() => _ConfirmBookingState();
 }
 
-class _ConfirmBookingState extends State<ConfirmBookingPage> {
-  double _currentSliderValue = 1;
-  final double _currentPrice = 10;
-  bool _disabledParking = false;
-  bool _carWashing = false;
-  String _checkInTime = "12:00 am";
+  class _ConfirmBookingState extends State<ConfirmBookingPage> {
+    double _currentSliderValue = 1;
+    final double _currentPrice = 10;
+    bool _disabledParking = false;
+    bool _carWashing = false;
+    String _checkInTime = "12:00 am";
 
-  Future<void> _selectTime(BuildContext context) async {
+    Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: 0, minute: 0),
+      initialTime: const TimeOfDay(hour: 0, minute: 0),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            timePickerTheme: const TimePickerThemeData(
+              dialHandColor: Color(0xFF58C6A9), // Change this to your desired color
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
@@ -137,7 +147,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                         const SizedBox(width: 8),
-                        Icon(
+                        const Icon(
                           Icons.edit,
                           color: Colors.white,
                           size: 20,

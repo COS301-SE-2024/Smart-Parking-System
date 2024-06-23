@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/parking/parking_history.dart';
 
 
 class PaymentSuccessionPage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                 Image.asset('assets/Successmark.png', height: 100), // Ensure you have the image in your assets folder
                 const SizedBox(height: 30),
                 const Text(
-                  'Payment Successfully',
+                  'Payment Successful',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -55,7 +56,7 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const MainPage(),
+                          builder: (_) => const ParkingHistoryPage(),
                         ),
                       );
                   },
