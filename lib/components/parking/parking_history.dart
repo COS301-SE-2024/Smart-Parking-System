@@ -20,7 +20,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       backgroundColor: const Color(0xFF35344A),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 30),
@@ -53,7 +54,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 ],
               ),
             ),
-            // Active Session
             const Text(
               'Active Session',
               style: TextStyle(
@@ -189,8 +189,10 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   _buildReservedSpotItem('02/09/2019', '02:00pm', 'R100'),
                 ],
               ),
-            
+              
           ],
+          
+        ),
         ),
       ),
       bottomNavigationBar: Theme(
