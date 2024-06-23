@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
-import 'package:smart_parking_system/main.dart';
 
 class LevelSelectPage extends StatefulWidget {
   const LevelSelectPage({super.key});
