@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
@@ -109,11 +108,11 @@ class _MainPageState extends State<MainPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const BookingPage(),
-                      ),
-                    );
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const BookingPage(),
+                    //   ),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF58C6A9),
