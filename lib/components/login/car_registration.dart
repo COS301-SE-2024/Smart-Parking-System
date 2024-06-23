@@ -264,7 +264,11 @@ class _CarRegistrationState extends State<CarRegistration> {
                         // Validate Vehicle details
                         bool bValid = true;
 
-                        // Handle add Vehicle action
+                        Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const SuccessionPage(),
+                                ),
+                              );
                         if (bValid) {
                           _register();
                         }
