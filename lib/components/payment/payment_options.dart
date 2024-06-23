@@ -10,7 +10,6 @@ class PaymentMethodPage extends StatefulWidget {
 }
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
-  int _selectedCard = 1;
   int _selectedIndex = 1;
 
   @override
@@ -172,22 +171,23 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         child: Image.asset('assets/mastercard.png'),
                       ),
                       title: const Text(
-                        'FNB Bank **** **** **** 8395',
+                        'FNB Bank\n**** **** **** 8395',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
-                      trailing: Radio(
-                        value: 1,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
+                      trailing: TextButton(
+                        onPressed: () {
+                          // Add your onPressed logic here for editing the card
                         },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
+                        child: const Text(
+                          'Edit Card',
+                          style: TextStyle(
+                            color: Color(0xFF58C6A9),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -201,22 +201,23 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         child: Image.asset('assets/visa.png'),
                       ),
                       title: const Text(
-                        'Capitec Bank **** **** **** 6246',
+                        'Capitec Bank\n**** **** **** 6246',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
-                      trailing: Radio(
-                        value: 2,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
+                      trailing: TextButton(
+                        onPressed: () {
+                          // Add your onPressed logic here for editing the card
                         },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
+                        child: const Text(
+                          'Edit Card',
+                          style: TextStyle(
+                            color: Color(0xFF58C6A9),
+                          ),
+                        ),
                       ),
                     ),
                   ),
