@@ -94,6 +94,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey),
                       ),
+                      counterStyle: TextStyle(color: Colors.grey),
                     ),
                     keyboardType: TextInputType.number,
                     maxLength: 4,
@@ -113,6 +114,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey),
                       ),
+                      counterStyle: TextStyle(color: Colors.grey),
                     ),
                     keyboardType: TextInputType.number,
                     maxLength: 3,
