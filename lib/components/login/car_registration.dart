@@ -72,7 +72,7 @@ class _CarRegistrationState extends State<CarRegistration> {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/Vehicle_temp.png',
+                'assets/car_temp.png',
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
               ),
