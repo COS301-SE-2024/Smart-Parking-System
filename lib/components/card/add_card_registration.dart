@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/payment/payment_options.dart';
+import 'package:smart_parking_system/components/login/car_registration.dart';
 // import 'package:smart_parking_system/components/bookings/make_booking.dart';
 
-class AddCardPage extends StatelessWidget {
-  const AddCardPage({super.key});
+class AddCardRegistrationPage extends StatelessWidget {
+  const AddCardRegistrationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +18,9 @@ class AddCardPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Spacer(),
-            Stack(
+            const Stack(
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const PaymentMethodPage(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const Center(
+                Center(
                   child: Text(
                     'Add Card',
                     style: TextStyle(
@@ -139,7 +126,7 @@ class AddCardPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const PaymentMethodPage(),
+                          builder: (_) => const CarRegistration(),
                         ),
                       );
                   },
@@ -160,6 +147,49 @@ class AddCardPage extends StatelessWidget {
                 ),
             ),
             const SizedBox(height: 10.0),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  // Add your skip logic here
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Expanded(
+                      child: Divider(
+                        color: Colors.white,
+                        thickness: 1,
+                        endIndent: 10,
+                      ),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const CarRegistration(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                        'Skip for now',
+                        style: TextStyle(
+                          color:  Color(0xFF58C6A9),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: Divider(
+                        color: Colors.white,
+                        thickness: 1,
+                        indent: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Spacer(),
           ],
         ),
       ),

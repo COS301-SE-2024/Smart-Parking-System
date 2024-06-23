@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/login/successmark.dart';
 
 class CarRegistration extends StatefulWidget {
   const CarRegistration({super.key});
@@ -43,7 +44,7 @@ class _CarRegistrationState extends State<CarRegistration> {
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const BookingPage(),
+            builder: (context) => const SuccessionPage(),
           ),
         );
       } else {
@@ -284,22 +285,31 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                     const SizedBox(height: 10), // Space between login button and Login with section
-                    const Row(
+                    Row(
                       children: <Widget>[
-                        Expanded(
+                        const Expanded(
                           child: Divider(
                             color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
                             thickness: 1, // Thickness of the lines
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const SuccessionPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
                             'Skip for now',
-                            style: TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
+                            style:  TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
+                            ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Divider(
                             color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
                             thickness: 1, // Thickness of the lines

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/card/add_card_registration.dart';
 import 'package:smart_parking_system/components/login/successmark.dart';
 
 class VerificationPage extends StatefulWidget {
@@ -70,7 +71,7 @@ class _VerificationPageState extends State<VerificationPage> {
     });
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => const SuccessionPage(),
+        builder: (context) => const AddCardRegistrationPage(),
       ),
     );
     if(mounted){

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/card/add_card.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -213,6 +214,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       trailing: TextButton(
                         onPressed: () {
                           // Add your onPressed logic here for editing the card
+                          
                         },
                         child: const Text(
                           'Edit Card',
@@ -230,15 +232,25 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       onTap: () {
                         // Insert here what Top Up does
                       },
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.add,
+                          const Icon(Icons.add,
                             color: Color(0xFF58C6A9),
                           ),
-                          SizedBox(width: 10),
-                          Text('Add New Card',
+                          const SizedBox(width: 10),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const AddCardPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                            'Add New Card',
                             style: TextStyle(
                               color: Color(0xFF58C6A9)
+                            ),
                             ),
                           ),
                         ],
