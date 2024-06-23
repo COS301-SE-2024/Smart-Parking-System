@@ -14,7 +14,19 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
   final double _currentPrice = 10;
   bool _disabledParking = false;
   bool _carWashing = false;
-  final String _checkInTime = "12:00 am";
+  String _checkInTime = "12:00 am";
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: 0, minute: 0),
+    );
+    if (picked != null) {
+      setState(() {
+        _checkInTime = picked.format(context);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +104,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '$_currentSliderValue hours - R${_currentPrice.toInt() * _currentSliderValue.toInt()}',
+                      '${_currentSliderValue.round()} hours - R${(_currentPrice.toInt() * _currentSliderValue.round()).toInt()}',
                       style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
@@ -116,24 +128,27 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      const Text(
-                        'Check-in Time:',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      const SizedBox(width: 120),
-                      const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _checkInTime,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
-                      ), 
-                    ],
+                  GestureDetector(
+                    onTap: () => _selectTime(context),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Check-in Time:',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _checkInTime,
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -144,7 +159,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     const Row(
+                      const Row(
                         children: [
                           Icon(
                             Icons.accessible,
