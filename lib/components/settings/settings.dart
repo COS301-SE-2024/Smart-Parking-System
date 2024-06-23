@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/cardetails/cardetailspage.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
@@ -93,6 +94,17 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (_) => const UserProfilePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Update vehicle details', style: TextStyle(color: Colors.white)),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => const CarDetailsPage(),
                   ),
                 );
               },
