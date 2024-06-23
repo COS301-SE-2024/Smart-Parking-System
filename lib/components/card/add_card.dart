@@ -154,7 +154,7 @@ class AddCardPage extends StatelessWidget {
                     backgroundColor: const Color(0xFF58C6A9),
                   ),
                   child: const Text(
-                    'Continue',
+                    'Save',
                     style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
                   ),
                 ),

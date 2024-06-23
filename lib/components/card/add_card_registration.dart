@@ -141,7 +141,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                     backgroundColor: const Color(0xFF58C6A9),
                   ),
                   child: const Text(
-                    'Save',
+                    'Continue',
                     style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
                   ),
                 ),
