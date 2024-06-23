@@ -102,9 +102,30 @@ class UserProfilePage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Handle save button
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: const Color(0xFF2D2F41),
+                              
+                              title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
+                              
+                              actions: [
+                                Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:  const Color(0xFF58C6A9),
+                        backgroundColor: const Color(0xFF58C6A9),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 150,
                           vertical: 24,
