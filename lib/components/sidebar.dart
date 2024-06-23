@@ -6,7 +6,6 @@ import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/payment/promotion_code.dart';
-import 'package:smart_parking_system/components/profile/userprofile.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});

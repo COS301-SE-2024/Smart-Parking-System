@@ -124,8 +124,8 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               backgroundColor: const Color(0xFF2D2F41),
-              title: Center(
-                child: const Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+              title: const Center(
+                child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
               ),
               actions: [
                 Center(
