@@ -4,6 +4,7 @@ import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
+import 'package:smart_parking_system/components/payment/promotion_code.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -75,7 +76,7 @@ class SideMenu extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const OfferPage(),
+                          builder: (_) => const PromotionCode(),
                         ),
                       );
                     },

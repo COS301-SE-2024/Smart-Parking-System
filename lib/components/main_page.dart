@@ -235,14 +235,6 @@ class _MainPageState extends State<MainPage> {
                                 _showParkingInfo();
                               });
                           },
-                          trailing: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                _isModalVisible = false;
-                              });
-                            },
-                          ),
                         ),
                       ],
                     ),

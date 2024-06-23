@@ -121,20 +121,20 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
-              title: const Text('Offers', style: TextStyle(color: Colors.white)),
-              trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const OfferPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
+            // ListTile(
+            //   leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
+            //   title: const Text('Offers', style: TextStyle(color: Colors.white)),
+            //   trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            //   onTap: () {
+            //     Navigator.of(context).pushReplacement(
+            //       MaterialPageRoute(
+            //         builder: (context) => const OfferPage(),
+            //       ),
+            //     );
+            //   },
+            // ),
+            // const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
