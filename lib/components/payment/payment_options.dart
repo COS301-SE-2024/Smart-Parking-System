@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
-import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class PaymentMethodPage extends StatefulWidget {

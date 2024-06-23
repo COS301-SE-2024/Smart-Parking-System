@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/help/support.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
-import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/payment/promotion_code.dart';
 
