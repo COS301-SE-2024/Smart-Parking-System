@@ -25,7 +25,7 @@ class _CarRegistrationState extends State<CarRegistration> {
     final String license = _licenseController.text;
 
     final response = await http.post(
-      Uri.parse('http://192.168.11.121:3000/registercar'),
+      Uri.parse('http://192.168.11.121:3000/registerVehicle'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -40,7 +40,7 @@ class _CarRegistrationState extends State<CarRegistration> {
     if (mounted) {
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Car registered successfully')),
+          const SnackBar(content: Text('Vehicle registered successfully')),
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -49,7 +49,7 @@ class _CarRegistrationState extends State<CarRegistration> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Car registration failed')),
+          const SnackBar(content: Text('Vehicle registration failed')),
         );
       }
     }
@@ -72,7 +72,7 @@ class _CarRegistrationState extends State<CarRegistration> {
             children: <Widget>[
               // Logo above the white container
               Image.asset(
-                'assets/car_temp.png',
+                'assets/Vehicle_temp.png',
                 height: 200, // Adjust the height as needed
                 width: 200,  // Adjust the width as needed
               ),
@@ -92,20 +92,20 @@ class _CarRegistrationState extends State<CarRegistration> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const SizedBox(height: 30),  // Space before the "Add Your Car" text
+                    const SizedBox(height: 30),  // Space before the "Add Your Vehicle" text
                     const Text(
-                      'Add Your Car',
+                      'Add Your Vehicle',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    const SizedBox(height: 25), // Space between the "Add Car" text and text boxes
+                    const SizedBox(height: 25), // Space between the "Add Vehicle" text and text boxes
                     TextField(
                       controller: _makeController,
                       decoration: InputDecoration(
-                        labelText: 'Car Brand',
+                        labelText: 'Vehicle Brand',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -144,7 +144,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                     TextField(
                       controller: _modelController,
                       decoration: InputDecoration(
-                        labelText: 'Car Model',
+                        labelText: 'Vehicle Model',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -258,13 +258,13 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // Add Car Button
+                    // Add Vehicle Button
                     ElevatedButton(
                       onPressed: () {
-                        // Validate car details
+                        // Validate Vehicle details
                         bool bValid = true;
 
-                        // Handle add car action
+                        // Handle add Vehicle action
                         if (bValid) {
                           _register();
                         }
