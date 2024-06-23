@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/parking/parking_history.dart';
+import 'package:smart_parking_system/components/payment/payment_options.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
+import 'package:smart_parking_system/components/sidebar.dart';
 
-void main() {
-  runApp(const SupportApp());
-}
 
-class SupportApp extends StatelessWidget {
+class SupportApp extends StatefulWidget {
   const SupportApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SupportPage(),
-    );
-  }
+  State<SupportApp> createState() => _SupportAppState();
 }
 
-class SupportPage extends StatelessWidget {
-  const SupportPage({super.key});
+class _SupportAppState extends State<SupportApp> {
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +33,9 @@ class SupportPage extends StatelessWidget {
                   Builder(
                     builder: (BuildContext context) {
                       return IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
                         onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const MainPage(),
-                            ),
-                          );
+                          Scaffold.of(context).openDrawer(); // Open the drawer
                         },
                       );
                     },
@@ -143,6 +136,92 @@ class SupportPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: const Color(0xFF35344A),),
+        child: Container(
+        decoration: BoxDecoration(
+          // color: const Color(0xFF2C2C54),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.6),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, -3),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed, 
+          backgroundColor: const Color(0xFF35344A), // To ensure the Container color is visible
+          currentIndex: _selectedIndex,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined, size: 30),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.wallet, size: 30),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history, size: 30),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined, size: 30),
+              label: '',
+            ),
+          ],
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+
+              if(_selectedIndex == 0){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const MainPage(),
+                  ),
+                );
+              } else if(_selectedIndex == 1){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentMethodPage(),
+                  ),
+                );
+              } else if(_selectedIndex == 2){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const ParkingHistoryPage(),
+                  ),
+                );
+              } else if(_selectedIndex == 3){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
+              }
+            });
+          },
+          selectedItemColor: Colors.grey,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
+        ),
+      ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: const Color(0xFF58C6A9),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Icons.near_me,
+          color: Colors.white,
+        ), 
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      drawer: const SideMenu(),
     );
   }
 
