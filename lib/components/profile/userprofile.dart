@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -23,7 +23,7 @@ class UserProfilePage extends StatelessWidget {
                         // Add your onPressed logic here
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (_) => const MainPage(),
+                              builder: (_) => const SettingsPage(),
                             ),
                           );
                       },
