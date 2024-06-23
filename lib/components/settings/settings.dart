@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/profile/userprofile.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
@@ -61,6 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -195,7 +197,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  // Add navigation if necessary
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const ParkingHistoryPage(),
+                    ),
+                  );
                 } else if (_selectedIndex == 3) {
                   // Add navigation if necessary
                 }

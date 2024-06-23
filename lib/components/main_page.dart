@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
@@ -306,7 +307,11 @@ class _MainPageState extends State<MainPage> {
                   ),
                 );
               } else if(_selectedIndex == 3){
-              
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
               }
             });
           },

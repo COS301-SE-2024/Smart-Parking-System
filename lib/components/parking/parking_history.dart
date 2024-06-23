@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class ParkingHistoryPage extends StatefulWidget {
@@ -250,6 +251,11 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   // Do nothing, already on this page
                 } else if (_selectedIndex == 3) {
                   // Handle settings navigation
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
                 }
               });
             },

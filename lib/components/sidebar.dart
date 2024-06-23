@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/help/support.dart';
-import 'package:smart_parking_system/components/login/login_main.dart';
+import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
@@ -147,7 +147,7 @@ class SideMenu extends StatelessWidget {
               onTap: () {
                   Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const LoginMainPage(),
+                          builder: (_) => const LoginPage(),
                         ),
                       );
               },
