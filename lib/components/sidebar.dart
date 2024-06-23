@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/help/support.dart';
+import 'package:smart_parking_system/components/login/login_main.dart';
+import 'package:smart_parking_system/components/notifications/notificationspage.dart';
+import 'package:smart_parking_system/components/payment/offers.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -49,32 +53,57 @@ class SideMenu extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.payment, color: Colors.white),
                     title: const Text('Payment methods', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.history, color: Colors.white),
                     title: const Text('Parking History', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.local_offer, color: Colors.white),
                     title: const Text('Promotion code', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const OfferPage(),
+                        ),
+                      );
+                    },
                   ),
+                  const SizedBox(height: 30),
                   ListTile(
                     leading: const Icon(Icons.notifications, color: Colors.white),
                     title: const Text('Notification', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationApp(),
+                        ),
+                      );
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.support, color: Colors.white),
                     title: const Text('Support', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const SupportApp(),
+                        ),
+                      );
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.settings, color: Colors.white),
                     title: const Text('Settings', style: TextStyle(color: Colors.white)),
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                   ),
                 ],
               ),
@@ -89,7 +118,13 @@ class SideMenu extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.white),
               title: const Text('Logout', style: TextStyle(color: Colors.white)),
-              onTap: () {},
+              onTap: () {
+                  Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const LoginMainPage(),
+                        ),
+                      );
+              },
             ),
           ],
         ),
