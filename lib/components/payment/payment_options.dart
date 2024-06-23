@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
-import 'package:smart_parking_system/components/payment/offers.dart';
+import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class PaymentMethodPage extends StatefulWidget {
@@ -11,7 +11,6 @@ class PaymentMethodPage extends StatefulWidget {
 }
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
-  int _selectedCard = 1;
   int _selectedIndex = 1;
 
   @override
@@ -121,20 +120,20 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
-              title: const Text('Offers', style: TextStyle(color: Colors.white)),
-              trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const OfferPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
+            // ListTile(
+            //   leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
+            //   title: const Text('Offers', style: TextStyle(color: Colors.white)),
+            //   trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            //   onTap: () {
+            //     Navigator.of(context).pushReplacement(
+            //       MaterialPageRoute(
+            //         builder: (context) => const OfferPage(),
+            //       ),
+            //     );
+            //   },
+            // ),
+            // const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
@@ -173,22 +172,23 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         child: Image.asset('assets/mastercard.png'),
                       ),
                       title: const Text(
-                        'FNB Bank **** **** **** 8395',
+                        'FNB Bank\n**** **** **** 8395',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
-                      trailing: Radio(
-                        value: 1,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
+                      trailing: TextButton(
+                        onPressed: () {
+                          // Add your onPressed logic here for editing the card
                         },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
+                        child: const Text(
+                          'Edit Card',
+                          style: TextStyle(
+                            color: Color(0xFF58C6A9),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -202,22 +202,23 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         child: Image.asset('assets/visa.png'),
                       ),
                       title: const Text(
-                        'Capitec Bank **** **** **** 6246',
+                        'Capitec Bank\n**** **** **** 6246',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
-                      trailing: Radio(
-                        value: 2,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
+                      trailing: TextButton(
+                        onPressed: () {
+                          // Add your onPressed logic here for editing the card
                         },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
+                        child: const Text(
+                          'Edit Card',
+                          style: TextStyle(
+                            color: Color(0xFF58C6A9),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -306,7 +307,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   ),
                 );
               } else if(_selectedIndex == 2){
-
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const ParkingHistoryPage(),
+                  ),
+                );
               } else if(_selectedIndex == 3){
               
               }

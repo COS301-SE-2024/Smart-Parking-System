@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
-class OfferPage extends StatefulWidget {
-  const OfferPage({super.key});
+class PromotionCode extends StatefulWidget {
+  const PromotionCode({super.key});
 
   @override
-  State<OfferPage> createState() => _OfferPageState();
+  State<PromotionCode> createState() => _OfferPageState();
 }
 
-class _OfferPageState extends State<OfferPage> {
+class _OfferPageState extends State<PromotionCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +26,7 @@ class _OfferPageState extends State<OfferPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => const ConfirmPaymentPage(),
+                        builder: (_) => const MainPage(),
                       ),
                     );
                   },
@@ -36,7 +36,7 @@ class _OfferPageState extends State<OfferPage> {
                   ),
                 ),
                 const Text(
-                  'Offers',
+                  'Promotion Codes',
                   style: TextStyle(
                     fontSize: 24, 
                     fontWeight: FontWeight.w500,

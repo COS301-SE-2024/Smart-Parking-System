@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -20,6 +21,11 @@ class UserProfilePage extends StatelessWidget {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const MainPage(),
+                            ),
+                          );
                       },
                       icon: const Icon(
                         Icons.arrow_back_ios,
