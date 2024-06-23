@@ -174,10 +174,10 @@ class _BookingPageState extends State<BookingPage> {
                                   padding: const EdgeInsets.all(20),
                                   decoration: BoxDecoration(
                                     color: selectedRow == row
-                                        ? Colors.green
+                                        ? const Color(0xFF58C6A9)
                                         : slots > 0
-                                            ? const Color(0xFF58C6A9)
-                                            : const Color.fromARGB(255, 170, 55, 47),
+                                            ? const Color(0xFF2A4037) 
+                                            : const Color(0xFF490517),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Row(
