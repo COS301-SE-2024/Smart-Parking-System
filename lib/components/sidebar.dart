@@ -31,11 +31,11 @@ class SideMenu extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const UserProfilePage(),
-                            ),
-                          );
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => const UserProfilePage(),
+                          //   ),
+                          // );
                         },
                         child: const CircleAvatar(
                           radius: 30,
