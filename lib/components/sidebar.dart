@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/help/support.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
+import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/payment/promotion_code.dart';
 import 'package:smart_parking_system/components/profile/userprofile.dart';
@@ -77,7 +78,11 @@ class SideMenu extends StatelessWidget {
                     leading: const Icon(Icons.history, color: Colors.white),
                     title: const Text('Parking History', style: TextStyle(color: Colors.white)),
                     onTap: () {
-
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const ParkingHistoryPage(),
+                        ),
+                      );
                     },
                   ),
                   ListTile(
