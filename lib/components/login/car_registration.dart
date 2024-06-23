@@ -280,7 +280,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
                       child: const Text(
-                        'Save',
+                        'Continue',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
