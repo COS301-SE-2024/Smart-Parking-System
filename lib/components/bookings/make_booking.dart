@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
+import 'package:smart_parking_system/components/bookings/select_level.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
@@ -35,13 +36,14 @@ class _BookingPageState extends State<BookingPage> {
                   color: const Color(0xFF35344A),
                   child: Stack(
                     children: [
-                      Builder(
-                        builder: (BuildContext context) {
-                          return IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer(); // Open the drawer
-                            },
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                        onPressed: () {
+                           // Open the drawer
+                           Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const LevelSelectPage(),
+                            ),
                           );
                         },
                       ),
