@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 void main() {
   runApp(const SupportApp());
@@ -21,32 +22,45 @@ class SupportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: const SizedBox(
-          width: 50,
-          height: 50,
-          child: Icon(
-            Icons.menu,
-            color: Colors.white,
-            size: 50,
-          ),
-          // onPressed: () {
-          //   // Add your menu button press logic here
-          // },
-        ),
-        title: const Text(
-          'Support',
-          style: TextStyle(color: Color(0xFF58C6A9)), // Change the color of the text
-        ),
-        backgroundColor: const Color(0xFF272639),
-      ),
       body: Container(
-        color: const Color(0xFF272639),
+        color: const Color(0xFF2D2F41),
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+           Container(
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+              color: const Color(0xFF2D2F41),
+              child: Stack(
+                children: [
+                  Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const MainPage(),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Support',
+                      style: TextStyle(
+                        color: Colors.tealAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const Text(
               'How can we help you?',
               style: TextStyle(

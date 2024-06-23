@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/help/support.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
+import 'package:smart_parking_system/components/payment/payment_options.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -54,7 +55,11 @@ class SideMenu extends StatelessWidget {
                     leading: const Icon(Icons.payment, color: Colors.white),
                     title: const Text('Payment methods', style: TextStyle(color: Colors.white)),
                     onTap: () {
-
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const PaymentMethodPage(),
+                        ),
+                      );
                     },
                   ),
                   ListTile(

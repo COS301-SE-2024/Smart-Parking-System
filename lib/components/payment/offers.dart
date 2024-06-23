@@ -23,7 +23,7 @@ class _OfferPageState extends State<OfferPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // This will pop the current route and navigate back to the previous page
+                    
                   },
                   icon: const Icon(Icons.arrow_back_ios,
                     color: Colors.white,

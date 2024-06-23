@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
+import 'package:smart_parking_system/components/sidebar.dart';
 
 class PaymentMethodPage extends StatefulWidget {
   const PaymentMethodPage({super.key});
@@ -22,31 +23,37 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 80),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // Add your onPressed logic here
-                  },
-                  icon: const Icon(Icons.menu,
-                    color: Colors.white,
-                    size: 30,
+            const SizedBox(height: 30),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+              color: const Color(0xFF35344A),
+              child: Stack(
+                children: [
+                  Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer(); // Open the drawer
+                        },
+                      );
+                    },
                   ),
-                ),
-                const Text(
-                  'Payment Method',
-                  style: TextStyle(
-                    fontSize: 24, 
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF58C6A9),
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Payment Options',
+                      style: TextStyle(
+                        color: Colors.tealAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 48), // Adjust the width as needed
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 10),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
@@ -322,6 +329,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         ), 
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      drawer: const SideMenu(),
     );
   }
 }
