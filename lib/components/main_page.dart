@@ -110,7 +110,11 @@ class _MainPageState extends State<MainPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigator.of(context).pushReplacement(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const BookingPage(),
+                    //   ),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF58C6A9),
