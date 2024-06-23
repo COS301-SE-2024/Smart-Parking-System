@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
+import 'package:smart_parking_system/components/payment/payment_successfull.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
   const ConfirmPaymentPage({super.key});
@@ -26,7 +28,11 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    // Add your onPressed logic here
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const ConfirmBookingPage(),
+                        ),
+                      );
                   },
                   icon: const Icon(Icons.arrow_back_ios,
                     color: Colors.white,
@@ -375,7 +381,11 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 const SizedBox(width: 180),
                 ElevatedButton(
                   onPressed: () {
-                    
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const PaymentSuccessionPage(),
+                        ),
+                      );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

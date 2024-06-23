@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 
 class PaymentSuccessionPage extends StatefulWidget {
@@ -52,7 +53,11 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                 const SizedBox(height: 60),
                  ElevatedButton(
                   onPressed: () {
-                    
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const MainPage(),
+                        ),
+                      );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

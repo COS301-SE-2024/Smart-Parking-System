@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
+import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
   const ConfirmBookingPage({super.key});
@@ -29,7 +31,11 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // This will pop the current route and navigate back to the previous page
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const BookingPage(),
+                        ),
+                      );
                   },
                   icon: const Icon(Icons.arrow_back_ios,
                     color: Colors.white,
@@ -198,7 +204,11 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
             const SizedBox(height: 30),
             ElevatedButton(
                       onPressed: () {
-                        
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const ConfirmPaymentPage(),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

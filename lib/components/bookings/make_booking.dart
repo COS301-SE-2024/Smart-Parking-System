@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
+import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 import 'package:smart_parking_system/components/bookings/select_level.dart';
 
 class BookingPage extends StatefulWidget {
@@ -235,6 +236,11 @@ class _BookingPageState extends State<BookingPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Change pages
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const ConfirmBookingPage(),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: selectedRow != null ? const Color(0xFF58C6A9): const Color(0xFF35344A),

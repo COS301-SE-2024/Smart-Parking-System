@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/select_level.dart';
-import 'package:smart_parking_system/main.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   const ZoneSelectPage({super.key});
@@ -31,7 +31,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                           // Replace this with your main page route
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (_) => const MyApp(),
+                              builder: (_) => const MainPage(),
                             ),
                           );
                         },
