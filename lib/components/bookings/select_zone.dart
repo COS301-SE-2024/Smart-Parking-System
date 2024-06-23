@@ -75,7 +75,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                 _buildZoneCard(
                   context: context,
                   zone: 'B',
-                  entrance: 'Woolworth Entrance',
+                  entrance: 'Woolworths Entrance',
                   availableSlots: 2,
                   isAvailable: true,
                 ),
@@ -123,7 +123,29 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                 ),
               );
             }
-          : null,
+          : () {
+          showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFF2D2F41),
+              title: Center(
+                child: const Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
       child: Container(
         width: 170,
         height: 180,

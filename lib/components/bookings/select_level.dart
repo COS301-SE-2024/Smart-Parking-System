@@ -53,7 +53,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
               ),
             ),
             const Text(
-              'Select prefered Level (Zone X)',
+              'Select prefered Level',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -118,7 +118,29 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                 ),
               );
             }
-          : null,
+          : () {
+          showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFF2D2F41),
+              title: Center(
+                child: const Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
       child: Container(
         width: 170,
         height: 140,
