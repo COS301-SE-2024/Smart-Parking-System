@@ -91,7 +91,29 @@ class _BookingPageState extends State<BookingPage> {
                                   selectedRow = row;
                                 });
                               }
-                            : null,
+                            : () {
+                                showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: const Color(0xFF2D2F41),
+                                    title: const Center(
+                                      child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+                                    ),
+                                    actions: [
+                                      Center(
+                                        child: TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0.0),
                           child: Column(
@@ -192,7 +214,7 @@ class _BookingPageState extends State<BookingPage> {
                                         ),
                                       ),
                                       selectedRow == row
-                                        ? const Text('  | Selected',
+                                        ? const Text(' | Selected',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -201,6 +223,8 @@ class _BookingPageState extends State<BookingPage> {
                                           
                                         ) 
                                         : const SizedBox(),
+                                      
+
                                     ],
                                   ),
                                 ),
