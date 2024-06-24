@@ -88,7 +88,7 @@ class _SupportAppState extends State<SupportApp> {
                     child: _buildCategoryCard(
                       imagePath: 'assets/getting_started.png',
                       label1: 'Questions about',
-                      label2: 'Getting Started',
+                      label2: 'Booking',
                       color: const Color(0xFF0D6EFD),
                     ),
                   ),
@@ -97,7 +97,7 @@ class _SupportAppState extends State<SupportApp> {
                     child: _buildCategoryCard(
                       imagePath: 'assets/how_to_invest.png',
                       label1: 'Questions about',
-                      label2: 'How to Invest',
+                      label2: 'Payment',
                       color: const Color(0xFF28A745),
                     ),
                   ),
@@ -106,7 +106,7 @@ class _SupportAppState extends State<SupportApp> {
                     child: _buildCategoryCard(
                       imagePath: 'assets/payment.png',
                       label1: 'Questions about',
-                      label2: 'Payments',
+                      label2: 'Account',
                       color: const Color(0xFFDC3545),
                     ),
                   ),
@@ -118,17 +118,17 @@ class _SupportAppState extends State<SupportApp> {
               child: ListView(
                 children: [
                   _buildQuestionCard(
-                    question: 'How to create a account?',
-                    answer: 'Open the app to get started and follow the steps, blablablablablablablsdasdasdasdasdasdasdas.',
+                    question: 'How to add card payment?',
+                    answer: 'Navigate to the payment option page by clicking on the "wallet" icon and enter your card details',
                     isExpanded: true,
                   ),
                   _buildQuestionCard(
-                    question: 'How to add a payment method by this app?',
-                    answer: 'To add a payment method, go to settings and follow the instructions.',
+                    question: 'How do I edit card information?',
+                    answer: 'On the payment options page, click on the edit card button and enter your new card details',
                   ),
                   _buildQuestionCard(
-                    question: 'What Time Does The Stock Market Open?',
-                    answer: 'The stock market opens at 9:30 AM EST.',
+                    question: 'How do I see my previous parking sessions',
+                    answer: 'Navigate to the parking history page by clicking on the "time" icon and view your previous parking sessions',
                   ),
                 ],
               ),

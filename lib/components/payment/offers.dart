@@ -101,7 +101,7 @@ class _OfferPageState extends State<OfferPage> {
                         ),
                         const SizedBox(height: 3),
                         const Text(
-                          'Blablablablabalbalabalblabala\nBlablablablabalbalabalblabalaBla\nblablablabalbalabalblabala',
+                          'Get R40 off your next booking',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w300
