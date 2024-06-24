@@ -11,6 +11,7 @@
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/COS301-SE-2024/Smart-Parking-System)
 ![commits](https://badgen.net/github/commits/COS301-SE-2024/Smart-Parking-System/main)
 ![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/Smart-Parking-System)
+![GitHub pull requests](https://img.shields.io/github/repo-size/COS301-SE-2024/Smart-Parking-System)
 
 </div>
 
@@ -30,6 +31,7 @@ Finding parking on a daily basis is a significant hassle for drivers. Precious t
 | Resource | Link |
 | --- | --- |
 | **Demo 1 Video** | <a href="https://drive.google.com/drive/u/0/folders/1lIgLNrJkaGIqTMIZvmtrBZJAeciorN-i">DaVinci Code - Demo 1</a> |
+| **Demo 2 Video** | <a href="https://drive.google.com/drive/u/0/folders/1lIgLNrJkaGIqTMIZvmtrBZJAeciorN-i">DaVinci Code - Demo 1</a> |
 | **Project Documentation** | <a href="https://github.com/COS301-SE-2024/Smart-Parking-System/tree/main/documentation">Requirement Specifications</a> |
 | **Project Management** | <a href="https://github.com/orgs/COS301-SE-2024/projects/93">Project Board</a> |
 | **Drive** | <a href="https://drive.google.com/drive/u/0/folders/1EVvKYJ5GjyLS5JommbtDldIFYj2v0EPS?ths=true">Google Drive</a> |
