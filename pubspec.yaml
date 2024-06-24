@@ -12,6 +12,12 @@ dependencies:
   http: ^0.13.6
   flutter_svg: ^1.0.3
   google_fonts: ^3.0.1
+  flutter_map: ^3.1.0 # Ensure you check for the latest version
+  latlong2: ^0.8.1
+  google_maps_flutter: ^2.1.0
+  cupertino_icons: ^1.0.6
+  font_awesome_flutter: ^10.7.0
+  flutter_dash: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -22,4 +28,22 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.png
+    - assets/logo.jpg
+    - assets/logo_small.png
     - assets/profile.png
+    - assets/main_add_card.png
+    - assets/Background - Small.svg
+    - assets/Background - Large.svg
+    - assets/car_temp.png
+    - assets/getting_started.png
+    - assets/how_to_invest.png
+    - assets/payment.png
+    - assets/Successmark.png
+    - assets/A_Logo.png
+    - assets/G_Logo.png
+    - assets/F_Logo.png
+    - assets/visa.png
+    - assets/mastercard.png
+    - assets/car.png
+    - assets/Line-7.png
+    - assets/map.webp

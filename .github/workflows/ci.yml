@@ -1,5 +1,4 @@
 name: Continuous Integration
-
 #trigger on push to main
 on:
   push:

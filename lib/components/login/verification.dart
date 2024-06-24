@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:smart_parking_system/components/login/signup.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/card/add_card_registration.dart';
+import 'package:smart_parking_system/components/login/successmark.dart';
 
 class VerificationPage extends StatefulWidget {
-  final String name;
-  final String surname;
+  final String fullname;
+  final String password;
   final String email;
   final String phoneNumber;
 
   const VerificationPage({super.key, 
-    required this.name,
-    required this.surname,
+    required this.fullname,
     required this.email,
     required this.phoneNumber,
+    required this.password,
   });
 
   @override
@@ -25,7 +26,9 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
   late String _verificationCode;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -63,19 +66,27 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void _verifyCode() {
+    setState(() {
+      _isLoading = true;
+    });
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const AddCardRegistrationPage(),
+      ),
+    );
     if(mounted){
       if (_formKey.currentState!.validate()) {
         String enteredCode = _codeControllers.map((controller) => controller.text).join();
         if (enteredCode == _verificationCode) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => SignupPage(name: widget.name, surname: widget.surname, email: widget.email, phoneNumber: widget.phoneNumber),
-            ),
-          );
+          
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Verified!')),
           );
+          _signup();
         } else {
+          setState(() {
+            _isLoading = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Invalid verification code')),
           );
@@ -84,124 +95,185 @@ class _VerificationPageState extends State<VerificationPage> {
     }
   }
 
-  @override
+  Future<void> _signup() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final String password = widget.password;
+    final String name = widget.fullname;
+    final String email = widget.email;
+    final String phoneNumber = widget.phoneNumber;
+    
+    final response = await http.post(
+      Uri.parse('http://192.168.3.20:3000/signup'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'name': name,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'password': password,
+      }),
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+    if(mounted){
+      if (response.statusCode == 201) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const SuccessionPage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Signup failed')),
+        );
+      }
+    }
+  }
+  
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  SingleChildScrollView(
-        child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(height: 50),
-              Image.asset('assets/logo.png', height: 150), // Ensure you have the logo image in your assets folder
-              const SizedBox(height: 30),
-              const SizedBox(
-                width: 300, // Specify the desired width
-                child: Text(
-                  'Interactively expedite revolutionary ROI after bricks-and-clicks alignments.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  return Container(
-                    width: 50,
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    child: TextFormField(
-                      controller: _codeControllers[index],
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: const BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                        counterText: '', // Removes the character counter
-                      ),
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '';
-                        }
-                        return null;
-                      },
-                    ),
-
-                  );
-                }),
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                'Automatically displayed OTP',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                  ),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                height: 150,
-                width: 150,
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 230, 230, 230),
-                  shape: BoxShape.circle,
-                ),
-                child: const Center(
-                  child: Text(
-                    'Waiting for\nthe OTP',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Color.fromARGB(255, 97, 97, 97), fontSize: 15),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    "Didn't receive OTP?",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                    ),
-                  TextButton(
-                    onPressed: _sendVerificationEmail,
-                    child: const Text('Resend'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF613EEA),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onPressed: _verifyCode,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 130.0,
-                    vertical: 15,
-                  ),
-                  child: Text('Verify'),
-                ),
-              ),
-            ],
+      body: Stack(
+        children: [
+          SvgPicture.asset(
+            'assets/Background - Small.svg', // Ensure you have the SVG background image in your assets folder
+            fit: BoxFit.fill,
+            width: double.infinity,
+            height: double.infinity,
           ),
-        ),
-      ),
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        'OTP Verification',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Enter the verification code we just sent on your email address. $_verificationCode',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(4, (index) {
+                          return SizedBox(
+                            width: 80,
+                            child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            child: TextFormField(
+                              controller: _codeControllers[index],
+                              focusNode: _focusNodes[index],
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(vertical: 22),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(color: Colors.green, width: 2.0),
+                                ),
+                                counterText: '', // Removes the character counter
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              maxLength: 1,
+                              onChanged: (value) {
+                                if (value.length == 1 && index < 3) {
+                                  FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+                                } else if (value.length == 1 && index == 3) {
+                                  _focusNodes[index].unfocus();
+                                }
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return '';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          );
+                        }),
+                      ),
+                     
+                      
+                      const SizedBox(height: 40),
+                      ElevatedButton(
+                        onPressed: () {
+                          _verifyCode();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40.0),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 150,
+                            vertical: 18,
+                          ),
+                          backgroundColor: const Color(0xFF58C6A9),
+                        ),
+                        child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.0,
+                              ),
+                            )
+                          : const Text(
+                              'Verify',
+                              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w300),
+                            ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            "Didn't receive OTP?",
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: _sendVerificationEmail,
+                            child: const Text('Resend', style: TextStyle(color:Color(0xFF58C6A9))),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
