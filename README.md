@@ -11,6 +11,7 @@
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/COS301-SE-2024/Smart-Parking-System)
 ![commits](https://badgen.net/github/commits/COS301-SE-2024/Smart-Parking-System/main)
 ![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/Smart-Parking-System)
+![GitHub pull requests](https://img.shields.io/github/repo-size/COS301-SE-2024/Smart-Parking-System)
 
 </div>
 
