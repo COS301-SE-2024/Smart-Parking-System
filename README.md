@@ -32,7 +32,7 @@ Finding parking on a daily basis is a significant hassle for drivers. Precious t
 | --- | --- |
 | **Demo 1 Video** | <a href="https://drive.google.com/drive/u/0/folders/1lIgLNrJkaGIqTMIZvmtrBZJAeciorN-i">DaVinci Code - Demo 1</a> |
 | **Demo 1 Slides** | <a href="https://drive.google.com/drive/u/0/folders/1o6gTkJRMDhnxutubH7QrOuVkR3ue1zSh?ths=true">DaVinci Code - Demo 1 Slides</a> |
-| **Demo 2 Video** | <a href="https://drive.google.com/drive/u/0/folders/1lIgLNrJkaGIqTMIZvmtrBZJAeciorN-i">DaVinci Code - Demo 2</a> |
+| **Demo 2 Video** | <a href="https://drive.google.com/drive/u/0/folders/1uKRiekx7V7o62Yi4ndCWJpVmrj3VhZ1J?ths=true">DaVinci Code - Demo 2</a> |
 | **Demo 2 Slides** | <a href="https://drive.google.com/drive/u/0/folders/1tx4WsgoqP1VVSJIjH60AEzuRtIgCMhR9?ths=true">DaVinci Code - Demo 2 Slides</a> |
 | **Project Documentation** | <a href="https://github.com/COS301-SE-2024/Smart-Parking-System/tree/main/documentation">Requirement Specifications</a> |
 | **Project Management** | <a href="https://github.com/orgs/COS301-SE-2024/projects/93">Project Board</a> |
