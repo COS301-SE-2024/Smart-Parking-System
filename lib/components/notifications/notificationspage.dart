@@ -19,8 +19,8 @@ class _NotificationPageState extends State<NotificationApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
+      backgroundColor: const Color(0xFF2D2F41),
+      body: SingleChildScrollView( 
         child: Column(
           children: [
             Container(
@@ -52,8 +52,7 @@ class _NotificationPageState extends State<NotificationApp> {
                 ],
               ),
             ),
-            Expanded(
-              child: Container(
+            Container(
                 padding: const EdgeInsets.all(20),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,10 +83,30 @@ class _NotificationPageState extends State<NotificationApp> {
                       icon: Icons.warning,
                       iconColor: Colors.yellow,
                     ),
+                    NotificationCard(
+                      time: '9:01am',
+                      title: 'Alert',
+                      subtitle: 'You have booked a Space at 9:10 am',
+                      icon: Icons.warning,
+                      iconColor: Colors.yellow,
+                    ),
+                    NotificationCard(
+                      time: '9:01am',
+                      title: 'Alert',
+                      subtitle: 'You have booked a Space at 9:10 am',
+                      icon: Icons.warning,
+                      iconColor: Colors.yellow,
+                    ),
+                    NotificationCard(
+                      time: '9:01am',
+                      title: 'Alert',
+                      subtitle: 'You have booked a Space at 9:10 am',
+                      icon: Icons.warning,
+                      iconColor: Colors.yellow,
+                    ),
                   ],
                 ),
               ),
-            ),
           ],
         ),
       ),

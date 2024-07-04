@@ -197,8 +197,7 @@ class _OfferPageState extends State<OfferPage> {
                     ),
                   ],
                 ),
-              )
-
+              ),
             ],
           ),
         ),

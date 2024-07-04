@@ -19,7 +19,8 @@ class _OfferPageState extends State<PromotionCode> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,11 +200,12 @@ class _OfferPageState extends State<PromotionCode> {
                   ),
                 ],
               ),
-            )
-
+            ),
           ],
         ),
       ),
+      ),
+      
        bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           canvasColor: const Color(0xFF35344A),),

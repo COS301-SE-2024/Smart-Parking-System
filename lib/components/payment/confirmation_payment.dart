@@ -19,7 +19,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       backgroundColor: const Color(0xFF35344A),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 50),
@@ -356,6 +357,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             ),
             const SizedBox(height: 40),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RichText(
                   text: const TextSpan(
@@ -406,6 +409,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             ),
           ],
         ),
+        ),
+        
       ),
     );
   }

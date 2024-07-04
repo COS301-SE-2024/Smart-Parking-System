@@ -94,7 +94,8 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                child: Column(
+                child: SingleChildScrollView(
+                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                      // Space before the Login text
@@ -353,6 +354,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                   ],
+                ),
                 ),
               ),
             ],
