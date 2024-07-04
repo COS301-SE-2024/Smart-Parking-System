@@ -11,8 +11,54 @@ class ParkingHistoryPage extends StatefulWidget {
   State<ParkingHistoryPage> createState() => _ParkingHistoryPageState();
 }
 
+class ActiveSession {
+  final String rate;
+  final String address;
+  final String parkingslot;
+  final String remainingtime;
+
+  ActiveSession(this.rate, this.address, this.parkingslot, this.remainingtime);
+}
+
+class ReservedSpot {
+  final String date;
+  final String time;
+  final String amount;
+  final String address;
+  final String parkingslot;
+
+  ReservedSpot(this.date, this.time, this.amount, this.address, this.parkingslot);
+}
+
+class CompletedSession {
+  final String date;
+  final String time;
+  final String amount;
+  final String address;
+  final String parkingslot;
+
+  CompletedSession(this.date, this.time, this.amount, this.address, this.parkingslot);
+}
+
+
+
 class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   int _selectedIndex = 2;
+
+  List<ActiveSession> activesessions = [
+    ActiveSession('20', 'Sandton City', 'A3C', '01hr : 30min'),
+    // Add more sessions here
+  ];
+
+  List<ReservedSpot> reservedspots = [
+    ReservedSpot('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
+    // Add more sessions here
+  ];
+
+  List<CompletedSession> completedsessions = [
+    CompletedSession('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
+    // Add more sessions here
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -63,69 +109,42 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               ),
             ),
             const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF35344A),
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 8,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF58C6A9),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'R20/Hr',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        'Sandton City Car Park A\nSpace 4c',
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.right,  
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(
-                    color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                    thickness: 1, // Thickness of the lines
-                  ),
-                  const SizedBox(height: 10),      
-                  const Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: activesessions.expand((activesession) => [
+                _buildActiveSessionItem(activesession),
+                const SizedBox(height: 10),
+              ]).toList(),
+            ),
+            const SizedBox(height: 20),
+            // Reserved Spots
+             const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Time Remaining',
-                        style: TextStyle(color: Colors.grey),
+                        'Reserved Spots',
+                        style: TextStyle(
+                          color: Colors.tealAccent,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
-                        '01hr : 30min',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        'View all',
+                        style: TextStyle(
+                          color: Colors.tealAccent,
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: reservedspots.expand((reservedspot) => [
+                _buildReservedSpotItem(reservedspot),
+                const SizedBox(height: 10),
+              ]).toList(),
             ),
             const SizedBox(height: 20),
             // Completed Sessions
@@ -151,44 +170,12 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             ),
             const SizedBox(height: 20),          
             Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSessionItem('02/09/2019', '02:00pm', 'R100'),
-                  const SizedBox(height: 10),  
-                  _buildSessionItem('02/09/2019', '02:00pm', 'R100'),
-                ],
-              ),
-            
-            const SizedBox(height: 20),
-            // Reserved Spots
-             const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Reserved Spots',
-                        style: TextStyle(
-                          color: Colors.tealAccent,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'View all',
-                        style: TextStyle(
-                          color: Colors.tealAccent,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-            const SizedBox(height: 10),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  _buildReservedSpotItem('02/09/2019', '02:00pm', 'R100'),
-                ],
-              ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: completedsessions.expand((completedsession) => [
+                _buildSessionItem(completedsession),
+                const SizedBox(height: 10),
+              ]).toList(),
+            ),
               
           ],
           
@@ -282,32 +269,32 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     );
   }
 
-  Widget _buildSessionItem(String date, String time, String amount) {
+    Widget _buildSessionItem(CompletedSession completedsession) {
     return Container(
       padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF35344A),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF35344A),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.check_circle, color: Colors.tealAccent, size: 30),
-              SizedBox(width: 10),
+              const Icon(Icons.check_circle, color: Colors.tealAccent, size: 30),
+              const SizedBox(width: 10),
               Text(
-                'Sandton City Car Park A\nSpace 4c',
-                style: TextStyle(color: Colors.white),
+                '${completedsession.address} Car Park A\nSpace ${completedsession.parkingslot}',
+                style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.right, 
               ),
             ],
@@ -322,15 +309,15 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                    date,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-              Text(
-                time,
+                completedsession.date,
                 style: const TextStyle(color: Colors.grey),
               ),
               Text(
-                amount,
+                completedsession.time,
+                style: const TextStyle(color: Colors.grey),
+              ),
+              Text(
+                completedsession.amount,
                 style: const TextStyle(color: Colors.white),
               ),
             ],
@@ -340,7 +327,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     );
   }
 
-  Widget _buildReservedSpotItem(String date, String time, String amount) {
+  Widget _buildReservedSpotItem(ReservedSpot reservedspot) {
     return Container(
       padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -358,14 +345,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.star, color: Colors.amber, size: 30),
-              SizedBox(width: 10),
+              const Icon(Icons.star, color: Colors.amber, size: 30),
+              const SizedBox(width: 10),
               Text(
-                'Sandton City Car Park A\nSpace 4c',
-                style: TextStyle(color: Colors.white),
+                '${reservedspot.address} Car Park A\nSpace ${reservedspot.parkingslot}',
+                style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.right, 
               ),
             ],
@@ -380,15 +367,15 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                    date,
+                    reservedspot.date,
                     style: const TextStyle(color: Colors.grey),
                   ),
               Text(
-                time,
+                reservedspot.time,
                 style: const TextStyle(color: Colors.grey),
               ),
               Text(
-                amount,
+                reservedspot.amount,
                 style: const TextStyle(color: Colors.white),
               ),
             ],
@@ -397,6 +384,74 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       ),
     );
   }
+}
+
+Widget _buildActiveSessionItem(ActiveSession activeSession) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xFF35344A),
+      borderRadius: BorderRadius.circular(8),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.white.withOpacity(0.2),
+          spreadRadius: 1,
+          blurRadius: 8,
+          offset: const Offset(0, 3), // changes position of shadow
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF58C6A9),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'R20/Hr',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              'Sandton City Car Park A\nSpace 4c',
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.right,  
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        const Divider(
+          color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+          thickness: 1, // Thickness of the lines
+        ),
+        const SizedBox(height: 10),      
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Time Remaining',
+              style: TextStyle(color: Colors.grey),
+            ),
+            Text(
+              '01hr : 30min',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ],
+    ),
+  
+  );
 }
 
 class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
