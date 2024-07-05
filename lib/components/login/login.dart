@@ -74,7 +74,7 @@ Future<void> _login() async {
           ),
           // Foreground elements
           SingleChildScrollView(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
             child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

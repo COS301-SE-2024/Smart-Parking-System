@@ -9,7 +9,7 @@ class AddCardRegistrationPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
+        // padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
         child: Center(
           child: SizedBox(
             width: 550,

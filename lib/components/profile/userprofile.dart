@@ -9,67 +9,66 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: const Color(0xFF2D2F41),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 1.0),
-                    child: IconButton(
-                      onPressed: () {
-                        // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 1.0),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (_) => const SettingsPage(),
                             ),
                           );
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  const Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'User Profile',
-                        style: TextStyle(
-                          color: Colors.tealAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                          size: 30,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 48), // Placeholder to keep the text centered
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey[200],
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.grey,
+                    const Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'User Profile',
+                          style: TextStyle(
+                            color: Colors.tealAccent,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 48), // Placeholder to keep the text centered
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: Container(
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[200],
+                      child: const Icon(
+                        Icons.person,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
@@ -98,7 +97,7 @@ class UserProfilePage extends StatelessWidget {
                       value: '09033421159',
                       obscureText: true,
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 40.0), // Space before the Save button
                     ElevatedButton(
                       onPressed: () {
                         // Handle save button
@@ -107,16 +106,20 @@ class UserProfilePage extends StatelessWidget {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               backgroundColor: const Color(0xFF2D2F41),
-                              
-                              title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
-                              
+                              title: const Text(
+                                'Successfully Updated!',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               actions: [
                                 Center(
                                   child: TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                                    child: const Text(
+                                      'OK',
+                                      style: TextStyle(color: Color(0xFF58C6A9)),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -142,11 +145,12 @@ class UserProfilePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20), // Space after the Save button
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
