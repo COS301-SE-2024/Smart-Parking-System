@@ -15,6 +15,21 @@ class PaymentMethodPage extends StatefulWidget {
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
 
+
+  final String creditAmount = 'ZAR 60.00';
+  final List<Map<String, String>> cards = [
+    {
+      'bank': 'FNB Bank',
+      'number': '**** **** **** 8395',
+      'image': 'assets/mastercard.png'
+    },
+    {
+      'bank': 'Capitec Bank',
+      'number': '**** **** **** 6246',
+      'image': 'assets/visa.png'
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +75,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: Text(
                 'Credit',
                 style: TextStyle(
-                  fontSize: 28, 
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF58C6A9),
                 ),
@@ -84,16 +99,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.account_balance_wallet, color: Colors.white),
-                      SizedBox(width: 20),
-                      Text('ZAR 60.00', 
-                        style: TextStyle(
-                          fontSize: 25, 
+                      const Icon(Icons.account_balance_wallet, color: Colors.white),
+                      const SizedBox(width: 20),
+                      Text(
+                        creditAmount,
+                        style: const TextStyle(
+                          fontSize: 25,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF58C6A9),  
-                        )
+                          color: Color(0xFF58C6A9),
+                        ),
                       ),
                     ],
                   ),
@@ -105,15 +121,15 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       },
                       child: const Row(
                         children: [
-                          Icon(Icons.add,
+                          Icon(
+                            Icons.add,
                             color: Colors.white,
                             size: 16,
                           ),
                           SizedBox(width: 10),
-                          Text('Top Up',
-                            style: TextStyle(
-                              color: Colors.white
-                            ),
+                          Text(
+                            'Top Up',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -123,31 +139,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               ),
             ),
             const SizedBox(height: 40),
-            // ListTile(
-            //   leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)), 
-            //   title: const Text('Offers', style: TextStyle(color: Colors.white)),
-            //   trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-            //   onTap: () {
-            //     Navigator.of(context).pushReplacement(
-            //       MaterialPageRoute(
-            //         builder: (context) => const OfferPage(),
-            //       ),
-            //     );
-            //   },
-            // ),
-            // const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 'Credits & Debit Cards',
                 style: TextStyle(
-                  fontSize: 28, 
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF58C6A9),
                 ),
               ),
             ),
-            
             const SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
@@ -165,67 +167,41 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  Card(
-                    elevation: 0, // Set elevation to 0
-                    color: Colors.transparent, // Set color to transparent
-                    child: ListTile(
-                      leading: SizedBox(
-                        width: 50, // Set the desired width of the image
-                        child: Image.asset('assets/mastercard.png'),
-                      ),
-                      title: const Text(
-                        'FNB Bank\n**** **** **** 8395',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      trailing: TextButton(
-                        onPressed: () {
-                          // Add your onPressed logic here for editing the card
-                        },
-                        child: const Text(
-                          'Edit Card',
-                          style: TextStyle(
-                            color: Color(0xFF58C6A9),
+                  for (var card in cards)
+                    Column(
+                      children: [
+                        Card(
+                          elevation: 0, // Set elevation to 0
+                          color: Colors.transparent, // Set color to transparent
+                          child: ListTile(
+                            leading: SizedBox(
+                              width: 50, // Set the desired width of the image
+                              child: Image.asset(card['image']!),
+                            ),
+                            title: Text(
+                              '${card['bank']}\n${card['number']}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ),
+                            trailing: TextButton(
+                              onPressed: () {
+                                // Add your onPressed logic here for editing the card
+                              },
+                              child: const Text(
+                                'Edit Card',
+                                style: TextStyle(
+                                  color: Color(0xFF58C6A9),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Card(
-                    elevation: 0, // Set elevation to 0
-                    color: Colors.transparent, // Set color to transparent
-                    child: ListTile(
-                      leading: SizedBox(
-                        width: 50, // Set the desired width of the image
-                        child: Image.asset('assets/visa.png'),
-                      ),
-                      title: const Text(
-                        'Capitec Bank\n**** **** **** 6246',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      trailing: TextButton(
-                        onPressed: () {
-                          // Add your onPressed logic here for editing the card
-                          
-                        },
-                        child: const Text(
-                          'Edit Card',
-                          style: TextStyle(
-                            color: Color(0xFF58C6A9),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
@@ -234,7 +210,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       },
                       child: Row(
                         children: [
-                          const Icon(Icons.add,
+                          const Icon(
+                            Icons.add,
                             color: Color(0xFF58C6A9),
                           ),
                           const SizedBox(width: 10),
@@ -247,17 +224,14 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               );
                             },
                             child: const Text(
-                            'Add New Card',
-                            style: TextStyle(
-                              color: Color(0xFF58C6A9)
-                            ),
+                              'Add New Card',
+                              style: TextStyle(color: Color(0xFF58C6A9)),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  
                   const SizedBox(height: 20),
                 ],
               ),
@@ -268,78 +242,78 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: const Color(0xFF35344A),),
+          canvasColor: const Color(0xFF35344A),
+        ),
         child: Container(
-        decoration: BoxDecoration(
-          // color: const Color(0xFF2C2C54),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed, 
-          backgroundColor: const Color(0xFF35344A), // To ensure the Container color is visible
-          currentIndex: _selectedIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.wallet, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history, size: 30),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined, size: 30),
-              label: '',
-            ),
-          ],
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.6),
+                spreadRadius: 1,
+                blurRadius: 8,
+                offset: const Offset(0, -3),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: const Color(0xFF35344A), // To ensure the Container color is visible
+            currentIndex: _selectedIndex,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined, size: 30),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.wallet, size: 30),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history, size: 30),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings_outlined, size: 30),
+                label: '',
+              ),
+            ],
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
 
-              if(_selectedIndex == 0){
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const MainPage(),
-                  ),
-                );
-              } else if(_selectedIndex == 1){
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const PaymentMethodPage(),
-                  ),
-                );
-              } else if(_selectedIndex == 2){
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const ParkingHistoryPage(),
-                  ),
-                );
-              } else if(_selectedIndex == 3){
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
-              }
-            });
-          },
-          selectedItemColor: const Color(0xFF58C6A9),
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
+                if (_selectedIndex == 0) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const MainPage(),
+                    ),
+                  );
+                } else if (_selectedIndex == 1) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentMethodPage(),
+                    ),
+                  );
+                } else if (_selectedIndex == 2) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const ParkingHistoryPage(),
+                    ),
+                  );
+                } else if (_selectedIndex == 3) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
+                }
+              });
+            },
+            selectedItemColor: const Color(0xFF58C6A9),
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: false,
+            showSelectedLabels: false,
+          ),
         ),
-      ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -348,7 +322,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         child: const Icon(
           Icons.near_me,
           color: Colors.white,
-        ), 
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
@@ -369,7 +343,7 @@ class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
     final double fabY = scaffoldGeometry.scaffoldSize.height -
         scaffoldGeometry.bottomSheetSize.height -
         scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) - 
+        (scaffoldGeometry.floatingActionButtonSize.height / 2) -
         offset;
     return Offset(fabX, fabY);
   }
