@@ -44,7 +44,8 @@ class ConfirmBookingPage extends StatefulWidget {
       backgroundColor: const Color(0xFF35344A),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 80),
@@ -253,6 +254,8 @@ class ConfirmBookingPage extends StatefulWidget {
 
           ],
         ),
+        ),
+        
       ),
     );
   }

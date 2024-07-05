@@ -13,10 +13,12 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF2D2F41),
       body: Container(
         color: const Color(0xFF2D2F41),
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           children: [
             Container(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
@@ -103,6 +105,9 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
             ),
           ],
         ),
+        ),
+        
+        
       ),
     );
   }
@@ -147,8 +152,8 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
         );
       },
       child: Container(
-        width: 170,
-        height: 180,
+        width: 200,
+        height: 200,
         decoration: BoxDecoration(
           color: isAvailable ? const Color(0xFF2A4037) : const Color(0xFF490517),
           borderRadius: BorderRadius.circular(16),

@@ -7,8 +7,8 @@ class CarDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
+      backgroundColor: const Color(0xFF2D2F41),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -90,81 +90,84 @@ class CarDetailsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.all(20),
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                child: Column(
-                  children: [
-                    const ProfileField(
-                      label: 'Vehicle Brand',
-                      value: 'BMW',
-                    ),
-                    const ProfileField(
-                      label: 'Vehicle Model',
-                      value: 'M3',
-                    ),
-                    const ProfileField(
-                      label: 'Color',
-                      value: 'Grey White',
-                    ),
-                    const ProfileField(
-                      label: 'License Number',
-                      value: 'NFSMW',
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle save button
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: const Color(0xFF2D2F41),
-                              
-                              title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
-                              
-                              actions: [
-                                Center(
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+              ),
+              child: Column(
+                children: [
+                  const ProfileField(
+                    label: 'Vehicle Brand',
+                    value: 'BMW',
+                  ),
+                  const ProfileField(
+                    label: 'Vehicle Model',
+                    value: 'M3',
+                  ),
+                  const ProfileField(
+                    label: 'Color',
+                    value: 'Grey White',
+                  ),
+                  const ProfileField(
+                    label: 'License Number',
+                    value: 'NFSMW',
+                  ),
+                  const SizedBox(height: 60.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle save button
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: const Color(0xFF2D2F41),
+                            title: const Text(
+                              'Successfully Updated!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            actions: [
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'OK',
+                                    style: TextStyle(color: Color(0xFF58C6A9)),
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF58C6A9),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 24,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF58C6A9),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 150,
+                        vertical: 24,
                       ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                  ],
-                ),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),                  
+                ],
               ),
             ),
           ],

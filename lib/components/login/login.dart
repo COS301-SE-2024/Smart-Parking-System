@@ -73,7 +73,9 @@ Future<void> _login() async {
             fit: BoxFit.fill,
           ),
           // Foreground elements
-          Column(
+          SingleChildScrollView(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // Logo above the white container
@@ -85,7 +87,7 @@ Future<void> _login() async {
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
-                height: MediaQuery.of(context).size.height * 0.60,
+                height: MediaQuery.of(context).size.height,
                 width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -286,11 +288,14 @@ Future<void> _login() async {
                         style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
                       ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             ],
           ),
+          ),
+          
         ],
       ),
     );

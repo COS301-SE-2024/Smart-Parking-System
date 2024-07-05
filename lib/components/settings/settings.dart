@@ -24,7 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: const Color(0xFF35344A),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 30),
@@ -154,6 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ],
         ),
+        ),   
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(

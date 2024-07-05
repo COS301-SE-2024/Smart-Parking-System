@@ -44,6 +44,9 @@ class _SignupPageState extends State<SignupPage> {
             fit: BoxFit.fill,
           ),
           // Foreground elements
+          SingleChildScrollView(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+            child: 
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -84,7 +87,7 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
-                height: MediaQuery.of(context).size.height * 0.62,
+                height: MediaQuery.of(context).size.height,
                 width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -354,8 +357,10 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ],
                 ),
-              ),
+                ),
+              
             ],
+          ),
           ),
         ],
       ),
