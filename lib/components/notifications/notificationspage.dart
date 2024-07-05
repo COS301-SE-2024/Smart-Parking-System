@@ -12,9 +12,43 @@ class NotificationApp extends StatefulWidget {
   State<NotificationApp> createState() => _NotificationPageState();
 }
 
+class BookedNotification {
+  final String time;
+  final String title = 'Successfully Booked';
+  final String location;
+  final String parkingslot;
+  final IconData icon = Icons.check_circle;
+  final Color iconColor = Colors.tealAccent;
+
+  BookedNotification(this.time, this.location, this.parkingslot);
+}
+
+class AlertNotification {
+  final String time;
+  final String title = 'Parking Violation';
+  final String description;
+  final IconData icon = Icons.warning;
+  final Color iconColor = Colors.yellow;
+
+  AlertNotification(this.time, this.description);
+}
+
+
+
 class _NotificationPageState extends State<NotificationApp> {
   int _selectedIndex = 0;
 
+  List<BookedNotification> bookednotifications = [
+   BookedNotification('4 hours ago', 'Sandton City', 'A3C'),
+    // Add more sessions here
+  ];
+
+  List<AlertNotification> alertnotifications = [
+   AlertNotification('2 Weeks ago', 'You violated parking regulations'),
+    // Add more sessions here
+  ];
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -58,31 +92,13 @@ class _NotificationPageState extends State<NotificationApp> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionTitle(title: 'Today'),
-                    NotificationCard(
-                      time: '9:01am',
-                      title: 'Booked Successful',
-                      subtitle: 'View Details',
-                      icon: Icons.check_circle,
-                      iconColor: Colors.tealAccent,
-                    ),
+                    
                     SizedBox(height: 10),
-                    SectionTitle(title: 'Yesterday'),
-                    NotificationCard(
-                      time: '9:01am',
-                      title: 'Booked Successful',
-                      subtitle: 'View Invoice',
-                      icon: Icons.check_circle,
-                      iconColor: Colors.tealAccent,
-                    ),
+                    SectionTitle(title: 'This Week'),
+                    
                     SizedBox(height: 10),
-                    SectionTitle(title: 'This week'),
-                    NotificationCard(
-                      time: '9:01am',
-                      title: 'Alert',
-                      subtitle: 'You have booked a Space at 9:10 am',
-                      icon: Icons.warning,
-                      iconColor: Colors.yellow,
-                    ),
+                    SectionTitle(title: 'Older'),
+                    
                   ],
                 ),
               ),
@@ -196,71 +212,107 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-class NotificationCard extends StatelessWidget {
-  final String time;
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color iconColor;
 
-  const NotificationCard({
-    super.key,
-    required this.time,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.iconColor,
-  });
+Widget _buildBookNotification(BookedNotification bNotification) {
+  return Card(
+    color: const Color(0xFF3A3E5B),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        children: [
+          Icon(
+            bNotification.icon,
+            color: bNotification.iconColor,
+            size: 30,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                bNotification.time,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                bNotification.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                '${bNotification.location}, Slot ${bNotification.parkingslot}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  //fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF3A3E5B),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+Widget _buildAlertNotification(AlertNotification aNotification) {
+  return Card(
+    color: const Color(0xFF3A3E5B),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        children: [
+          Icon(
+            aNotification.icon,
+            color: aNotification.iconColor,
+            size: 30,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                aNotification.time,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                aNotification.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                aNotification.description,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  //fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: iconColor,
-              size: 30,
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  time,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Colors.tealAccent,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }
