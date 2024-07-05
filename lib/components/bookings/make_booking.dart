@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
-import 'package:smart_parking_system/components/bookings/select_level.dart';
+// import 'package:smart_parking_system/components/bookings/select_level.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({super.key});
+  final String selectedZone;
+  final String selectedLevel;
+
+  const BookingPage({required this.selectedZone, required this.selectedLevel, super.key});
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -41,11 +44,12 @@ class _BookingPageState extends State<BookingPage> {
                         icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
                         onPressed: () {
                            // Open the drawer
-                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const LevelSelectPage(),
-                            ),
-                          );
+                          //  Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => const LevelSelectPage(),
+                          //   ),
+                          // );
+                          Navigator.of(context).pop();
                         },
                       ),
                       const Align(

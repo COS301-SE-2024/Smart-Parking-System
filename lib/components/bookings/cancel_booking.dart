@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
+// import 'package:smart_parking_system/components/bookings/make_booking.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -136,11 +136,12 @@ class _CancelBookingPageState extends State<CancelBookingPage> {
           FloatingActionButton(
             onPressed: () {
               // Handle add booking action
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const BookingPage(),
-                  ),
-                );
+              // Navigator.of(context).pushReplacement(
+              //     MaterialPageRoute(
+              //       builder: (context) => const BookingPage(),
+              //     ),
+              //   );
+              Navigator.of(context).pop();
             },
             child: const Icon(Icons.add),
           ),

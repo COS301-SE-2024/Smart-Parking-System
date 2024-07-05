@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/make_booking.dart';
-import 'package:smart_parking_system/components/bookings/select_zone.dart';
+// import 'package:smart_parking_system/components/bookings/select_zone.dart';
 
 class LevelSelectPage extends StatefulWidget {
-  const LevelSelectPage({super.key});
+  final String selectedZone;
+  
+  const LevelSelectPage({required this.selectedZone, super.key});
 
   @override
-  State<LevelSelectPage> createState() => _LevelSelectPageState();
+  // ignore: library_private_types_in_public_api
+  _LevelSelectPageState createState() => _LevelSelectPageState();
 }
 
 class _LevelSelectPageState extends State<LevelSelectPage> {
@@ -29,11 +32,12 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                         icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
                         onPressed: () {
                           // Replace this with your main page route
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const ZoneSelectPage(),
-                            ),
-                          );
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => const ZoneSelectPage(),
+                          //   ),
+                          // );
+                          Navigator.of(context).pop();
                         },
                       );
                     },
@@ -52,9 +56,9 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                 ],
               ),
             ),
-            const Text(
-              'Select prefered Level',
-              style: TextStyle(
+            Text(
+              'Select prefered Level (zone ${widget.selectedZone})',
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -114,7 +118,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
           ? () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => const BookingPage(),
+                  builder: (_) => BookingPage(selectedZone: widget.selectedZone, selectedLevel: level,),
                 ),
               );
             }
