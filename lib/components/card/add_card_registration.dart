@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/login/car_registration.dart';
-
 class AddCardRegistrationPage extends StatelessWidget {
   const AddCardRegistrationPage({super.key});
 

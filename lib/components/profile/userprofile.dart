@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
+
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,21 +90,21 @@ class UserProfilePage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const ProfileField(
+                    ProfileField(
                       label: 'Full name',
-                      value: 'John Doe',
+                      controller: _nameController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'Email address',
-                      value: 'JohnDoe@gmail.com',
+                      controller: _emailController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'Phone number',
-                      value: '+27 63 123 4567',
+                      controller: _phoneController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'Password',
-                      value: '09033421159',
+                      controller: _passwordController,
                       obscureText: true,
                     ),
                     const SizedBox(height: 40.0), // Space before the Save button
@@ -159,13 +169,13 @@ class UserProfilePage extends StatelessWidget {
 
 class ProfileField extends StatelessWidget {
   final String label;
-  final String value;
+  final TextEditingController controller;
   final bool obscureText;
 
   const ProfileField({
     super.key,
     required this.label,
-    required this.value,
+    required this.controller,
     this.obscureText = false,
   });
 
@@ -174,7 +184,7 @@ class ProfileField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: TextFormField(
-        initialValue: value,
+        controller: controller,
         obscureText: obscureText,
         style: const TextStyle(
           fontWeight: FontWeight.w600, // Make the input text bold
