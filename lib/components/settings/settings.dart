@@ -16,7 +16,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  String _username = 'John Doe'; 
+  final String _username = 'John Doe'; 
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.grey,
                     child: Icon(Icons.person, size: 40, color: Colors.white),
@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 10), 
                   Text(
                     _username, 
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
