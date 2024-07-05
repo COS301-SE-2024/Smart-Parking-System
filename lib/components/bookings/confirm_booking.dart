@@ -17,6 +17,9 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
   String _checkInTime = "12:00 am";
 
   // use the variable to replace the text
+  // final String appBarTitle = apiResponse['appBarTitle'];
+
+
   final String appBarTitle = 'Confirm Booking';
   final String parkingSlot = 'Parking Slot A1';
   final String estimateDuration = 'Estimate Duration';
