@@ -213,6 +213,7 @@ class SectionTitle extends StatelessWidget {
 }
 
 
+// ignore: unused_element
 Widget _buildBookNotification(BookedNotification bNotification) {
   return Card(
     color: const Color(0xFF3A3E5B),
@@ -265,6 +266,7 @@ Widget _buildBookNotification(BookedNotification bNotification) {
   );
 }
 
+// ignore: unused_element
 Widget _buildAlertNotification(AlertNotification aNotification) {
   return Card(
     color: const Color(0xFF3A3E5B),
