@@ -58,8 +58,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
+      backgroundColor: const Color(0xFF2D2F41),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -141,18 +141,18 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.all(20),
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                child: Column(
+              ),
+              child: Column(
                   children: [
                     ProfileField(
                       label: 'Vehicle Brand',
@@ -201,26 +201,25 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         //   },
                         // );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF58C6A9),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 24,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF58C6A9),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 150,
+                        vertical: 24,
                       ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                  ],
-                ),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),                  
+                ],
               ),
             ),
           ],

@@ -16,6 +16,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
+  final String _username = 'John Doe'; 
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: const Color(0xFF35344A),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 30),
@@ -56,19 +58,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.grey,
                     child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10), 
                   Text(
-                    'John Doe',
-                    style: TextStyle(
+                    _username, 
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
@@ -153,6 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ],
         ),
+        ),   
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
@@ -238,24 +241,5 @@ class _SettingsPageState extends State<SettingsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
-  }
-}
-
-class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
-  final double offset;
-
-  CustomCenterDockedFABLocation(this.offset);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Position the FAB slightly higher than centerDocked
-    final double fabX = (scaffoldGeometry.scaffoldSize.width / 2) -
-        (scaffoldGeometry.floatingActionButtonSize.width / 2);
-    final double fabY = scaffoldGeometry.scaffoldSize.height -
-        scaffoldGeometry.bottomSheetSize.height -
-        scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) -
-        offset;
-    return Offset(fabX, fabY);
   }
 }
