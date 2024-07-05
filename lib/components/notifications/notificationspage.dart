@@ -72,11 +72,11 @@ class _NotificationPageState extends State<NotificationApp> {
                       );
                     },
                   ),
-                  Align(
+                  const Align(
                     alignment: Alignment.center,
                     child: Text(
-                      appBarTitle,
-                      style: const TextStyle(
+                      'Notifications',
+                      style: TextStyle(
                         color: Colors.tealAccent,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ class _NotificationPageState extends State<NotificationApp> {
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  // 设置页的操作可以放在这里
+      
                 }
               });
             },
