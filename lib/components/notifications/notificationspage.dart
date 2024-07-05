@@ -15,7 +15,7 @@ class NotificationApp extends StatefulWidget {
 class _NotificationPageState extends State<NotificationApp> {
   int _selectedIndex = 0;
 
-  //
+  //this part will be used to display the notifications, can be replaced with the api data in future
   final String appBarTitle = 'Notifications';
   final String sectionTitleToday = 'Today';
   final String sectionTitleYesterday = 'Yesterday';
