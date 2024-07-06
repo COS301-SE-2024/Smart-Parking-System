@@ -1,8 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
-class CarDetailsPage extends StatelessWidget {
+class CarDetailsPage extends StatefulWidget {
   const CarDetailsPage({super.key});
+
+  @override
+  State<CarDetailsPage> createState() => _CarDetailsPageState();
+}
+
+class _CarDetailsPageState extends State<CarDetailsPage> {
+  final TextEditingController _makeController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
+
+  Future<void> _register() async {
+    final String make = _makeController.text;
+    final String model = _modelController.text;
+    final String color = _colorController.text;
+    final String license = _licenseController.text;
+
+    final response = await http.post(
+      Uri.parse('http://192.168.11.121:3000/registerVehicle'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'make': make,
+        'model': model,
+        'color': color,
+        'license_number': license,
+      }),
+    );
+
+    if (mounted) {
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Vehicle registered successfully')),
+        );
+        Navigator.of(context).pop();
+        // Navigator.of(context).pushReplacement(
+        //   MaterialPageRoute(
+        //     builder: (context) => const SettingsPage(),
+        //   ),
+        // );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Vehicle registration failed')),
+        );
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,53 +153,54 @@ class CarDetailsPage extends StatelessWidget {
                 ),
               ),
               child: Column(
-                children: [
-                  const ProfileField(
-                    label: 'Vehicle Brand',
-                    value: 'BMW',
-                  ),
-                  const ProfileField(
-                    label: 'Vehicle Model',
-                    value: 'M3',
-                  ),
-                  const ProfileField(
-                    label: 'Color',
-                    value: 'Grey White',
-                  ),
-                  const ProfileField(
-                    label: 'License Number',
-                    value: 'NFSMW',
-                  ),
-                  const SizedBox(height: 60.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle save button
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: const Color(0xFF2D2F41),
-                            title: const Text(
-                              'Successfully Updated!',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            actions: [
-                              Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    'OK',
-                                    style: TextStyle(color: Color(0xFF58C6A9)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                  children: [
+                    ProfileField(
+                      label: 'Vehicle Brand',
+                      value: 'BMW',
+                      controller: _makeController,
+                    ),
+                    ProfileField(
+                      label: 'Vehicle Model',
+                      value: 'M3',
+                      controller: _modelController,
+                    ),
+                    ProfileField(
+                      label: 'Color',
+                      value: 'Grey White',
+                      controller: _colorController,
+                    ),
+                    ProfileField(
+                      label: 'License Number',
+                      value: 'NFSMW',
+                      controller: _licenseController,
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle save button
+                        _register();
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return AlertDialog(
+                        //       backgroundColor: const Color(0xFF2D2F41),
+                              
+                        //       title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
+                              
+                        //       actions: [
+                        //         Center(
+                        //           child: TextButton(
+                        //             onPressed: () {
+                        //               Navigator.of(context).pop();
+                        //             },
+                        //             child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     );
+                        //   },
+                        // );
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF58C6A9),
                       padding: const EdgeInsets.symmetric(
@@ -180,12 +232,14 @@ class CarDetailsPage extends StatelessWidget {
 class ProfileField extends StatelessWidget {
   final String label;
   final String value;
+  final TextEditingController controller;
   final bool obscureText;
 
   const ProfileField({
     super.key,
     required this.label,
     required this.value,
+    required this.controller,
     this.obscureText = false,
   });
 
@@ -194,7 +248,8 @@ class ProfileField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: TextFormField(
-        initialValue: value,
+        // initialValue: value,
+        controller: controller,
         obscureText: obscureText,
         style: const TextStyle(
           fontWeight: FontWeight.w600, // Make the input text bold

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/select_level.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+// import 'package:smart_parking_system/components/main_page.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   const ZoneSelectPage({super.key});
@@ -31,11 +31,12 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                         icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
                         onPressed: () {
                           // Replace this with your main page route
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const MainPage(),
-                            ),
-                          );
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => const MainPage(),
+                          //   ),
+                          // );
+                          Navigator.of(context).pop();
                         },
                       );
                     },
@@ -124,7 +125,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
           ? () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => const LevelSelectPage(),
+                  builder: (_) => LevelSelectPage(selectedZone: zone),
                 ),
               );
             }

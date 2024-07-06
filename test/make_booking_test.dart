@@ -6,7 +6,7 @@ import 'package:smart_parking_system/components/bookings/make_booking.dart';
 void main() {
   testWidgets('Widget initialization test', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(
-      home: BookingPage(),
+      home: BookingPage(selectedZone: 'A', selectedLevel: '1',),
     ));
 
     expect(find.text('Parking Slot'), findsOneWidget);
@@ -18,7 +18,7 @@ void main() {
 
   testWidgets('Slot availability test', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(
-      home: BookingPage(),
+      home: BookingPage(selectedZone: 'A', selectedLevel: '1',),
     ));
 
     expect(find.text('2 slots Available'), findsOneWidget);
