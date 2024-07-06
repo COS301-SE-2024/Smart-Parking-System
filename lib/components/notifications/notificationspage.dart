@@ -12,25 +12,36 @@ class NotificationApp extends StatefulWidget {
   State<NotificationApp> createState() => _NotificationPageState();
 }
 
-class BookedNotification {
+abstract class Notification {
   final String time;
-  final String title = 'Successfully Booked';
-  final String location;
-  final String parkingslot;
-  final IconData icon = Icons.check_circle;
-  final Color iconColor = Colors.tealAccent;
+  final String title;
+  final IconData icon;
+  final Color iconColor;
 
-  BookedNotification(this.time, this.location, this.parkingslot);
+  Notification(this.time, this.title, this.icon, this.iconColor);
 }
 
-class AlertNotification {
-  final String time;
-  final String title = 'Parking Violation';
-  final String description;
-  final IconData icon = Icons.warning;
-  final Color iconColor = Colors.yellow;
+class BookedNotification extends Notification {
+  final String location;
+  final String parkingslot;
 
-  AlertNotification(this.time, this.description);
+  BookedNotification(String time, this.location, this.parkingslot)
+      : super(time, 'Successfully Booked', Icons.check_circle, Colors.tealAccent);
+}
+
+class AlertNotification extends Notification {
+  final String description;
+
+  AlertNotification(String time, this.description)
+      : super(time, 'Parking Violation', Icons.warning, Colors.yellow);
+}
+
+class ReminderNotification extends Notification {
+  final String bookingTime;
+  final String location;
+
+  ReminderNotification(String time, this.bookingTime, this.location)
+      : super(time, 'Upcoming Parking Session', Icons.notification_important, Colors.green);
 }
 
 
@@ -38,14 +49,24 @@ class AlertNotification {
 class _NotificationPageState extends State<NotificationApp> {
   int _selectedIndex = 0;
 
-  List<BookedNotification> bookednotifications = [
-   BookedNotification('4 hours ago', 'Sandton City', 'A3C'),
-    // Add more sessions here
+  List<Notification> today = [
+    ReminderNotification('1 hour ago', '12:00 PM', 'Sandton City'),
+    AlertNotification('2 hours ago', 'You have parked longer allocated duration'),
+    BookedNotification('5 hours ago', 'Sandton City', 'A4c'),
+    
+    // Add more notifications here
   ];
 
-  List<AlertNotification> alertnotifications = [
-   AlertNotification('2 Weeks ago', 'You violated parking regulations'),
-    // Add more sessions here
+  List<Notification> thisweek = [
+    BookedNotification('3 days ago', 'Sandton City', 'A4c'),
+    
+    // Add more notifications here
+  ];
+
+  List<Notification> older = [
+   
+    AlertNotification('2 weeks ago', 'You have parked in a no-parking zone'),
+    // Add more notifications here
   ];
 
   
@@ -86,22 +107,23 @@ class _NotificationPageState extends State<NotificationApp> {
                 ],
               ),
             ),
-            Container(
-                padding: const EdgeInsets.all(20),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionTitle(title: 'Today'),
-                    
-                    SizedBox(height: 10),
-                    SectionTitle(title: 'This Week'),
-                    
-                    SizedBox(height: 10),
-                    SectionTitle(title: 'Older'),
-                    
-                  ],
-                ),
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SectionTitle(title: 'Today'),
+                for (var notification in today)
+                _buildNotification(notification),
+                const SizedBox(height: 10),
+                const SectionTitle(title: 'This Week'),
+                for (var notification in thisweek)
+                _buildNotification(notification),
+                const SizedBox(height: 10),
+                const SectionTitle(title: 'Older'),
+                for (var notification in older)
+                _buildNotification(notification),
+                
+              ],
+            ),
           ],
         ),
       ),
@@ -203,9 +225,7 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-
-// ignore: unused_element
-Widget _buildBookNotification(BookedNotification bNotification) {
+Widget _buildNotification(Notification notification) {
   return Card(
     color: const Color(0xFF3A3E5B),
     shape: RoundedRectangleBorder(
@@ -216,8 +236,8 @@ Widget _buildBookNotification(BookedNotification bNotification) {
       child: Row(
         children: [
           Icon(
-            bNotification.icon,
-            color: bNotification.iconColor,
+            notification.icon,
+            color: notification.iconColor,
             size: 30,
           ),
           const SizedBox(width: 10),
@@ -225,7 +245,7 @@ Widget _buildBookNotification(BookedNotification bNotification) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                bNotification.time,
+                notification.time,
                 style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
@@ -233,7 +253,7 @@ Widget _buildBookNotification(BookedNotification bNotification) {
               ),
               const SizedBox(height: 5),
               Text(
-                bNotification.title,
+                notification.title,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -241,67 +261,30 @@ Widget _buildBookNotification(BookedNotification bNotification) {
                 ),
               ),
               const SizedBox(height: 5),
-              Text(
-                '${bNotification.location}, Slot ${bNotification.parkingslot}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  //fontWeight: FontWeight.w400,
+              if (notification is BookedNotification)
+                Text(
+                  '${notification.location}, Parking Slot ${notification.parkingslot}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-// ignore: unused_element
-Widget _buildAlertNotification(AlertNotification aNotification) {
-  return Card(
-    color: const Color(0xFF3A3E5B),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(15),
-      child: Row(
-        children: [
-          Icon(
-            aNotification.icon,
-            color: aNotification.iconColor,
-            size: 30,
-          ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                aNotification.time,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+              if (notification is AlertNotification)
+                Text(
+                  notification.description,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                aNotification.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                aNotification.description,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  //fontWeight: FontWeight.w400,
-                ),
-              ),
+              if (notification is ReminderNotification)
+                Text(
+                  '${notification.location}, @${notification.bookingTime}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),  
             ],
           ),
         ],
