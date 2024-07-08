@@ -30,7 +30,7 @@ class _OfferPageState extends State<PromotionCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(53, 52, 74, 1),
+      backgroundColor: const Color.fromRGBO(53, 52, 74, 1),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
