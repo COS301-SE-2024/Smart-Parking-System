@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 
@@ -15,50 +15,57 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
-Future<void> _login() async {
-  setState(() {
-    _isLoading = true;
-  });
+  final FireBaseAuthServices _auth = FireBaseAuthServices();
 
-  final String email = _emailController.text;
-  final String password = _passwordController.text;
-
-  final response = await http.post(
-    Uri.parse('http://192.168.3.20:3000/login'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': email,
-      'password': password,
-    }),
-  );
-
-  setState(() {
-    _isLoading = false;
-  });
-
-  if (mounted) { // Add this check
-    if (response.statusCode == 200) {
-      // If the server returns a successful response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login successful')),
-      );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const MainPage(),
-        ),
-      );
-    } else {
-      // If the server returns an error response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login failed')),
-      );
-    }
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
-}
+   
+  Future<void> _signIn() async {
+    final String password = _passwordController.text;
+    final String email = _emailController.text;
+
+    final User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      if(mounted) { // Check if the widget is still in the tree
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainPage(),
+          ),
+        );
+      }
+    } else {
+      // ignore: avoid_print
+      if(mounted) { // Check if the widget is still in the tree
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Sign In Failed'),
+              content: const Text('Please check your email and password and try again.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+      
+  }
+    
+
 
 
  @override
@@ -194,7 +201,7 @@ Future<void> _login() async {
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        _login();
+                       _signIn();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
