@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
 import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/login/verification.dart';
+import 'package:smart_parking_system/components/main_page.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -13,21 +18,86 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _noController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
+  final FireBaseAuthServices _auth = FireBaseAuthServices();
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _usernameController.dispose();
+    _noController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+   _signUpWithGoogle () async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        final UserCredential authResult = await _auth.signInWithCredential(credential);
+        final User? user = authResult.user;
+
+        if (user != null) {
+          if(mounted) { // Check if the widget is still in the tree
+            showToast(message: 'Successfully signed in');
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const MainPage(),
+              ),
+            );
+          }
+        }
+      }
+      
+    } catch (e) {
+        showToast(message: 'Some error occurred: $e');
+    }
+  }
    
   Future<void> verification() async {
     final String password = _passwordController.text;
-    final String name = _nameController.text;
+    final String name = _usernameController.text;
     final String email = _emailController.text;
     final String phoneNumber = _noController.text;
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => VerificationPage(fullname: name, email: email, phoneNumber: phoneNumber, password: password,),
-      ),
-    );
+    setState((){
+      _isLoading = true;
+    });
+
+    final User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    setState((){
+      _isLoading = false;
+    });
+
+    if (user != null) {
+      if(mounted) { // Check if the widget is still in the tree
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => VerificationPage(fullname: name, email: email, phoneNumber: phoneNumber, password: password,),
+          ),
+        );
+      }
+    } else {
+      // ignore: avoid_print
+      showToast(message: 'An Error Occured');
+    }
+    
   }
 
   
@@ -111,7 +181,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     const SizedBox(height: 8), // Space between the Login text and text boxes
                     TextField(
-                      controller: _nameController,
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: 'Name',
                         labelStyle: TextStyle(
@@ -268,7 +338,7 @@ class _SignupPageState extends State<SignupPage> {
                       obscureText: true,
                     ),
                     const SizedBox(height: 30),
-                    // Login Button
+                    // Signup Button
                     ElevatedButton(
                       onPressed: () {
                         verification();
@@ -283,7 +353,16 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
-                      child: const Text(
+                      child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : const Text(
                         'Signup',
                         style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
@@ -316,28 +395,19 @@ class _SignupPageState extends State<SignupPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'assets/F_Logo.png',
-                          height: 50, // Adjust the height as needed
-                          width: 50,  // Adjust the width as needed
-                        ),
                         GestureDetector(
                           onTap: () {
+                            _signUpWithGoogle();
                             // Add functionality to signup with Google
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 40),
                             child: Image.asset(
                               'assets/G_Logo.png',
-                              height: 50, // Adjust the height as needed
-                              width: 50,  // Adjust the width as needed
+                              height: 100, // Adjust the height as needed
+                              width: 100,  // Adjust the width as needed
                             ),
                           ),
-                        ),
-                        Image.asset(
-                          'assets/A_Logo.png',
-                          height: 50, // Adjust the height as needed
-                          width: 50,  // Adjust the width as needed
                         ),
                       ],
                     ),
