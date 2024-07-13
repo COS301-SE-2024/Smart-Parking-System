@@ -22,6 +22,10 @@ dependencies:
   cloud_firestore: ^5.1.0
   firebase_auth: ^5.1.2
   firebase_storage: ^12.1.1
+  fluttertoast: ^8.2.6
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.1
+  the_apple_sign_in: ^1.1.1
 
 dev_dependencies:
   flutter_test:
