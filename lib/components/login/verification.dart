@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
@@ -25,10 +26,11 @@ class VerificationPage extends StatefulWidget {
 
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _codeControllers = List.generate(4, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(4, (index) => FocusNode());
+  final List<TextEditingController> _codeControllers = List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
   late String _verificationCode;
   bool _isLoading = false;
+  late String _verificationId;
 
   @override
   void initState() {
@@ -45,97 +47,93 @@ class _VerificationPageState extends State<VerificationPage> {
     );
   }
 
-  Future<void> _sendVerificationEmail() async {
-    final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/verification'), // Replace with your server URL
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+Future<void> _sendVerificationEmail() async {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  try {
+    await auth.verifyPhoneNumber(
+      phoneNumber: widget.phoneNumber,     
+      verificationCompleted: (PhoneAuthCredential credential) {
+        // This callback won't be used for manual entry of OTP
+        setState(() {
+          _isLoading = false;
+        });
       },
-      body: jsonEncode(<String, String>{
-        'email': widget.email,
-        'code': _verificationCode,
-      }),
-    );
-    if(mounted){
-      if (response.statusCode != 200) {
+      verificationFailed: (FirebaseAuthException e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to send verification code')),
+          const SnackBar(content: Text('Verification failed')),
         );
-      }
-    }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        setState(() {
+          _verificationId = verificationId; // Save verification ID
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          _verificationId = verificationId; // Save verification ID
+        });
+      },
+      timeout: const Duration(seconds: 110),
+    );
+  } catch (e) {
+    print('Error during phone number verification: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Error during phone number verification')),
+    );
   }
+}
+
+  
 
   void _verifyCode() {
     setState(() {
       _isLoading = true;
     });
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const AddCardRegistrationPage(),
-      ),
-    );
-    if(mounted){
-      if (_formKey.currentState!.validate()) {
-        String enteredCode = _codeControllers.map((controller) => controller.text).join();
-        if (enteredCode == _verificationCode) {
-          
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verified!')),
-          );
-          _signup();
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid verification code')),
-          );
-        }
-      }
-    }
-  }
 
-  Future<void> _signup() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final String password = widget.password;
-    final String name = widget.fullname;
-    final String email = widget.email;
-    final String phoneNumber = widget.phoneNumber;
+    String enteredCode = _codeControllers.map((controller) => controller.text).join();
     
-    final response = await http.post(
-      Uri.parse('http://192.168.3.20:3000/signup'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'name': name,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'password': password,
-      }),
-    );
+    // Create PhoneAuthCredential object
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: _verificationId, smsCode: enteredCode);
 
-    setState(() {
-      _isLoading = false;
-    });
-    if(mounted){
-      if (response.statusCode == 201) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const SuccessionPage(),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup failed')),
-        );
-      }
+    // Check if a user is currently authenticated
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not authenticated')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
     }
+
+    // Link the PhoneAuthCredential to the current user's account
+    currentUser.linkWithCredential(credential).then((authResult) {
+      // Handle linking success
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Successfully linked phone number!')),
+      );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const AddCardRegistrationPage(),
+        ),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((error) {
+      // Handle linking failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to link phone number')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
-  
+
+
    @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +175,7 @@ class _VerificationPageState extends State<VerificationPage> {
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(4, (index) {
+                        children: List.generate(6, (index) {
                           return SizedBox(
                             width: 80,
                             child: Container(
@@ -203,9 +201,9 @@ class _VerificationPageState extends State<VerificationPage> {
                               textAlign: TextAlign.center,
                               maxLength: 1,
                               onChanged: (value) {
-                                if (value.length == 1 && index < 3) {
+                                if (value.length == 1 && index < 5) {
                                   FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-                                } else if (value.length == 1 && index == 3) {
+                                } else if (value.length == 1 && index == 5) {
                                   _focusNodes[index].unfocus();
                                 }
                               },
