@@ -21,7 +21,7 @@ class _BookingPageState extends State<BookingPage> {
     'C': 0,
   };
 
-  String? selectedRow;
+  String selectedRow = '';
 
   @override
   Widget build(BuildContext context) {
@@ -266,12 +266,12 @@ class _BookingPageState extends State<BookingPage> {
                       // Change pages
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const ConfirmBookingPage(),
+                          builder: (_) => ConfirmBookingPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedRow != null ? const Color(0xFF58C6A9): const Color(0xFF35344A),
+                      backgroundColor: selectedRow != '' ? const Color(0xFF58C6A9): const Color(0xFF35344A),
                       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                       textStyle: const TextStyle(
                         fontSize: 16,
@@ -281,7 +281,7 @@ class _BookingPageState extends State<BookingPage> {
                     child: Text(
                       'Book Slot',
                       style: TextStyle(
-                        color: selectedRow == null ? const Color(0xFF35344A) : Colors.white,
+                        color: selectedRow == '' ? const Color(0xFF35344A) : Colors.white,
                       ),
                     ),
                   ),
