@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -30,34 +31,38 @@ class _UserProfilePageState extends State<UserProfilePage> {
           'phone': _phoneController.text,
         });
 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: const Color(0xFF2D2F41),
-              title: const Text(
-                'Successfully Updated!',
-                style: TextStyle(color: Colors.white),
-              ),
-              actions: [
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(color: Color(0xFF58C6A9)),
+
+        if (mounted){
+            showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Text(
+                  'Successfully Updated!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xFF58C6A9)),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        );
+                ],
+              );
+            },
+          );
+        }
+        
       }
     } catch (e) {
-      print('Error: $e');
+      showToast(message: 'Error: $e');
     }
   }
 
