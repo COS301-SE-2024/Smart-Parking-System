@@ -1,9 +1,15 @@
+// import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 // import 'package:smart_parking_system/components/bookings/make_booking.dart';
 import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
-  const ConfirmBookingPage({super.key});
+  final String selectedZone;
+  final String selectedLevel;
+  final String selectedRow;
+
+  const ConfirmBookingPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
 
   @override
   State<ConfirmBookingPage> createState() => _ConfirmBookingState();
@@ -246,7 +252,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => const ConfirmPaymentPage(),
+                      builder: (_) => ConfirmPaymentPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDuration: _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
                     ),
                   );
                 },

@@ -1,16 +1,60 @@
+// import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
+// import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
+//Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
-  const ConfirmPaymentPage({super.key});
+  final String selectedZone;
+  final String selectedLevel;
+  final String selectedRow;
+  final String selectedTime;
+  final double selectedDuration;
+  final double price;
+  final bool selectedDisabled;
+  final bool selectedWash;
+
+  const ConfirmPaymentPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
+    Future<void> _bookspace() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('bookings').add({
+          'userId': user.uid, // Add the userId field
+          'zone': widget.selectedZone,
+          'level': widget.selectedLevel,
+          'row': widget.selectedRow,
+          'time': widget.selectedTime,
+          'duration': widget.selectedDuration,
+          'price': widget.price,
+          'disabled': widget.selectedDisabled,
+          'wash': widget.selectedWash,
+        });
+
+        showToast(message: 'Booked Successfully!');
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const PaymentSuccessionPage(),
+          ),
+        );
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
   int _selectedCard = 1;
 
   @override
@@ -29,11 +73,12 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const ConfirmBookingPage(),
-                        ),
-                      );
+                    // Navigator.of(context).pushReplacement(
+                    //     MaterialPageRoute(
+                    //       builder: (_) => ConfirmBookingPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
+                    //     ),
+                    //   );
+                    Navigator.of(context).pop();
                   },
                   icon: const Icon(Icons.arrow_back_ios,
                     color: Colors.white,
@@ -384,11 +429,12 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 const SizedBox(width: 180),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const PaymentSuccessionPage(),
-                        ),
-                      );
+                    _bookspace();
+                    // Navigator.of(context).pushReplacement(
+                    //     MaterialPageRoute(
+                    //       builder: (_) => PaymentSuccessionPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: widget.selectedTime, selectedDuration: widget.selectedDuration, price: widget.price, selectedDisabled: widget.selectedDisabled, selectedWash: widget.selectedWash,),
+                    //     ),
+                    //   );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
