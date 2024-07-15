@@ -1,14 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/login/car_registration.dart';
+
 class AddCardRegistrationPage extends StatelessWidget {
   const AddCardRegistrationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _cardNumberController = TextEditingController();
+    final TextEditingController _holderNameController = TextEditingController();
+    final TextEditingController _expiryController = TextEditingController();
+    final TextEditingController _cvvController = TextEditingController();
+
+    Future<void> _addCardDetails() async {
+      try {
+        User? user = FirebaseAuth.instance.currentUser;
+
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('cards').doc(user.uid).set({
+            'cardNumber': _cardNumberController.text,
+            'holderName': _holderNameController.text,
+            'expiry': _expiryController.text,
+            'cvv': _cvvController.text,
+          });
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Text(
+                  'Card Added Successfully!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const CarRegistration(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xFF58C6A9)),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
       body: SingleChildScrollView(
-        // padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
         child: Center(
           child: SizedBox(
             width: 550,
@@ -49,8 +104,9 @@ class AddCardRegistrationPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40.0),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: _cardNumberController,
+                    decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.transparent,
                       labelText: 'Card Number',
@@ -65,8 +121,9 @@ class AddCardRegistrationPage extends StatelessWidget {
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 10.0),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: _holderNameController,
+                    decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.transparent,
                       labelText: 'Holder Name',
@@ -80,11 +137,12 @@ class AddCardRegistrationPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  const Row(
+                  Row(
                     children: [
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: _expiryController,
+                          decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.transparent,
                             labelText: 'MM/YY',
@@ -101,10 +159,11 @@ class AddCardRegistrationPage extends StatelessWidget {
                           maxLength: 4,
                         ),
                       ),
-                      SizedBox(width: 120.0),
+                      const SizedBox(width: 120.0),
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: _cvvController,
+                          decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.transparent,
                             labelText: 'CVV',
@@ -119,6 +178,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                           ),
                           keyboardType: TextInputType.number,
                           maxLength: 3,
+                          style: const TextStyle(color: Colors.white)
                         ),
                       ),
                     ],
@@ -126,13 +186,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                   const SizedBox(height: 60.0),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const CarRegistration(),
-                          ),
-                        );
-                      },
+                      onPressed: _addCardDetails,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40.0),
@@ -157,7 +211,11 @@ class AddCardRegistrationPage extends StatelessWidget {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        // Add your skip logic here
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const CarRegistration(),
+                          ),
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -169,20 +227,11 @@ class AddCardRegistrationPage extends StatelessWidget {
                               endIndent: 10,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => const CarRegistration(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Skip for now',
-                              style: TextStyle(
-                                color: Color(0xFF58C6A9),
-                                decoration: TextDecoration.underline,
-                              ),
+                          const Text(
+                            'Skip for now',
+                            style: TextStyle(
+                              color: Color(0xFF58C6A9),
+                              decoration: TextDecoration.underline,
                             ),
                           ),
                           const Expanded(
