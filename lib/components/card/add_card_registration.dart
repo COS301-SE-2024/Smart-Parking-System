@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/login/car_registration.dart';
 
 class AddCardRegistrationPage extends StatelessWidget {
@@ -8,56 +9,34 @@ class AddCardRegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _cardNumberController = TextEditingController();
-    final TextEditingController _holderNameController = TextEditingController();
-    final TextEditingController _expiryController = TextEditingController();
-    final TextEditingController _cvvController = TextEditingController();
+    final TextEditingController cardNumberController = TextEditingController();
+    final TextEditingController holderNameController = TextEditingController();
+    final TextEditingController expiryController = TextEditingController();
+    final TextEditingController cvvController = TextEditingController();
 
-    Future<void> _addCardDetails() async {
+    Future<void> addCardDetails() async {
       try {
         User? user = FirebaseAuth.instance.currentUser;
 
         if (user != null) {
-          await FirebaseFirestore.instance.collection('cards').doc(user.uid).set({
-            'cardNumber': _cardNumberController.text,
-            'holderName': _holderNameController.text,
-            'expiry': _expiryController.text,
-            'cvv': _cvvController.text,
+          await FirebaseFirestore.instance.collection('cards').add({
+            'userId': user.uid, // Add the userId field
+            'cardNumber': cardNumberController.text,
+            'holderName': holderNameController.text,
+            'expiry': expiryController.text,
+            'cvv': cvvController.text,
           });
 
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: const Color(0xFF2D2F41),
-                title: const Text(
-                  'Card Added Successfully!',
-                  style: TextStyle(color: Colors.white),
-                ),
-                actions: [
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const CarRegistration(),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'OK',
-                        style: TextStyle(color: Color(0xFF58C6A9)),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
+          showToast(message: 'Card Added Successfully!');
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const CarRegistration(),
+            ),
           );
         }
       } catch (e) {
-        print('Error: $e');
+        showToast(message: 'Error: $e');
       }
     }
 
@@ -105,7 +84,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 40.0),
                   TextField(
-                    controller: _cardNumberController,
+                    controller: cardNumberController,
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.transparent,
@@ -119,10 +98,11 @@ class AddCardRegistrationPage extends StatelessWidget {
                       ),
                     ),
                     keyboardType: TextInputType.number,
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
-                    controller: _holderNameController,
+                    controller: holderNameController,
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.transparent,
@@ -135,13 +115,14 @@ class AddCardRegistrationPage extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 10.0),
                   Row(
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _expiryController,
+                          controller: expiryController,
                           decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.transparent,
@@ -157,12 +138,13 @@ class AddCardRegistrationPage extends StatelessWidget {
                           ),
                           keyboardType: TextInputType.number,
                           maxLength: 4,
+                          style: const TextStyle(color: Colors.white)
                         ),
                       ),
                       const SizedBox(width: 120.0),
                       Expanded(
                         child: TextField(
-                          controller: _cvvController,
+                          controller: cvvController,
                           decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.transparent,
@@ -186,7 +168,7 @@ class AddCardRegistrationPage extends StatelessWidget {
                   const SizedBox(height: 60.0),
                   Center(
                     child: ElevatedButton(
-                      onPressed: _addCardDetails,
+                      onPressed: addCardDetails,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40.0),
@@ -217,24 +199,24 @@ class AddCardRegistrationPage extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Divider(
                               color: Colors.white,
                               thickness: 1,
                               endIndent: 10,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Skip for now',
                             style: TextStyle(
                               color: Color(0xFF58C6A9),
                               decoration: TextDecoration.underline,
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Divider(
                               color: Colors.white,
                               thickness: 1,
