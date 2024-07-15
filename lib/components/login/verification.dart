@@ -1,11 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/card/add_card_registration.dart';
-import 'package:smart_parking_system/components/login/successmark.dart';
 
 class VerificationPage extends StatefulWidget {
   final String fullname;
@@ -13,12 +10,13 @@ class VerificationPage extends StatefulWidget {
   final String email;
   final String phoneNumber;
 
-  const VerificationPage({super.key, 
+  const VerificationPage({
+    Key? key,
     required this.fullname,
     required this.email,
     required this.phoneNumber,
     required this.password,
-  });
+  }) : super(key: key);
 
   @override
   State<VerificationPage> createState() => _VerificationPageState();
@@ -26,7 +24,8 @@ class VerificationPage extends StatefulWidget {
 
 class _VerificationPageState extends State<VerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _codeControllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _codeControllers =
+      List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
   late String _verificationCode;
   bool _isLoading = false;
@@ -43,16 +42,15 @@ class _VerificationPageState extends State<VerificationPage> {
     final Random random = Random();
     const int length = 4;
     return String.fromCharCodes(
-      List.generate(length, (index) => random.nextInt(10) + 48), // Generates digits (0-9)
+      List.generate(length, (index) => random.nextInt(10) + 48),
     );
   }
 
-Future<void> _sendVerificationEmail() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  Future<void> _sendVerificationEmail() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
 
-  try {
     await auth.verifyPhoneNumber(
-      phoneNumber: widget.phoneNumber,     
+      phoneNumber: widget.phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) {
         // This callback won't be used for manual entry of OTP
         setState(() {
@@ -76,27 +74,19 @@ Future<void> _sendVerificationEmail() async {
       },
       timeout: const Duration(seconds: 110),
     );
-  } catch (e) {
-    print('Error during phone number verification: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Error during phone number verification')),
-    );
   }
-}
-
-  
 
   void _verifyCode() {
     setState(() {
       _isLoading = true;
     });
 
-    String enteredCode = _codeControllers.map((controller) => controller.text).join();
-    
-    // Create PhoneAuthCredential object
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: _verificationId, smsCode: enteredCode);
+    String enteredCode =
+        _codeControllers.map((controller) => controller.text).join();
 
-    // Check if a user is currently authenticated
+    PhoneAuthCredential credential =
+        PhoneAuthProvider.credential(verificationId: _verificationId, smsCode: enteredCode);
+
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -108,9 +98,7 @@ Future<void> _sendVerificationEmail() async {
       return;
     }
 
-    // Link the PhoneAuthCredential to the current user's account
     currentUser.linkWithCredential(credential).then((authResult) {
-      // Handle linking success
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Successfully linked phone number!')),
       );
@@ -123,7 +111,6 @@ Future<void> _sendVerificationEmail() async {
         _isLoading = false;
       });
     }).catchError((error) {
-      // Handle linking failure
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to link phone number')),
       );
@@ -133,14 +120,29 @@ Future<void> _sendVerificationEmail() async {
     });
   }
 
+  void _resendVerificationCode() {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    // Reset previous values
+    _verificationId = '';
+    _verificationCode = _generateVerificationCode();
 
-   @override
+    // Trigger resend verification email
+    _sendVerificationEmail();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Resent OTP code to your Phone Number')),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           SvgPicture.asset(
-            'assets/Background - Small.svg', // Ensure you have the SVG background image in your assets folder
+            'assets/Background - Small.svg',
             fit: BoxFit.fill,
             width: double.infinity,
             height: double.infinity,
@@ -158,10 +160,9 @@ Future<void> _sendVerificationEmail() async {
                         'OTP Verification',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -179,47 +180,45 @@ Future<void> _sendVerificationEmail() async {
                           return SizedBox(
                             width: 80,
                             child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            child: TextFormField(
-                              controller: _codeControllers[index],
-                              focusNode: _focusNodes[index],
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 22),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
+                              child: TextFormField(
+                                controller: _codeControllers[index],
+                                focusNode: _focusNodes[index],
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 22),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(color: Colors.green, width: 2.0),
+                                  ),
+                                  counterText: '', // Removes the character counter
+                                  filled: true,
+                                  fillColor: Colors.white,
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(color: Colors.green, width: 2.0),
-                                ),
-                                counterText: '', // Removes the character counter
-                                filled: true,
-                                fillColor: Colors.white,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.center,
+                                maxLength: 1,
+                                onChanged: (value) {
+                                  if (value.length == 1 && index < 5) {
+                                    FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+                                  } else if (value.length == 1 && index == 5) {
+                                    _focusNodes[index].unfocus();
+                                  }
+                                },
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return '';
+                                  }
+                                  return null;
+                                },
                               ),
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                              maxLength: 1,
-                              onChanged: (value) {
-                                if (value.length == 1 && index < 5) {
-                                  FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-                                } else if (value.length == 1 && index == 5) {
-                                  _focusNodes[index].unfocus();
-                                }
-                              },
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
                           );
                         }),
                       ),
-                     
-                      
                       const SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
@@ -236,18 +235,18 @@ Future<void> _sendVerificationEmail() async {
                           backgroundColor: const Color(0xFF58C6A9),
                         ),
                         child: _isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.0,
-                              ),
-                            )
-                          : const Text(
-                              'Verify',
-                              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w300),
-                            ),
+                            ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.0,
+                          ),
+                        )
+                            : const Text(
+                          'Verify',
+                          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w300),
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -260,7 +259,7 @@ Future<void> _sendVerificationEmail() async {
                             ),
                           ),
                           TextButton(
-                            onPressed: _sendVerificationEmail,
+                            onPressed: _resendVerificationCode,
                             child: const Text('Resend', style: TextStyle(color:Color(0xFF58C6A9))),
                           ),
                         ],
