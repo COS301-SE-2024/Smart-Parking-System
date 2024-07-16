@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -13,6 +16,55 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _updateUserProfile() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        await user.updateEmail(_emailController.text);
+        await user.updatePassword(_passwordController.text);
+
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+        });
+
+
+        if (mounted){
+            showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Text(
+                  'Successfully Updated!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xFF58C6A9)),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +109,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 48), // Placeholder to keep the text centered
+                    const SizedBox(width: 48),
                   ],
                 ),
               ),
@@ -107,36 +159,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       controller: _passwordController,
                       obscureText: true,
                     ),
-                    const SizedBox(height: 40.0), // Space before the Save button
+                    const SizedBox(height: 40.0),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle save button
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: const Color(0xFF2D2F41),
-                              title: const Text(
-                                'Successfully Updated!',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              actions: [
-                                Center(
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text(
-                                      'OK',
-                                      style: TextStyle(color: Color(0xFF58C6A9)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                      onPressed: _updateUserProfile,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF58C6A9),
                         padding: const EdgeInsets.symmetric(
@@ -155,7 +180,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20), // Space after the Save button
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -187,13 +212,13 @@ class ProfileField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         style: const TextStyle(
-          fontWeight: FontWeight.w600, // Make the input text bold
+          fontWeight: FontWeight.w600,
           fontSize: 16,
         ),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(
-            color: Color(0xFF757F8C), // Set the color here
+            color: Color(0xFF757F8C),
             fontSize: 18,
           ),
           contentPadding: const EdgeInsets.only(top: 0),

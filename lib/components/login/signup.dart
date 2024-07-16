@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smart_parking_system/components/card/add_card_registration.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
 import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/login/verification.dart';
-import 'package:smart_parking_system/components/main_page.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -53,11 +54,23 @@ class _SignupPageState extends State<SignupPage> {
         final User? user = authResult.user;
 
         if (user != null) {
+          final firestore = FirebaseFirestore.instance;
+          final String? username = googleSignInAccount.displayName;
+          final String email = googleSignInAccount.email;
+
+          await firestore.collection('users').doc(user.uid).set(
+            {
+              'username': username,
+              'email': email,
+              'phoneNumber': null,
+            }
+          );
+
           if(mounted) { // Check if the widget is still in the tree
-            showToast(message: 'Successfully signed in');
+            showToast(message: 'Successfully signed up');
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const MainPage(),
+                builder: (context) => const AddCardRegistrationPage(),
               ),
             );
           }
@@ -71,7 +84,7 @@ class _SignupPageState extends State<SignupPage> {
    
   Future<void> verification() async {
     final String password = _passwordController.text;
-    // final String name = _usernameController.text;
+    final String username = _usernameController.text;
     final String email = _emailController.text;
     // final String phoneNumber = _noController.text;
 
@@ -87,11 +100,22 @@ class _SignupPageState extends State<SignupPage> {
 
     if (user != null) {
       if(mounted) { // Check if the widget is still in the tree
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => VerificationPage(user: user, email: email),
-          ),
+        final firestore = FirebaseFirestore.instance;
+
+        await firestore.collection('users').doc(user.uid).set(
+          {
+            'username': username,
+            'email': email,
+            'phoneNumber': phoneNumber,
+          }
         );
+
+        if (mounted) { // Check if the widget is still in the tree before navigating
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => VerificationPage(user: user, email: email),
+          ),
+        }
       }
     } else {
       // ignore: avoid_print
@@ -99,8 +123,6 @@ class _SignupPageState extends State<SignupPage> {
     }
     
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

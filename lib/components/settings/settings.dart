@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/cardetails/cardetailspage.dart';
 import 'package:smart_parking_system/components/main_page.dart';
@@ -13,10 +15,36 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+Future<String> getUserName(String userId) async {
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  return userDoc.get('username');
+}
+
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  final String _username = 'John Doe'; 
+  String _username = 'John Doe';
+
+  @override
+  void initState() {
+    super.initState();
+    _setUsername();
+  }
+
+  Future<void> _setUsername() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    String username = await getUserName(userId);
+    setState(() {
+      _username = username;
+    });
+  }
+
+  
+
+  
+
+
+
 
   @override
   Widget build(BuildContext context) {
