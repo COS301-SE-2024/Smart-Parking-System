@@ -71,9 +71,9 @@ class _SignupPageState extends State<SignupPage> {
    
   Future<void> verification() async {
     final String password = _passwordController.text;
-    final String name = _usernameController.text;
+    // final String name = _usernameController.text;
     final String email = _emailController.text;
-    final String phoneNumber = _noController.text;
+    // final String phoneNumber = _noController.text;
 
     setState((){
       _isLoading = true;
@@ -89,7 +89,7 @@ class _SignupPageState extends State<SignupPage> {
       if(mounted) { // Check if the widget is still in the tree
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => VerificationPage(fullname: name, email: email, phoneNumber: phoneNumber, password: password,),
+            builder: (context) => VerificationPage(user: user, email: email),
           ),
         );
       }
