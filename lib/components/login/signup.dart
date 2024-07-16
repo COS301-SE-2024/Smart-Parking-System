@@ -86,7 +86,7 @@ class _SignupPageState extends State<SignupPage> {
     final String password = _passwordController.text;
     final String username = _usernameController.text;
     final String email = _emailController.text;
-    // final String phoneNumber = _noController.text;
+    final String phoneNumber = _noController.text;
 
     setState((){
       _isLoading = true;
@@ -114,7 +114,8 @@ class _SignupPageState extends State<SignupPage> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => VerificationPage(user: user, email: email),
-          ),
+            )
+          );
         }
       }
     } else {
