@@ -113,8 +113,8 @@ class _SignupPageState extends State<SignupPage> {
         if (mounted) { // Check if the widget is still in the tree before navigating
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => VerificationPage(fullname: username, email: email, phoneNumber: phoneNumber, password: password,),
-            ),
+              builder: (context) => VerificationPage(user: user, email: email),
+            )
           );
         }
       }
