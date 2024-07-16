@@ -3,9 +3,10 @@ import 'package:smart_parking_system/components/bookings/make_booking.dart';
 // import 'package:smart_parking_system/components/bookings/select_zone.dart';
 
 class LevelSelectPage extends StatefulWidget {
+  final String bookedAddress;
   final String selectedZone;
   
-  const LevelSelectPage({required this.selectedZone, super.key});
+  const LevelSelectPage({required this.bookedAddress, required this.selectedZone, super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -59,7 +60,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
               ),
             ),
             Text(
-              'Select prefered Level (zone ${widget.selectedZone})',
+              'Select prefered Level (Zone ${widget.selectedZone})',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -122,7 +123,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
           ? () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => BookingPage(selectedZone: widget.selectedZone, selectedLevel: level,),
+                  builder: (_) => BookingPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: level,),
                 ),
               );
             }

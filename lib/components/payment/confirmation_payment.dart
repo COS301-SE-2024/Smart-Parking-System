@@ -1,15 +1,14 @@
-// import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-// import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
+import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
+  final String bookedAddress;
   final String selectedZone;
   final String selectedLevel;
   final String selectedRow;
@@ -19,14 +18,23 @@ class ConfirmPaymentPage extends StatefulWidget {
   final bool selectedDisabled;
   final bool selectedWash;
 
-  const ConfirmPaymentPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
+  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
-    Future<void> _bookspace() async {
+    //Variables
+  String? licenseNum = '';
+  String? carMake = '';
+  String? carModel = '';
+  String? startTime = '';
+  String? endTime = '';
+  String? bookingDate = '';
+  double? totalPrice = 0;
+    //Functions
+  Future<void> _bookspace() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -36,7 +44,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'zone': widget.selectedZone,
           'level': widget.selectedLevel,
           'row': widget.selectedRow,
-          'time': widget.selectedTime,
+          'time': startTime,
           'duration': widget.selectedDuration,
           'price': widget.price,
           'disabled': widget.selectedDisabled,
@@ -55,8 +63,68 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       showToast(message: 'Error: $e');
     }
   }
+
+  Future<void> getDetails() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userId = user?.uid;
+
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Query the 'cars' collection for a document with matching userId
+      QuerySnapshot querySnapshot = await firestore
+          .collection('vehicles')
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first (and should be only) document
+        DocumentSnapshot document = querySnapshot.docs.first;
+        // Retrieve the licenseNumber field
+        licenseNum = document.get('licenseNumber') as String?;
+        carMake = document.get('vehicleBrand') as String?;
+        carModel = document.get('vehicleModel') as String?;
+      } else {
+        // No matching document found
+        showToast(message: 'No car found for userId: $userName');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving user details: $e');
+    }
+
+
+    //endTime calc
+    DateTime tempStartTime;
+    if (widget.selectedTime.toLowerCase().contains('am') || widget.selectedTime.toLowerCase().contains('pm')) {
+      tempStartTime = DateFormat('hh:mm a').parse(widget.selectedTime);
+    } else {
+      tempStartTime = DateFormat('HH:mm').parse(widget.selectedTime);
+    }
+    startTime = DateFormat('HH:mm').format(tempStartTime);
+    endTime = DateFormat('HH:mm').format(tempStartTime.add(Duration(minutes: (widget.selectedDuration * 60).round())));
+    //booking date
+    bookingDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //total price calc
+    totalPrice = widget.price * widget.selectedDuration;
+
+    setState((){
+      // This will trigger a rebuild with the new values
+    });
+  }
+
+
+    //Output
   int _selectedCard = 1;
 
+  @override
+  void initState() {
+    super.initState();
+    getDetails();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,11 +141,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => ConfirmBookingPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
-                    //     ),
-                    //   );
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(Icons.arrow_back_ios,
@@ -132,18 +195,18 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
-                            TextSpan(
+                            const TextSpan(
                               text: 'Plate : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
                               ),
                             ),
                             TextSpan(
-                              text: 'EG123GP',
-                              style: TextStyle(
+                              text: licenseNum,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
@@ -152,18 +215,18 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                       ),
                       const SizedBox(height: 1),
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
-                            TextSpan(
+                            const TextSpan(
                               text: 'Car Modal : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
                               ),
                             ),
                             TextSpan(
-                              text: 'Honda CVR',
-                              style: TextStyle(
+                              text: '$carMake $carModel',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
@@ -177,18 +240,18 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                       ),
                       const SizedBox(height: 1),
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
                             TextSpan(
-                              text: 'Zone 1',
-                              style: TextStyle(
+                              text: 'Zone ${widget.selectedZone}',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             TextSpan(
-                              text: '32A- Sandton city',
-                              style: TextStyle(
+                              text: ' ${widget.selectedLevel}${widget.selectedRow} - ${widget.bookedAddress}',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
@@ -221,19 +284,19 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                             children: [
                               
                               RichText(
-                                text: const TextSpan(
-                                  style: TextStyle(color: Colors.white),
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '15:06         ',
-                                      style: TextStyle(
+                                      text: '$startTime         ',
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '03:06:2024',
-                                      style: TextStyle(
+                                      text: bookingDate,
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w200, 
                                         fontSize: 14
                                       ),
@@ -243,19 +306,19 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               ),
                               const SizedBox(height: 25),
                               RichText(
-                                text: const TextSpan(
-                                  style: TextStyle(color: Colors.white),
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '15:41         ',
-                                      style: TextStyle(
+                                      text: '$endTime         ',
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '03:06:2024',
-                                      style: TextStyle(
+                                      text: bookingDate,
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w200,
                                         fontSize: 14
                                       ),
@@ -406,10 +469,10 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RichText(
-                  text: const TextSpan(
-                    style: TextStyle(color: Colors.white),
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.white),
                     children: [
-                      TextSpan(
+                      const TextSpan(
                         text: 'Total\n',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -417,8 +480,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         ),
                       ),
                       TextSpan(
-                        text: 'ZAR 20.00',
-                        style: TextStyle(
+                        text: 'ZAR $totalPrice',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w400, 
                           fontSize: 20
                         ),

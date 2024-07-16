@@ -20,7 +20,7 @@ class _MainPageState extends State<MainPage> {
 
 
   final String pricePerHour = 'R20 /Hr';
-  final String parkingLocation = 'Sandton City Park A';
+  final String parkingLocation = 'Sandton City Center';
   final String spacesAvailable = '5 slots';
   final String distanceToVenue = '3 mins drive';
 
@@ -125,7 +125,7 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => const ZoneSelectPage(),
+                        builder: (_) => ZoneSelectPage(bookedAddress: parkingLocation),
                       ),
                     );
                   },

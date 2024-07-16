@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
+  final String bookedAddress;
   final String selectedZone;
   final String selectedLevel;
   final String selectedRow;
 
-  const ConfirmBookingPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
+  const ConfirmBookingPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
 
   @override
   State<ConfirmBookingPage> createState() => _ConfirmBookingState();
@@ -27,7 +28,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
 
 
   final String appBarTitle = 'Confirm Booking';
-  final String parkingSlot = 'Parking Slot A1';
+  // final String parkingSlot = 'Parking Slot ${widget.selectedZone}${widget.selectedLevel}${widget.selectedRow}';
   final String estimateDuration = 'Estimate Duration';
   final String checkInTimeText = 'Check-in Time:';
   final String disabledParkingText = 'Disabled Parking';
@@ -100,7 +101,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  parkingSlot,
+                  'Parking Slot ${widget.selectedZone}${widget.selectedLevel}${widget.selectedRow}',
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -252,7 +253,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => ConfirmPaymentPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDuration: _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
+                      builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDuration: _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
                     ),
                   );
                 },
