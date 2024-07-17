@@ -26,6 +26,7 @@ dependencies:
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.1
   the_apple_sign_in: ^1.1.1
+  flutter_local_notifications: ^17.2.1+2
 
 dev_dependencies:
   flutter_test:

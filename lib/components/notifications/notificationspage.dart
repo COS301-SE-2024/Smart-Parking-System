@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/main.dart';
 
 class NotificationApp extends StatefulWidget {
   const NotificationApp({super.key});
@@ -69,7 +71,31 @@ class _NotificationPageState extends State<NotificationApp> {
     // Add more notifications here
   ];
 
-  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future<void> showOrderReadyNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'order_ready_channel',  // channel id
+      'Order Notifications',  // channel name
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,  // notification id
+      'Order Ready',  // notification title
+      'Your order is now ready :)',  // notification body
+      platformChannelSpecifics,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
