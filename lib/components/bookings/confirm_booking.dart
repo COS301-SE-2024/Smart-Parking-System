@@ -22,6 +22,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
   bool _disabledParking = false;
   bool _carWashing = false;
   String _checkInTime = "12:00 am";
+  DateTime _checkInDate = DateTime.now();
 
   // use the variable to replace the text
   // final String appBarTitle = apiResponse['appBarTitle'];
@@ -53,6 +54,20 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
     if (picked != null) {
       setState(() {
         _checkInTime = picked.format(context);
+      });
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _checkInDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _checkInDate) {
+      setState(() {
+        _checkInDate = picked;
       });
     }
   }
@@ -184,6 +199,31 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                     ),
                     const SizedBox(height: 16),
 
+                    //Place code here
+                    GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Check-in Date:',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${_checkInDate.day}/${_checkInDate.month}/${_checkInDate.year}',
+                            style: const TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
                     // Divider line
                     const Divider(color: Colors.white, thickness: 1),
 
@@ -253,7 +293,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDuration: _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
+                      builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
                     ),
                   );
                 },

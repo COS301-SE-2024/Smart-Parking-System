@@ -13,12 +13,13 @@ class ConfirmPaymentPage extends StatefulWidget {
   final String selectedLevel;
   final String selectedRow;
   final String selectedTime;
+  final DateTime selectedDate;
   final double selectedDuration;
   final double price;
   final bool selectedDisabled;
   final bool selectedWash;
 
-  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
+  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDate, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
@@ -48,6 +49,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'level': widget.selectedLevel,
           'row': widget.selectedRow,
           'time': startTime,
+          'date': bookingDate,
           'duration': widget.selectedDuration,
           'price': widget.price,
           'disabled': widget.selectedDisabled,
@@ -135,7 +137,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     startTime = DateFormat('HH:mm').format(tempStartTime);
     endTime = DateFormat('HH:mm').format(tempStartTime.add(Duration(minutes: (widget.selectedDuration * 60).round())));
     //booking date
-    bookingDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    bookingDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
     //total price calc
     totalPrice = widget.price * widget.selectedDuration;
 
@@ -230,6 +232,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               text: 'Plate : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
+                                fontSize: 16,
                               ),
                             ),
                             TextSpan(
@@ -250,6 +253,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               text: 'Car Modal : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
+                                fontSize: 16,
                               ),
                             ),
                             TextSpan(
@@ -305,32 +309,59 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         text: TextSpan(
                           style: const TextStyle(color: Colors.white),
                           children: [
+                            
                             TextSpan(
-                              text: 'Zone ${widget.selectedZone}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' ${widget.selectedLevel} ${widget.selectedRow} - ${widget.bookedAddress}',
+                              text: widget.bookedAddress,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
+                            
+
+                            
+
                           ],
                         ),
                       ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'Hourly parking ticket',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w200
+                      RichText(
+                        text: TextSpan(
+                          text: 'Zone: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedZone,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Level: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedLevel,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Row: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedRow,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 5), // Spacer
                       const Text(
-                        'Parking Time:',
+                        'Check-in Time and Date:',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500
@@ -359,8 +390,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                     TextSpan(
                                       text: bookingDate,
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w200, 
-                                        fontSize: 14
+                                        fontWeight: FontWeight.w300, 
+                                        fontSize: 18
                                       ),
                                     ),
                                   ],
@@ -376,13 +407,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: bookingDate,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w200,
-                                        fontSize: 14
                                       ),
                                     ),
                                   ],

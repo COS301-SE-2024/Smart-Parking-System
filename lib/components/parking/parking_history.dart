@@ -46,7 +46,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   int _selectedIndex = 2;
 
   List<ActiveSession> activesessions = [
-    ActiveSession('20', 'Sandton City', 'A3C', '01hr : 30min'),
     // Add more sessions here
   ];
 
@@ -56,7 +55,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   ];
 
   List<CompletedSession> completedsessions = [
-    CompletedSession('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
     // Add more sessions here
   ];
 
