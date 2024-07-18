@@ -33,6 +33,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   String? endTime = '';
   String? bookingDate = '';
   double? totalPrice = 0;
+
+  String cardNumber = '';
+  String cardNumberFormatted = '';
     //Functions
   Future<void> _bookspace() async {
     try {
@@ -48,6 +51,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'duration': widget.selectedDuration,
           'price': widget.price,
           'disabled': widget.selectedDisabled,
+          'card': cardNumber,
           'wash': widget.selectedWash,
         });
 
@@ -73,7 +77,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       
-      // Query the 'cars' collection for a document with matching userId
+      // Query the 'vehicles' collection for a document with matching userId
       QuerySnapshot querySnapshot = await firestore
           .collection('vehicles')
           .where('userId', isEqualTo: userId)
@@ -83,7 +87,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       if (querySnapshot.docs.isNotEmpty) {
         // Get the first (and should be only) document
         DocumentSnapshot document = querySnapshot.docs.first;
-        // Retrieve the licenseNumber field
+        // Retrieve the fields
         licenseNum = document.get('licenseNumber') as String?;
         carMake = document.get('vehicleBrand') as String?;
         carModel = document.get('vehicleModel') as String?;
@@ -91,6 +95,30 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
         // No matching document found
         showToast(message: 'No car found for userId: $userName');
       }
+
+      // Query the 'cards' collection for a document with matching userId
+      querySnapshot = await firestore
+          .collection('cards')
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first (and should be only) document
+        DocumentSnapshot document = querySnapshot.docs.first;
+        // Retrieve the fields
+        cardNumber = document.get('cardNumber') as String;
+      } else {
+        // No matching document found
+        showToast(message: 'No cards found for userId: $userName');
+      }
+
+      cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
+      // Insert spaces every 4 characters
+      cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
+        RegExp(r'.{4}'), (match) => '${match.group(0)} '
+      ).trim();
+
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving user details: $e');
@@ -239,6 +267,40 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 1),
+                      //
+                      // Row(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Expanded(
+                      //       child: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Text(
+                      //             'Zone: ${widget.selectedZone}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //           const SizedBox(height: 5),
+                      //           Text(
+                      //             'Level: ${widget.selectedLevel}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //           const SizedBox(height: 5),
+                      //           Text(
+                      //             'Row: ${widget.selectedRow}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       child: Text(
+                      //         widget.bookedAddress,
+                      //         style: const TextStyle(color: Colors.white),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      //
                       RichText(
                         text: TextSpan(
                           style: const TextStyle(color: Colors.white),
@@ -250,7 +312,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               ),
                             ),
                             TextSpan(
-                              text: ' ${widget.selectedLevel}${widget.selectedRow} - ${widget.bookedAddress}',
+                              text: ' ${widget.selectedLevel} ${widget.selectedRow} - ${widget.bookedAddress}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
@@ -387,9 +449,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         width: 50, // Set the desired width of the image
                         child: Image.asset('assets/mastercard.png'),
                       ),
-                      title: const Text(
-                        'FNB Bank **** **** **** 8395',
-                        style: TextStyle(
+                      title: Text(
+                        'FNB Bank $cardNumberFormatted',
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
@@ -408,35 +470,35 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Card(
-                    elevation: 0, // Set elevation to 0
-                    color: Colors.transparent, // Set color to transparent
-                    child: ListTile(
-                      leading: SizedBox(
-                        width: 50, // Set the desired width of the image
-                        child: Image.asset('assets/visa.png'),
-                      ),
-                      title: const Text(
-                        'Capitec Bank **** **** **** 6246',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      trailing: Radio(
-                        value: 2,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
-                        },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
+                  // Card(
+                  //   elevation: 0, // Set elevation to 0
+                  //   color: Colors.transparent, // Set color to transparent
+                  //   child: ListTile(
+                  //     leading: SizedBox(
+                  //       width: 50, // Set the desired width of the image
+                  //       child: Image.asset('assets/visa.png'),
+                  //     ),
+                  //     title: const Text(
+                  //       'Capitec Bank **** **** **** 6246',
+                  //       style: TextStyle(
+                  //         fontSize: 13,
+                  //         fontWeight: FontWeight.w400,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //     trailing: Radio(
+                  //       value: 2,
+                  //       groupValue: _selectedCard,
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           _selectedCard = value as int;
+                  //         });
+                  //       },
+                  //       activeColor: const Color(0xFF58C6A9), // Set the color here
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 5),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
