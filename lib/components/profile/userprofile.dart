@@ -21,7 +21,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'name': _nameController.text,
           'email': _emailController.text,

@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
+  final String bookedAddress;
+  final double price;
   final String selectedZone;
   final String selectedLevel;
   final String selectedRow;
 
-  const ConfirmBookingPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
+  const ConfirmBookingPage({required this.bookedAddress, required this.price, required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
 
   @override
   State<ConfirmBookingPage> createState() => _ConfirmBookingState();
@@ -17,21 +19,19 @@ class ConfirmBookingPage extends StatefulWidget {
 
 class _ConfirmBookingState extends State<ConfirmBookingPage> {
   double _currentSliderValue = 1;
-  final double _currentPrice = 10;
   bool _disabledParking = false;
-  bool _carWashing = false;
   String _checkInTime = "12:00 am";
+  DateTime _checkInDate = DateTime.now();
 
   // use the variable to replace the text
   // final String appBarTitle = apiResponse['appBarTitle'];
 
 
   final String appBarTitle = 'Confirm Booking';
-  final String parkingSlot = 'Parking Slot A1';
+  // final String parkingSlot = 'Parking Slot ${widget.selectedZone}${widget.selectedLevel}${widget.selectedRow}';
   final String estimateDuration = 'Estimate Duration';
   final String checkInTimeText = 'Check-in Time:';
   final String disabledParkingText = 'Disabled Parking';
-  final String requestCarWashingText = 'Request Car Washing (R100)';
   final String bookSpaceButtonText = 'Book Space';
 
   Future<void> _selectTime(BuildContext context) async {
@@ -52,6 +52,20 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
     if (picked != null) {
       setState(() {
         _checkInTime = picked.format(context);
+      });
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _checkInDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _checkInDate) {
+      setState(() {
+        _checkInDate = picked;
       });
     }
   }
@@ -100,7 +114,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  parkingSlot,
+                  'Parking Slot ${widget.selectedZone}${widget.selectedLevel}${widget.selectedRow}',
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -135,7 +149,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${_currentSliderValue.round()} hours - R${(_currentPrice.toInt() * _currentSliderValue.round()).toInt()}',
+                        '${_currentSliderValue.round()} hours - R${(widget.price.toInt() * _currentSliderValue.round()).toInt()}',
                         style: const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ),
@@ -151,7 +165,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                       divisions: 23,
                       activeColor: const Color(0xFF58C6A9),
                       inactiveColor: Colors.white.withOpacity(0.5),
-                      label: '${_currentSliderValue.toInt()} hour(s) - R${_currentSliderValue.toInt() * _currentPrice.toInt()}',
+                      label: '${_currentSliderValue.toInt()} hour(s) - R${_currentSliderValue.toInt() * widget.price.toInt()}',
                       onChanged: (double value) {
                         setState(() {
                           _currentSliderValue = value;
@@ -176,6 +190,31 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                           const SizedBox(width: 8),
                           Text(
                             _checkInTime,
+                            style: const TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    //Place code here
+                    GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Check-in Date:',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${_checkInDate.day}/${_checkInDate.month}/${_checkInDate.year}',
                             style: const TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ],
@@ -215,35 +254,6 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-
-                    // Request Car Washing option
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.directions_car,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              requestCarWashingText,
-                              style: const TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        Switch(
-                          value: _carWashing,
-                          onChanged: (bool value) {
-                            setState(() {
-                              _carWashing = value;
-                            });
-                          },
-                          activeColor: const Color(0xFF58C6A9),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -252,7 +262,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (_) => ConfirmPaymentPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDuration: _currentSliderValue, price: _currentPrice, selectedDisabled: _disabledParking, selectedWash: _carWashing,),
+                      builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
                     ),
                   );
                 },

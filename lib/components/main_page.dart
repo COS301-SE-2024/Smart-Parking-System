@@ -19,8 +19,8 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController _destinationController = TextEditingController();
 
 
-  final String pricePerHour = 'R20 /Hr';
-  final String parkingLocation = 'Sandton City Park A';
+  final double pricePerHour = 10;
+  final String parkingLocation = 'Sandton City Centre';
   final String spacesAvailable = '5 slots';
   final String distanceToVenue = '3 mins drive';
 
@@ -53,7 +53,7 @@ class _MainPageState extends State<MainPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    pricePerHour,
+                    'R${pricePerHour.toInt()} /Hr',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -125,7 +125,7 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => const ZoneSelectPage(),
+                        builder: (_) => ZoneSelectPage(bookedAddress: parkingLocation, price: pricePerHour),
                       ),
                     );
                   },

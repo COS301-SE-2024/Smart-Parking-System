@@ -1,32 +1,43 @@
-// import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-// import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
+import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
+  final String bookedAddress;
+  final double price;
   final String selectedZone;
   final String selectedLevel;
   final String selectedRow;
   final String selectedTime;
+  final DateTime selectedDate;
   final double selectedDuration;
-  final double price;
   final bool selectedDisabled;
-  final bool selectedWash;
 
-  const ConfirmPaymentPage({required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
+  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDate, required this.selectedDuration, required this.price, required this.selectedDisabled, super.key});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
-    Future<void> _bookspace() async {
+    //Variables
+  String? licenseNum = '';
+  String? carMake = '';
+  String? carModel = '';
+  String? startTime = '';
+  String? endTime = '';
+  String? bookingDate = '';
+  double? totalPrice = 0;
+
+  String cardNumber = '';
+  String cardNumberFormatted = '';
+    //Functions
+  Future<void> _bookspace() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -36,11 +47,13 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'zone': widget.selectedZone,
           'level': widget.selectedLevel,
           'row': widget.selectedRow,
-          'time': widget.selectedTime,
+          'time': startTime,
+          'date': bookingDate,
           'duration': widget.selectedDuration,
           'price': widget.price,
+          'address': widget.bookedAddress,
           'disabled': widget.selectedDisabled,
-          'wash': widget.selectedWash,
+          'card': cardNumber,
         });
 
         showToast(message: 'Booked Successfully!');
@@ -55,8 +68,92 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       showToast(message: 'Error: $e');
     }
   }
+
+  Future<void> getDetails() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userId = user?.uid;
+
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Query the 'vehicles' collection for a document with matching userId
+      QuerySnapshot querySnapshot = await firestore
+          .collection('vehicles')
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first (and should be only) document
+        DocumentSnapshot document = querySnapshot.docs.first;
+        // Retrieve the fields
+        licenseNum = document.get('licenseNumber') as String?;
+        carMake = document.get('vehicleBrand') as String?;
+        carModel = document.get('vehicleModel') as String?;
+      } else {
+        // No matching document found
+        showToast(message: 'No car found for userId: $userName');
+      }
+
+      // Query the 'cards' collection for a document with matching userId
+      querySnapshot = await firestore
+          .collection('cards')
+          .where('userId', isEqualTo: userId)
+          .limit(1)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the first (and should be only) document
+        DocumentSnapshot document = querySnapshot.docs.first;
+        // Retrieve the fields
+        cardNumber = document.get('cardNumber') as String;
+      } else {
+        // No matching document found
+        showToast(message: 'No cards found for userId: $userName');
+      }
+
+      cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
+      // Insert spaces every 4 characters
+      cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
+        RegExp(r'.{4}'), (match) => '${match.group(0)} '
+      ).trim();
+
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving user details: $e');
+    }
+
+
+    //endTime calc
+    DateTime tempStartTime;
+    if (widget.selectedTime.toLowerCase().contains('am') || widget.selectedTime.toLowerCase().contains('pm')) {
+      tempStartTime = DateFormat('hh:mm a').parse(widget.selectedTime);
+    } else {
+      tempStartTime = DateFormat('HH:mm').parse(widget.selectedTime);
+    }
+    startTime = DateFormat('HH:mm').format(tempStartTime);
+    endTime = DateFormat('HH:mm').format(tempStartTime.add(Duration(minutes: (widget.selectedDuration * 60).round())));
+    //booking date
+    bookingDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+    //total price calc
+    totalPrice = widget.price * widget.selectedDuration;
+
+    setState((){
+      // This will trigger a rebuild with the new values
+    });
+  }
+
+
+    //Output
   int _selectedCard = 1;
 
+  @override
+  void initState() {
+    super.initState();
+    getDetails();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,11 +170,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => ConfirmBookingPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
-                    //     ),
-                    //   );
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(Icons.arrow_back_ios,
@@ -132,18 +224,19 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
-                            TextSpan(
+                            const TextSpan(
                               text: 'Plate : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
+                                fontSize: 16,
                               ),
                             ),
                             TextSpan(
-                              text: 'EG123GP',
-                              style: TextStyle(
+                              text: licenseNum,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
@@ -152,18 +245,19 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                       ),
                       const SizedBox(height: 1),
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
-                            TextSpan(
+                            const TextSpan(
                               text: 'Car Modal : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.w200,
+                                fontSize: 16,
                               ),
                             ),
                             TextSpan(
-                              text: 'Honda CVR',
-                              style: TextStyle(
+                              text: '$carMake $carModel',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
@@ -176,36 +270,97 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 1),
+                      //
+                      // Row(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Expanded(
+                      //       child: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Text(
+                      //             'Zone: ${widget.selectedZone}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //           const SizedBox(height: 5),
+                      //           Text(
+                      //             'Level: ${widget.selectedLevel}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //           const SizedBox(height: 5),
+                      //           Text(
+                      //             'Row: ${widget.selectedRow}',
+                      //             style: const TextStyle(color: Colors.white),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       child: Text(
+                      //         widget.bookedAddress,
+                      //         style: const TextStyle(color: Colors.white),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      //
                       RichText(
-                        text: const TextSpan(
-                          style: TextStyle(color: Colors.white),
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white),
                           children: [
+                            
                             TextSpan(
-                              text: 'Zone 1',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '32A- Sandton city',
-                              style: TextStyle(
+                              text: widget.bookedAddress,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
+                            ),
+                            
+
+                            
+
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Zone: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedZone,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'Hourly parking ticket',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w200
+                      RichText(
+                        text: TextSpan(
+                          text: 'Level: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedLevel,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Row: ',
+                          style: const TextStyle(color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.selectedRow,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 5), // Spacer
                       const Text(
-                        'Parking Time:',
+                        'Check-in Time and Date:',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500
@@ -221,21 +376,21 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                             children: [
                               
                               RichText(
-                                text: const TextSpan(
-                                  style: TextStyle(color: Colors.white),
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '15:06         ',
-                                      style: TextStyle(
+                                      text: '$startTime         ',
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '03:06:2024',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w200, 
-                                        fontSize: 14
+                                      text: bookingDate,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w300, 
+                                        fontSize: 18
                                       ),
                                     ),
                                   ],
@@ -243,21 +398,14 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               ),
                               const SizedBox(height: 25),
                               RichText(
-                                text: const TextSpan(
-                                  style: TextStyle(color: Colors.white),
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '15:41         ',
-                                      style: TextStyle(
+                                      text: '$endTime         ',
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: '03:06:2024',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w200,
-                                        fontSize: 14
                                       ),
                                     ),
                                   ],
@@ -324,9 +472,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         width: 50, // Set the desired width of the image
                         child: Image.asset('assets/mastercard.png'),
                       ),
-                      title: const Text(
-                        'FNB Bank **** **** **** 8395',
-                        style: TextStyle(
+                      title: Text(
+                        'FNB Bank $cardNumberFormatted',
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
@@ -345,35 +493,35 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Card(
-                    elevation: 0, // Set elevation to 0
-                    color: Colors.transparent, // Set color to transparent
-                    child: ListTile(
-                      leading: SizedBox(
-                        width: 50, // Set the desired width of the image
-                        child: Image.asset('assets/visa.png'),
-                      ),
-                      title: const Text(
-                        'Capitec Bank **** **** **** 6246',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
-                      trailing: Radio(
-                        value: 2,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
-                        },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
+                  // Card(
+                  //   elevation: 0, // Set elevation to 0
+                  //   color: Colors.transparent, // Set color to transparent
+                  //   child: ListTile(
+                  //     leading: SizedBox(
+                  //       width: 50, // Set the desired width of the image
+                  //       child: Image.asset('assets/visa.png'),
+                  //     ),
+                  //     title: const Text(
+                  //       'Capitec Bank **** **** **** 6246',
+                  //       style: TextStyle(
+                  //         fontSize: 13,
+                  //         fontWeight: FontWeight.w400,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //     trailing: Radio(
+                  //       value: 2,
+                  //       groupValue: _selectedCard,
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           _selectedCard = value as int;
+                  //         });
+                  //       },
+                  //       activeColor: const Color(0xFF58C6A9), // Set the color here
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 5),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
@@ -406,10 +554,10 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RichText(
-                  text: const TextSpan(
-                    style: TextStyle(color: Colors.white),
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.white),
                     children: [
-                      TextSpan(
+                      const TextSpan(
                         text: 'Total\n',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -417,8 +565,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         ),
                       ),
                       TextSpan(
-                        text: 'ZAR 20.00',
-                        style: TextStyle(
+                        text: 'ZAR $totalPrice',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w400, 
                           fontSize: 20
                         ),
@@ -430,11 +578,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 ElevatedButton(
                   onPressed: () {
                     _bookspace();
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => PaymentSuccessionPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: widget.selectedTime, selectedDuration: widget.selectedDuration, price: widget.price, selectedDisabled: widget.selectedDisabled, selectedWash: widget.selectedWash,),
-                    //     ),
-                    //   );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
