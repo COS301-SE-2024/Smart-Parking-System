@@ -9,17 +9,16 @@ import 'package:smart_parking_system/components/common/toast.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
   final String bookedAddress;
+  final double price;
   final String selectedZone;
   final String selectedLevel;
   final String selectedRow;
   final String selectedTime;
   final DateTime selectedDate;
   final double selectedDuration;
-  final double price;
   final bool selectedDisabled;
-  final bool selectedWash;
 
-  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDate, required this.selectedDuration, required this.price, required this.selectedDisabled, required this.selectedWash, super.key});
+  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDate, required this.selectedDuration, required this.price, required this.selectedDisabled, super.key});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
@@ -52,9 +51,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'date': bookingDate,
           'duration': widget.selectedDuration,
           'price': widget.price,
+          'address': widget.bookedAddress,
           'disabled': widget.selectedDisabled,
           'card': cardNumber,
-          'wash': widget.selectedWash,
         });
 
         showToast(message: 'Booked Successfully!');
@@ -579,11 +578,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 ElevatedButton(
                   onPressed: () {
                     _bookspace();
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => PaymentSuccessionPage(selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: widget.selectedTime, selectedDuration: widget.selectedDuration, price: widget.price, selectedDisabled: widget.selectedDisabled, selectedWash: widget.selectedWash,),
-                    //     ),
-                    //   );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

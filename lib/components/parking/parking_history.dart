@@ -3,6 +3,11 @@ import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
+// import 'package:intl/intl.dart';
+//Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class ParkingHistoryPage extends StatefulWidget {
   const ParkingHistoryPage({super.key});
@@ -43,6 +48,93 @@ class CompletedSession {
 
 
 class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
+  // Variables
+  String bookedLocation = '';
+  String bookedZone = '';
+  String bookedLevel = '';
+  String bookedRow = '';
+  String bookedDate = '';
+  String bookedTime = '';
+  double bookedPrice = 0;
+  double bookedDuration = 0;
+  int totalPrice = 0;
+
+  // Get details on load
+  Future<void> getDetails() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userId = user?.uid;
+
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Query the 'vehicles' collection for a document with matching userId
+      QuerySnapshot querySnapshot = await firestore
+          .collection('bookings')
+          .where('userId', isEqualTo: userId)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // // Get the first (and should be only) document
+        // DocumentSnapshot document = querySnapshot.docs.first;
+        // // Retrieve the fields
+        //   bookedLocation = document.get('address') as String;
+        //   bookedZone = document.get('zone') as String;
+        //   bookedLevel = document.get('level') as String;
+        //   bookedRow = document.get('row') as String;
+        //   bookedDate = document.get('date') as String;
+        //   bookedTime = document.get('time') as String;
+        //   bookedPrice = document.get('price') as double;
+        //   bookedDuration = document.get('duration') as double;
+
+        //   //total price calc
+        //   totalPrice = (bookedPrice * bookedDuration).toInt();
+        // // Loop through each document
+        for (var document in querySnapshot.docs) {
+          // Retrieve the fields
+          String bookedLocation = document.get('address') as String;
+          String bookedZone = document.get('zone') as String;
+          String bookedLevel = document.get('level') as String;
+          String bookedRow = document.get('row') as String;
+          String bookedDate = document.get('date') as String;
+          String bookedTime = document.get('time') as String;
+          double bookedPrice = document.get('price') as double;
+          double bookedDuration = document.get('duration') as double;
+
+          // Calculate total price
+          int totalPrice = (bookedPrice * bookedDuration).toInt();
+
+          // Add to reservedspots list
+          reservedspots.add(ReservedSpot(
+            bookedDate,
+            bookedTime,
+            'R $totalPrice',
+            bookedLocation,
+            'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+          ));
+        }
+
+        reservedspots.sort((a, b) {
+          int dateComparison = a.date.compareTo(b.date);
+          if (dateComparison != 0) {
+            return dateComparison;
+          } else {
+            return a.time.compareTo(b.time);
+          }
+        });
+      } else {
+        // No matching document found
+        showToast(message: 'No bookings found for userId: $userName');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving booking details: $e');
+    }
+
+    setState((){}); // This will trigger a rebuild with the new values
+  }
+
   int _selectedIndex = 2;
 
   List<ActiveSession> activesessions = [
@@ -50,7 +142,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   ];
 
   List<ReservedSpot> reservedspots = [
-    ReservedSpot('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
+    // ReservedSpot(bookedDate, bookedTime, totalPrice, bookedLocation, 'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow'),
+    // ReservedSpot('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
     // Add more sessions here
   ];
 
@@ -58,6 +151,22 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     // Add more sessions here
   ];
 
+  // void initReservedSpots() {
+  //   reservedspots = [
+  //     ReservedSpot(bookedDate, bookedTime, 'R $totalPrice', bookedLocation, 'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow'),
+  //     // Add more sessions here
+  //   ];
+  //   setState((){}); // This will trigger a rebuild with the new values
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    getDetails();
+    // .then((_) {
+    //   initReservedSpots();
+    // });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -349,7 +458,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               const Icon(Icons.star, color: Colors.amber, size: 30),
               const SizedBox(width: 10),
               Text(
-                '${reservedspot.address} Car Park A\nSpace ${reservedspot.parkingslot}',
+                '${reservedspot.address}\n${reservedspot.parkingslot}',
                 style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.right, 
               ),
