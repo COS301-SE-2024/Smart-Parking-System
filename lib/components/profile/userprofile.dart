@@ -15,16 +15,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _updateUserProfile() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        // await user.updateEmail(_emailController.text);
-        await user.updatePassword(_passwordController.text);
-
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'name': _nameController.text,
           'email': _emailController.text,
@@ -153,11 +149,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ProfileField(
                       label: 'Phone number',
                       controller: _phoneController,
-                    ),
-                    ProfileField(
-                      label: 'Password',
-                      controller: _passwordController,
-                      obscureText: true,
                     ),
                     const SizedBox(height: 40.0),
                     ElevatedButton(

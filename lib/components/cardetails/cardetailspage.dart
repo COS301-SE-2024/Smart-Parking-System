@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
 class CarDetailsPage extends StatefulWidget {
@@ -11,48 +12,70 @@ class CarDetailsPage extends StatefulWidget {
 }
 
 class _CarDetailsPageState extends State<CarDetailsPage> {
-  final TextEditingController _makeController = TextEditingController();
+  final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _colorController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
 
-  Future<void> _register() async {
-    final String make = _makeController.text;
-    final String model = _modelController.text;
-    final String color = _colorController.text;
-    final String license = _licenseController.text;
+  Future<void> _updateVehicleDetails() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final response = await http.post(
-      Uri.parse('http://192.168.11.121:3000/registerVehicle'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'make': make,
-        'model': model,
-        'color': color,
-        'license_number': license,
-      }),
-    );
+      if (user != null) {
 
-    if (mounted) {
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Vehicle registered successfully')),
-        );
-        Navigator.of(context).pop();
-        // Navigator.of(context).pushReplacement(
-        //   MaterialPageRoute(
-        //     builder: (context) => const SettingsPage(),
-        //   ),
-        // );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Vehicle registration failed')),
-        );
+        //Place code here
+
+
+        
+
+        QuerySnapshot vehiclesSnapshot = await FirebaseFirestore.instance.collection('vehicles').get();
+        for (var vehicle in vehiclesSnapshot.docs) {
+          if (vehicle.get('userId') == user.uid) {
+            await vehicle.reference.update({
+              'licenseNumber': _licenseController.text,
+              'vehicleBrand': _brandController.text,
+              'vehicleColor': _colorController.text,
+              'vehicleModel': _modelController.text,
+              'userId': user.uid,
+            });
+          }
+        }
+
+        if (mounted){
+            showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Text(
+                  'Successfully Updated!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xFF58C6A9)),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        
       }
+    } catch (e) {
+      showToast(message: 'Error: $e');
     }
   }
+
+  
 
 
   @override
@@ -157,7 +180,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                     ProfileField(
                       label: 'Vehicle Brand',
                       value: 'BMW',
-                      controller: _makeController,
+                      controller: _brandController,
                     ),
                     ProfileField(
                       label: 'Vehicle Model',
@@ -178,7 +201,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                     ElevatedButton(
                       onPressed: () {
                         // Handle save button
-                        _register();
+                        _updateVehicleDetails();
                         // showDialog(
                         //   context: context,
                         //   builder: (BuildContext context) {
