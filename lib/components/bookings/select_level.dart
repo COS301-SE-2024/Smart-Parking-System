@@ -12,14 +12,32 @@ class LevelSelectPage extends StatefulWidget {
   State<LevelSelectPage> createState() => _LevelSelectPageState();
 }
 
+class Level {
+  final String level;
+  final int slots;
+
+  Level(this.level, this.slots);
+}
+
 class _LevelSelectPageState extends State<LevelSelectPage> {
   String? selectedLevel;
+  int totalSlots = 110;
+
+  List<Level> levels = [
+    Level('L3', 0),
+    Level('L2', 30),
+    Level('L1', 20),
+    Level('Ground', 10),
+    Level('B1', 20),
+    Level('B2', 30),
+    // Add more levels here
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -64,47 +82,30 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                     border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: const Text(
-                    '120 spaces available',
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  child: Text(
+                    '$totalSlots spaces available',
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              // const Center(
-              //   child: Text(
-              //     'Parking',
-              //     style: TextStyle(color: Color(0xFF58C6A9), fontSize: 16, fontWeight: FontWeight.bold),
-              //   ),
-              // ),
-              // const Center(
-              //   child: Text(
-              //     'Floors',
-              //     style: TextStyle(color: Color(0xFF58C6A9), fontSize: 16, fontWeight: FontWeight.bold),
-              //   ),
-              // ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               Center(
                 child: Container(
                   width: 330,
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.05),
-                    // border: Border.all(color: Colors.white., width: 2),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Column(
-                    children: [
-                      _buildLevelButton('L2', 0),
-                      _buildLevelButton('L1', 30),
-                      _buildLevelButton('Ground', 30),
-                      _buildLevelButton('B1', 0),
-                      _buildLevelButton('B2', 30),
-                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: levels.expand((levels) => [
+                      _buildLevelButton(levels),
+                    ]).toList(),
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 16),
               Center(
                 child: SizedBox(
                   width: 160,
@@ -133,7 +134,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -141,9 +142,9 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
     );
   }
 
-  Widget _buildLevelButton(String level, int slots) {
-    bool isSelected = selectedLevel == level;
-    bool isAvailable = slots > 0;
+  Widget _buildLevelButton(Level levels) {
+    bool isSelected = selectedLevel == levels.level;
+    bool isAvailable = levels.slots > 0;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: ElevatedButton(
@@ -157,7 +158,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
         onPressed: isAvailable
             ? () {
                 setState(() {
-                  selectedLevel = level;
+                  selectedLevel = levels.level;
                 });
               }
             : () {
@@ -187,9 +188,9 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
           children: [
             const Icon(Icons.directions_car, color: Colors.white),
             const SizedBox(width: 10),
-            Text(level, style: const TextStyle(color: Colors.white, fontSize: 18)),
+            Text(levels.level, style: const TextStyle(color: Colors.white, fontSize: 18)),
             const Spacer(),
-            Text('$slots Slots', style: const TextStyle(color: Colors.white, fontSize: 18)),
+            Text('${levels.slots} Slots', style: const TextStyle(color: Colors.white, fontSize: 18)),
           ]
         ),
       ),
