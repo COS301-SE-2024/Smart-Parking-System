@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/splashscreen/splash_screen.dart';
+import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
+import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const SplashScreen(
-        child: LoginMainPage(),
+        child: ViewVehiclePage(),
       ),
     );
   }
