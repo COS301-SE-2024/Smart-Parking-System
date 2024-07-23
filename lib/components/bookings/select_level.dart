@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/make_booking.dart';
+import 'package:smart_parking_system/components/bookings/select_row.dart';
 
 class LevelSelectPage extends StatefulWidget {
   final String bookedAddress;
   final double price;
   final String selectedZone;
-  
+
   const LevelSelectPage({required this.bookedAddress, required this.price, required this.selectedZone, super.key});
 
   @override
@@ -118,17 +119,17 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                     ),
                     onPressed: selectedLevel != null
                         ? () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => BookingPage(
-                                  bookedAddress: widget.bookedAddress,
-                                  price: widget.price,
-                                  selectedZone: widget.selectedZone,
-                                  selectedLevel: selectedLevel!,
-                                ),
-                              ),
-                            );
-                          }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SelectRowPage( // 导航到 SelectRowPage
+                            bookedAddress: widget.bookedAddress,
+                            price: widget.price,
+                            selectedZone: widget.selectedZone,
+                            selectedLevel: selectedLevel!,
+                          ),
+                        ),
+                      );
+                    }
                         : null,
                     child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
                   ),
@@ -157,41 +158,41 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
         ),
         onPressed: isAvailable
             ? () {
-                setState(() {
-                  selectedLevel = levels.level;
-                });
-              }
+          setState(() {
+            selectedLevel = levels.level;
+          });
+        }
             : () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: const Color(0xFF2D2F41),
-                      title: const Center(
-                        child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
-                      ),
-                      actions: [
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Center(
+                  child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: Row(
-          children: [
-            const Icon(Icons.directions_car, color: Colors.white),
-            const SizedBox(width: 10),
-            Text(levels.level, style: const TextStyle(color: Colors.white, fontSize: 18)),
-            const Spacer(),
-            Text('${levels.slots} Slots', style: const TextStyle(color: Colors.white, fontSize: 18)),
-          ]
+            children: [
+              const Icon(Icons.directions_car, color: Colors.white),
+              const SizedBox(width: 10),
+              Text(levels.level, style: const TextStyle(color: Colors.white, fontSize: 18)),
+              const Spacer(),
+              Text('${levels.slots} Slots', style: const TextStyle(color: Colors.white, fontSize: 18)),
+            ]
         ),
       ),
     );
