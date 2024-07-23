@@ -1,7 +1,6 @@
-// select_row.dart
 import 'package:flutter/material.dart';
 
-class SelectRowPage extends StatelessWidget {
+class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
   final double price;
   final String selectedZone;
@@ -14,6 +13,13 @@ class SelectRowPage extends StatelessWidget {
     required this.selectedLevel,
     Key? key,
   }) : super(key: key);
+
+  @override
+  _SelectRowPageState createState() => _SelectRowPageState();
+}
+
+class _SelectRowPageState extends State<SelectRowPage> {
+  String? selectedRow;
 
   @override
   Widget build(BuildContext context) {
@@ -127,23 +133,32 @@ class SelectRowPage extends StatelessWidget {
   }
 
   Widget _buildRowButton(BuildContext context, String rowLabel, String slotInfo) {
+    int slotsAvailable = int.parse(slotInfo.split(' ')[0]);
+
+    bool isDisabled = slotsAvailable == 0;
+    bool isSelected = selectedRow == rowLabel;
+    Color buttonColor = isDisabled ? Color(0xFFC0C0C0) : (isSelected ? Color(0xFF58C6A9) : Color(0xFF39C16B));
+    String buttonText = isSelected ? '$rowLabel Selected' : rowLabel;
+
     return Center(
       child: Container(
         width: 290,
         height: 90,
         decoration: BoxDecoration(
-          color: const Color(0xFF39C16B),
+          color: buttonColor,
           borderRadius: BorderRadius.circular(14),
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF39C16B),
+            backgroundColor: buttonColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
           ),
-          onPressed: () {
-            // Define your onPressed functionality here
+          onPressed: isDisabled ? null : () {
+            setState(() {
+              selectedRow = rowLabel;
+            });
           },
           child: Stack(
             children: [
@@ -151,32 +166,34 @@ class SelectRowPage extends StatelessWidget {
                 left: 2,
                 top: 8,
                 child: Text(
-                  rowLabel,
+                  buttonText,
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
-              Positioned(
-                right: 2,
-                top: 8,
-                child: Text(
-                  slotInfo,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+              if (!isSelected) ...[
+                Positioned(
+                  right: 2,
+                  top: 8,
+                  child: Text(
+                    slotInfo,
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 ),
-              ),
-              Positioned(
-                bottom: 8,
-                left: 2,
-                child: Row(
-                  children: List.generate(6, (index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Image.asset(
-                      'smallCar.png',
-                      width: 30,
-                      height: 50,
-                    ),
-                  )),
+                Positioned(
+                  bottom: 8,
+                  left: 2,
+                  child: Row(
+                    children: List.generate(6, (index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Image.asset(
+                        'smallCar.png',
+                        width: 30,
+                        height: 50,
+                      ),
+                    )),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
