@@ -40,13 +40,17 @@ class _SelectRowPageState extends State<SelectRowPage> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                    icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded, color: Colors.white,
+                        size: 30.0),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   const Expanded(
                     child: Text(
                       'Parking Slot',
-                      style: TextStyle(color: Color(0xFF58C6A9), fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Color(0xFF58C6A9),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -69,14 +73,18 @@ class _SelectRowPageState extends State<SelectRowPage> {
               const SizedBox(height: 13),
               Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15, horizontal: 80),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                    border: Border.all(
+                        color: Colors.white.withOpacity(0.2), width: 2),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
                     '$totalSlots spaces available',
-                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -135,11 +143,14 @@ class _SelectRowPageState extends State<SelectRowPage> {
                   height: 42,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(26),
-                    color: selectedRow == null ? Color(0xFFC0C0C0) : Color(0xFF58C6A9),
+                    color: selectedRow == null ? Color(0xFFC0C0C0) : Color(
+                        0xFF58C6A9),
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedRow == null ? Color(0xFFC0C0C0) : Color(0xFF58C6A9),
+                      backgroundColor: selectedRow == null
+                          ? Color(0xFFC0C0C0)
+                          : Color(0xFF58C6A9),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(26),
                       ),
@@ -147,8 +158,9 @@ class _SelectRowPageState extends State<SelectRowPage> {
                     onPressed: selectedRow == null ? null : () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => BookSpaceScreen(
-                          ),
+                          builder: (_) =>
+                              BookSpaceScreen(
+                              ),
                         ),
                       );
                     },
@@ -196,16 +208,24 @@ class _SelectRowPageState extends State<SelectRowPage> {
           },
           child: Stack(
             children: [
-              Positioned(
-                left: 2,
-                top: 8,
-                child: Text(
-                  buttonText,
-                  style: TextStyle(color: Colors.white, fontSize: isSelected ? 22 : 18, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
-                  textAlign: TextAlign.center,
+              if (isSelected)
+                Center(
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              else ...[
+                Positioned(
+                  left: 2,
+                  top: 8,
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-              ),
-              if (!isSelected) ...[
                 Positioned(
                   right: 2,
                   top: 8,
