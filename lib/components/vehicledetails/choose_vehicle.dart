@@ -11,7 +11,7 @@ class ChooseVehiclePage extends StatefulWidget {
 
 
 class _ViewVehiclePageState extends State<ChooseVehiclePage> {
-  String? selectedCarLicense;
+  
 
   final List<Map<String, String>> cars = [
     {
@@ -33,6 +33,8 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
       'imagePath':'assets/VWTiguan.png'
     }
   ];
+  String? selectedCarLicense;
+   
 
   void selectCar(String license) {
     setState(() {
@@ -43,6 +45,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   @override
   void initState() {
     super.initState();
+    selectedCarLicense = cars.isNotEmpty ? cars[0]['lisenseNumber'] : null;
   }
 
   @override
@@ -61,26 +64,41 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
               color: const Color(0xFF35344A),
               child: Stack(
                 children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer(); // Open the drawer
-                        },
-                      );
-                    },
-                  ),
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'My Vehicles',
-                      style: TextStyle(
-                        color: Colors.tealAccent,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 1.0),
+                        child: IconButton(
+                          onPressed: () {
+                            // Navigator.of(context).pushReplacement(
+                            //   MaterialPageRoute(
+                            //     builder: (_) => const SettingsPage(),
+                            //   ),
+                            // );
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
                       ),
-                    ),
+                      const Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Select Vehicle',
+                            style: TextStyle(
+                              color: Colors.tealAccent,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 48),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
@@ -100,7 +118,6 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                             child:   CarCard(
                               carName: car['carName'],
                               carType: car['carType'],
-                              lisenseNumber: car['lisenseNumber'],
                               imagePath: car['imagePath'],
                               isSelected: selectedCarLicense == car['lisenseNumber'],
                               onSelect: () => selectCar(car['lisenseNumber']!),
@@ -123,11 +140,57 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   }
 }
 
+class CustomRoundedCornerShape extends ShapeBorder {
+  final double radius;
+  final double innerRadius;
+
+  const CustomRoundedCornerShape({this.radius = 50.0, this.innerRadius = 89.0});
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    return getOuterPath(rect, textDirection: textDirection);
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    final Path path = Path();
+    
+    // Top left corner
+    path.moveTo(rect.left + radius, rect.top);
+    
+    // Top right corner
+    path.lineTo(rect.right - radius, rect.top);
+    path.arcToPoint(Offset(rect.right, rect.top + radius), radius: Radius.circular(radius));
+    
+    // Bottom right corner (inward curve)
+    path.lineTo(rect.right, rect.bottom - innerRadius);
+    path.arcToPoint(Offset(rect.right - innerRadius, rect.bottom), radius: Radius.circular(innerRadius), clockwise: false);
+    
+    // Bottom left corner
+    path.lineTo(rect.left + radius, rect.bottom);
+    path.arcToPoint(Offset(rect.left, rect.bottom - radius), radius: Radius.circular(radius));
+    
+    // Back to top left
+    path.lineTo(rect.left, rect.top + radius);
+    path.arcToPoint(Offset(rect.left + radius, rect.top), radius: Radius.circular(radius));
+    
+    path.close();
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => CustomRoundedCornerShape(radius: radius * t, innerRadius: innerRadius * t);
+}
 
 class CarCard extends StatelessWidget {
   final String? carName;
   final String? carType;
-  final String? lisenseNumber;
   final String? imagePath;
   final bool isSelected;
   final VoidCallback onSelect;
@@ -137,7 +200,6 @@ class CarCard extends StatelessWidget {
     required this.carName,
     required this.carType,
     required this.imagePath,
-    required this.lisenseNumber,
     required this.isSelected,
     required this.onSelect,
   });
@@ -147,50 +209,74 @@ class CarCard extends StatelessWidget {
     return Center(
       child: Container(
         width: 500,
-        decoration: BoxDecoration(
+        // decoration: BoxDecoration(
+        //   color: const Color(0xFF23223a),
+        //   borderRadius: BorderRadius.circular(60),
+        // ),
+        decoration: ShapeDecoration(
           color: const Color(0xFF23223a),
-          borderRadius: BorderRadius.circular(60),
+          shape: CustomRoundedCornerShape(), // Adjust radius as needed
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [ 
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: Row(
                   children: [
-                    Text(
-                      carName!,
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            carName!,
+                            style: const TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          Text(
+                            carType!,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      carType!,
-                      style: const TextStyle(color: Colors.grey),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              imagePath!,
+                              width: 120,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(width: 40,)
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                         GestureDetector(
+                          onTap: onSelect,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: isSelected ? Colors.tealAccent : Colors.grey,
+                            size: 65,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      lisenseNumber!,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
+                    
+                    // const SizedBox(width: 20),
+                    
                   ],
                 ),
               ),
-              Image.asset(
-                imagePath!,
-                width: 120,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(width: 20),
-              GestureDetector(
-                onTap: onSelect,
-                child: Icon(
-                  Icons.check_circle,
-                  color: isSelected ? Colors.tealAccent : Colors.grey,
-                  size: 30,
-                ),
-              ),
-            ],
+              
+              // const SizedBox(height: 5),
+             
+            ]
           ),
         ),
       ),
