@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/bookings/make_booking.dart';
+
+import 'bookspace.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -142,7 +145,12 @@ class _SelectRowPageState extends State<SelectRowPage> {
                       ),
                     ),
                     onPressed: selectedRow == null ? null : () {
-                      // Continue button action
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => BookSpaceScreen(
+                          ),
+                        ),
+                      );
                     },
                     child: Text(
                       'Continue',
