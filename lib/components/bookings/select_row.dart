@@ -57,7 +57,7 @@ class SelectRowPage extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontSize: 30),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 13),
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
@@ -71,7 +71,7 @@ class SelectRowPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 13),
               Center(
                 child: Container(
                   width: 300, // 控制虚线的总体长度
@@ -81,58 +81,102 @@ class SelectRowPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 13),
+              _buildRowButton(context, 'Row A', '3 Slots Available'),
+              const SizedBox(height: 13),
               Center(
                 child: Container(
-                  width: 290,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF39C16B),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF39C16B),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    onPressed: () {
-                      // Define your onPressed functionality here
-                    },
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 2,
-                          top: 8,
-                          child: Text(
-                            'Row A',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ),
-                        Positioned(
-                          right: 2,
-                          top: 8,
-                          child: Text(
-                            '3 Slots Available',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          left: 2,
-                          child: Image.asset(
-                            'smallCar.png',
-                            width: 30,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
+                  width: 300,
+                  height: 1,
+                  child: CustomPaint(
+                    painter: DottedLinePainter(),
                   ),
                 ),
               ),
-              // Add additional buttons or rows as needed
+              const SizedBox(height: 13),
+              _buildRowButton(context, 'Row B', '0 Slots Available'),
+              const SizedBox(height: 13),
+              Center(
+                child: Container(
+                  width: 300,
+                  height: 1,
+                  child: CustomPaint(
+                    painter: DottedLinePainter(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 13),
+              _buildRowButton(context, 'Row C', '5 Slots Available'),
+              const SizedBox(height: 13),
+              Center(
+                child: Container(
+                  width: 300,
+                  height: 1,
+                  child: CustomPaint(
+                    painter: DottedLinePainter(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 13),
+              _buildRowButton(context, 'Row D', '1 Slot Available'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRowButton(BuildContext context, String rowLabel, String slotInfo) {
+    return Center(
+      child: Container(
+        width: 290,
+        height: 90,
+        decoration: BoxDecoration(
+          color: const Color(0xFF39C16B),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF39C16B),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          onPressed: () {
+            // Define your onPressed functionality here
+          },
+          child: Stack(
+            children: [
+              Positioned(
+                left: 2,
+                top: 8,
+                child: Text(
+                  rowLabel,
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+              Positioned(
+                right: 2,
+                top: 8,
+                child: Text(
+                  slotInfo,
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+              Positioned(
+                bottom: 8,
+                left: 2,
+                child: Row(
+                  children: List.generate(6, (index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Image.asset(
+                      'smallCar.png',
+                      width: 30,
+                      height: 50,
+                    ),
+                  )),
+                ),
+              ),
             ],
           ),
         ),
