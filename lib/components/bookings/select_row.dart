@@ -17,7 +17,6 @@ class SelectRowPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     int totalSlots = 8;
 
     return Scaffold(
@@ -72,10 +71,44 @@ class SelectRowPage extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              Center(
+                child: Container(
+                  width: 400,
+                  height: 1,
+                  child: CustomPaint(
+                    painter: DottedLinePainter(),
+                  ),
+                ),
+              ),
+              // Add your rows here
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class DottedLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.white.withOpacity(0.5)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    var max = size.width;
+    var dashWidth = 5;
+    var dashSpace = 5;
+    double startX = 0;
+
+    while (startX < max) {
+      canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
+      startX += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
