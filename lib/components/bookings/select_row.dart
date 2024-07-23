@@ -125,6 +125,32 @@ class _SelectRowPageState extends State<SelectRowPage> {
               ),
               const SizedBox(height: 13),
               _buildRowButton(context, 'Row D', '1 Slot Available'),
+              const SizedBox(height: 20),
+              Center(
+                child: Container(
+                  width: 133,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(26),
+                    color: selectedRow == null ? Color(0xFFC0C0C0) : Color(0xFF58C6A9),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedRow == null ? Color(0xFFC0C0C0) : Color(0xFF58C6A9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
+                    ),
+                    onPressed: selectedRow == null ? null : () {
+                      // Continue button action
+                    },
+                    child: Text(
+                      'Continue',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
