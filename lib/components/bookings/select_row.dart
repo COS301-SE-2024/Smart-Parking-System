@@ -167,7 +167,8 @@ class _SelectRowPageState extends State<SelectRowPage> {
                 top: 8,
                 child: Text(
                   buttonText,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: Colors.white, fontSize: isSelected ? 22 : 18, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+                  textAlign: TextAlign.center,
                 ),
               ),
               if (!isSelected) ...[
