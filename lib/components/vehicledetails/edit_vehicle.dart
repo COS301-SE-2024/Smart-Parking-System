@@ -84,7 +84,6 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getInformation();
   }
@@ -143,7 +142,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
             Container(
               width: 200, // Adjust the size as needed
               height: 200, // Make sure width and height are equal for a perfect circle
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFF25253d), // The color you specified
                 shape: BoxShape.circle, // This makes the container perfectly round
               ),

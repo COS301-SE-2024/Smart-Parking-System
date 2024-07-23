@@ -213,8 +213,8 @@ class CarCard extends StatelessWidget {
         //   color: const Color(0xFF23223a),
         //   borderRadius: BorderRadius.circular(60),
         // ),
-        decoration: ShapeDecoration(
-          color: const Color(0xFF23223a),
+        decoration: const ShapeDecoration(
+          color:Color(0xFF23223a),
           shape: CustomRoundedCornerShape(), // Adjust radius as needed
         ),
         child: Padding(
