@@ -74,14 +74,65 @@ class SelectRowPage extends StatelessWidget {
               const SizedBox(height: 16),
               Center(
                 child: Container(
-                  width: 400,
+                  width: 300, // 控制虚线的总体长度
                   height: 1,
                   child: CustomPaint(
                     painter: DottedLinePainter(),
                   ),
                 ),
               ),
-              // Add your rows here
+              const SizedBox(height: 16),
+              Center(
+                child: Container(
+                  width: 290,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF39C16B),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF39C16B),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () {
+                      // Define your onPressed functionality here
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 2,
+                          top: 8,
+                          child: Text(
+                            'Row A',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                        Positioned(
+                          right: 2,
+                          top: 8,
+                          child: Text(
+                            '3 Slots Available',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 8,
+                          left: 2,
+                          child: Image.asset(
+                            'smallCar.png',
+                            width: 30,
+                            height: 50,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Add additional buttons or rows as needed
             ],
           ),
         ),
