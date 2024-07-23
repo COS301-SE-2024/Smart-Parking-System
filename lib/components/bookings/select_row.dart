@@ -17,10 +17,64 @@ class SelectRowPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    int totalSlots = 8;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Row')),
-      body: Center(
-        child: Text('Booked Address: $bookedAddress\nPrice: $price\nSelected Zone: $selectedZone\nSelected Level: $selectedLevel'),
+      backgroundColor: const Color(0xFF2D2F41),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const Expanded(
+                    child: Text(
+                      'Parking Slot',
+                      style: TextStyle(color: Color(0xFF58C6A9), fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(width: 48), // To balance the back button
+                ],
+              ),
+              const SizedBox(height: 40),
+              const Center(
+                child: Text(
+                  'Choose your parking',
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Row',
+                  style: const TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    '$totalSlots spaces available',
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
