@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.0.2
   http: ^0.13.6
   flutter_svg: ^1.0.3
   google_fonts: ^3.0.1
@@ -58,3 +59,5 @@ flutter:
     - assets/Line-7.png
     - assets/map.webp
     - assets/s-map.png
+    - assets/smallCar.png
+
