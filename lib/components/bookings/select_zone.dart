@@ -358,7 +358,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: selectedZone == null ? Colors.green : Color(0xFF58C6A9),
+                    color: selectedZone == null ? Colors.green : const Color(0xFF58C6A9),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Center(
@@ -376,7 +376,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
               ],
             ),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: 300, // Fixed width to ensure positions don't change with screen size
               height: 200, // Fixed height to ensure positions don't change with screen size
               child: Stack(
@@ -398,7 +398,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: selectedZone == 'A' ? Color(0xFF58C6A9) : Colors.green,
+                          color: selectedZone == 'A' ? const Color(0xFF58C6A9) : Colors.green,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Center(
@@ -418,7 +418,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: selectedZone == 'B' ? Color(0xFF58C6A9) : Colors.green,
+                          color: selectedZone == 'B' ? const Color(0xFF58C6A9) : Colors.green,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Center(
