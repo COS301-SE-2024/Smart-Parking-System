@@ -376,56 +376,60 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
               ],
             ),
             const SizedBox(height: 20),
-            Stack(
-              children: [
-                Image.asset(
-                  'assets/s-map.png', // Update this with your image path
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                ),
-                Positioned(
-                  left: 100,
-                  top: 50,
-                  child: GestureDetector(
-                    onTap: () {
-                      selectZone('A');
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: selectedZone == 'A' ? Color(0xFF58C6A9) : Colors.green,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.local_parking, color: Colors.white),
+            Container(
+              width: 300, // Fixed width to ensure positions don't change with screen size
+              height: 200, // Fixed height to ensure positions don't change with screen size
+              child: Stack(
+                children: [
+                  Image.asset(
+                    'assets/s-map.png', // Update this with your image path
+                    height: 200,
+                    width: 300,
+                    fit: BoxFit.contain,
+                  ),
+                  Positioned(
+                    left: 100,
+                    top: 50,
+                    child: GestureDetector(
+                      onTap: () {
+                        selectZone('A');
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: selectedZone == 'A' ? Color(0xFF58C6A9) : Colors.green,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.local_parking, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: 200,
-                  top: 100,
-                  child: GestureDetector(
-                    onTap: () {
-                      selectZone('B');
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: selectedZone == 'B' ? Color(0xFF58C6A9) : Colors.green,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.local_parking, color: Colors.white),
+                  Positioned(
+                    left: 200,
+                    top: 100,
+                    child: GestureDetector(
+                      onTap: () {
+                        selectZone('B');
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: selectedZone == 'B' ? Color(0xFF58C6A9) : Colors.green,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.local_parking, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // Add more Positioned widgets for other 'P' markers
-              ],
+                  // Add more Positioned widgets for other 'P' markers
+                ],
+              ),
             ),
             if (selectedZone != null && zoneDetails.containsKey(selectedZone)) ...[
               const SizedBox(height: 20),
