@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
 
 class ViewVehiclePage extends StatefulWidget {
   const ViewVehiclePage({super.key});
@@ -181,6 +182,11 @@ class CarCard extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () {
                       // Edit button logic here
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const EditVehiclePage(),
+                        ),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.transparent,
