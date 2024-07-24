@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 // import 'package:flutter/material.dart';
 // import 'package:smart_parking_system/components/main_page.dart'; // Import your main_page.dart file here
 
