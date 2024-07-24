@@ -16,19 +16,19 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
       'carName': 'Audi R8',
       'carType': 'Black',
       'lisenseNumber': 'BW26CZGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/Audi_Logo.png'
     },
     {
       'carName': 'VW Tiguan',
       'carType': 'Black',
       'lisenseNumber': 'OP34CZGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/VW_Logo.png'
     },
     {
       'carName': 'VW Citi Golf',
       'carType': 'Blue',
       'lisenseNumber': 'TXGASGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/VW_Logo.png'
     }
   ];
 
@@ -93,7 +93,7 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
                             child:   CarCard(
                               carName: car['carName'],
                               carType: car['carType'],
-                              lisenseNumber: car['lisenseNumber'],
+                              // lisenseNumber: car['lisenseNumber'],
                               imagePath: car['imagePath'],
                             ),
                           )
@@ -118,7 +118,7 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
 class CarCard extends StatelessWidget {
   final String? carName;
   final String? carType;
-  final String? lisenseNumber;
+  // final String? lisenseNumber;
   final String? imagePath;
 
   const CarCard({
@@ -126,7 +126,7 @@ class CarCard extends StatelessWidget {
     required this.carName,
     required this.carType,
     required this.imagePath,
-    required this.lisenseNumber,
+    // required this.lisenseNumber,
   });
 
   @override
@@ -157,19 +157,19 @@ class CarCard extends StatelessWidget {
                           carType!,
                           style: const TextStyle(color: Colors.grey),
                         ),
-                        const SizedBox(height: 5,),
-                        Text(
-                          lisenseNumber!,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
+                        // const SizedBox(height: 5,),
+                        // Text(
+                        //   lisenseNumber!,
+                        //   style: const TextStyle(color: Colors.grey),
+                        // ),
                       ],
                     ),
                   ),
                   Image.asset(
                     imagePath!,
-                    width: 120,
+                    // width: 120,
                     height: 80,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                 ],
               ),

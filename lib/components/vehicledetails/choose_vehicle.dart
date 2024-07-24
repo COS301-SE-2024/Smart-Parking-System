@@ -18,19 +18,19 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
       'carName': 'Audi R8',
       'carType': 'Black',
       'lisenseNumber': 'BW26CZGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/Audi_Logo.png'
     },
     {
       'carName': 'VW Tiguan',
       'carType': 'Black',
       'lisenseNumber': 'OP34CZGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/VW_Logo.png'
     },
     {
       'carName': 'VW Citi Golf',
       'carType': 'Blue',
       'lisenseNumber': 'TXGASGP',
-      'imagePath':'assets/VWTiguan.png'
+      'imagePath':'assets/VW_Logo.png'
     }
   ];
   String? selectedCarLicense;
@@ -249,9 +249,9 @@ class CarCard extends StatelessWidget {
                           children: [
                             Image.asset(
                               imagePath!,
-                              width: 120,
+                              // width: 120,
                               height: 80,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                             ),
                             const SizedBox(width: 40,)
                           ],
