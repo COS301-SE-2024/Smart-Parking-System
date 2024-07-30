@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 
 import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
@@ -55,15 +56,23 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
               color: const Color(0xFF35344A),
               child: Stack(
                 children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer(); // Open the drawer
-                        },
-                      );
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 1.0),
+                    child: IconButton(
+                      onPressed: () {
+                        // Add your onPressed logic here
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const SettingsPage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
                   ),
                   const Align(
                     alignment: Alignment.center,

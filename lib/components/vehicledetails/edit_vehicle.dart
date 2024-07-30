@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/settings/settings.dart';
+import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
 class EditVehiclePage extends StatefulWidget {
   const EditVehiclePage({super.key});
@@ -110,7 +110,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                         // Add your onPressed logic here
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => const SettingsPage(),
+                            builder: (_) => const ViewVehiclePage(),
                           ),
                         );
                       },

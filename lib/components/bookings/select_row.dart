@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'bookspace.dart';
+import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -137,36 +136,25 @@ class SelectRowPageState extends State<SelectRowPage> {
               _buildRowButton(context, 'Row D', '1 Slot Available'),
               const SizedBox(height: 20),
               Center(
-                child: Container(
-                  width: 133,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(26),
-                    color: selectedRow == null ? const Color(0xFFC0C0C0) : const Color(
-                        0xFF58C6A9),
-                  ),
+                child: SizedBox(
+                  width: 160,
+                  height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedRow == null
-                          ? const Color(0xFFC0C0C0)
-                          : const Color(0xFF58C6A9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26),
-                      ),
+                      backgroundColor: selectedRow != null ? const Color(0xFF58C6A9) : const Color(0xFF5B5B5B),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
-                    onPressed: selectedRow == null ? null : () {
-                      Navigator.of(context).pushReplacement(
+                    onPressed: selectedRow != null
+                        ? () {
+                      Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const BookSpaceScreen(
-                              ),
+                          builder: (_) => const ChooseVehiclePage(),
                         ),
                       );
-                    },
-                    child: const Text(
-                      'Continue',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
+                    }
+                        : null,
+                    child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
                   ),
                 ),
               ),
