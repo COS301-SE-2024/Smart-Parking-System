@@ -58,6 +58,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
     
       setState(() {
         cars = fetchedCars;
+        selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
         isLoading = false;
       });
     } catch (e) {
@@ -71,7 +72,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   @override
   void initState() {
     super.initState();
-    selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
+    fetchUserVehicles();
   }
 
   @override
@@ -126,19 +127,21 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                       const SizedBox(width: 48),
                     ],
                   ),
+                  
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 130, horizontal: 20),
                     child: Column(
                       children: [
-                        Center(
-                          child: IconButton(
-                            icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
-                            onPressed: () {
-                              // Add new vehicle logic here
-                            },
-                          ),
-                        ),
+                        // Center(
+                        //   child: IconButton(
+                        //     icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
+                        //     onPressed: () {
+                        //       // Add new vehicle logic here
+                        //     },
+                        //   ),
+                        // ),
                         const SizedBox(height: 20,),
+                        
                         for (var car in cars)
                           Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                             child:   CarCard(
@@ -153,6 +156,64 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                       ],
                     ),
                   ),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Column(
+                      children: [
+                        const SizedBox(height: 40,),
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!isLoading){
+                              // Change to Something:
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                              vertical: 24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          child: isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.0,
+                                    ),
+                                  )
+                                : const Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20,),
+                        !isLoading && cars.isEmpty ?
+                          const Text(
+                            'Sorry, you have no Vehicles.'
+                          ) 
+                            : const Text(''),
+                          isLoading
+                          ? const Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Colors.white
+                            ),
+                          )
+                          :  const Text(''),
+                      ],
+                    ),
+                    ),
+                  ),
+                  
                   
                 ],
               ),
