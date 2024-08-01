@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
-
 class AddCardPage extends StatefulWidget {
   const AddCardPage({super.key});
 
@@ -21,7 +20,7 @@ class _AddCardPageState extends State<AddCardPage> {
     // Replace 'userId' with the actual user ID
     String userId = "lhfXz2ynvue4ZOQJ5XQ9QT6oghu1";
 
-    await FirebaseFirestore.instance.collection('cards').doc(userId).set({
+    await FirebaseFirestore.instance.collection('cards').add({
       'cardNumber': _cardNumberController.text,
       'holderName': _holderNameController.text,
       'expiry': _expiryController.text,
