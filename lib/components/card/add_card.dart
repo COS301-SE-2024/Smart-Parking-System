@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
-// import 'package:smart_parking_system/components/bookings/make_booking.dart';
+
 
 class AddCardPage extends StatelessWidget {
   const AddCardPage({super.key});
