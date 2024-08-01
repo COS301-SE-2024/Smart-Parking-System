@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/add_vehicle.dart';
 import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
@@ -13,31 +15,58 @@ class ViewVehiclePage extends StatefulWidget {
 
 
 class _ViewVehiclePageState extends State<ViewVehiclePage> {
-  late List<Map<String, String>> cars = [
-    // {
-    //   'carName': 'Audi R8',
-    //   'carType': 'Black',
-    //   'lisenseNumber': 'BW26CZGP',
-    //   'imagePath':'assets/Audi_Logo.png'
-    // },
-    // {
-    //   'carName': 'VW Tiguan',
-    //   'carType': 'Black',
-    //   'lisenseNumber': 'OP34CZGP',
-    //   'imagePath':'assets/VW_Logo.png'
-    // },
-    // {
-    //   'carName': 'VW Citi Golf',
-    //   'carType': 'Blue',
-    //   'lisenseNumber': 'TXGASGP',
-    //   'imagePath':'assets/VW_Logo.png'
-    // }
-  ];
+  late List<Map<String, dynamic>> cars = [];
+  bool isLoading = false;
 
+  Future<void> fetchUserVehicles() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('vehicles')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+      List<Map<String, dynamic>> fetchedCars = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        
+        // Add the imageDirector based on the vehicleBrand
+        String imageDirector;
+        switch (data['vehicleBrand']?.toLowerCase()) {
+          case 'vw':
+            imageDirector = 'assets/VW_logo.png';
+            break;
+          case 'audi':
+            imageDirector = 'assets/Audi_logo.png';
+            break;
+          default:
+            imageDirector = 'assets/default_logo.png'; // You might want to have a default logo
+        }
+        
+        // Add the imageDirector to the data map
+        data['imageDirector'] = imageDirector;
+        data['vehicleId'] = doc.id;
+        
+        return data;
+      }).toList();
+    
+      setState(() {
+        cars = fetchedCars;
+        isLoading = false;
+      });
+    } catch (e) {
+      // print('Error fetching vehicles: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    fetchUserVehicles();
   }
 
   @override
@@ -56,15 +85,23 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
               color: const Color(0xFF35344A),
               child: Stack(
                 children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer(); // Open the drawer
-                        },
-                      );
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 1.0),
+                    child: IconButton(
+                      onPressed: () {
+                        // Add your onPressed logic here
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const SettingsPage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
                   ),
                   const Align(
                     alignment: Alignment.center,
@@ -95,16 +132,24 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
                           ),
                         ),
                         const SizedBox(height: 20,),
+                        // if(cars.isEmpty)
+                        // const Text(
+                        //   'You have no Vehicles',
+                        //   style: TextStyle(
+                        //     color: Colors.white,
+                        //   )
+                        // ),
                         for (var car in cars)
                           Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                             child:   CarCard(
-                              carName: car['carName'],
-                              carType: car['carType'],
-                              // lisenseNumber: car['lisenseNumber'],
-                              imagePath: car['imagePath'],
+                              carName: car['vehicleBrand'],
+                              carType: car['vehicleModel'],
+                              carColor: car['vehicleColor'],
+                              lisenseNumber: car['licenseNumber'], 
+                              imagePath: car['imageDirector'],
+                              vehicleId: car['vehicleId'],
                             ),
                           )
-                          
                       ],
                     ),
                   ),
@@ -125,15 +170,19 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
 class CarCard extends StatelessWidget {
   final String? carName;
   final String? carType;
-  // final String? lisenseNumber;
+  final String? carColor;
+  final String? lisenseNumber;
   final String? imagePath;
+  final String vehicleId;
 
   const CarCard({
     super.key,
     required this.carName,
     required this.carType,
     required this.imagePath,
-    // required this.lisenseNumber,
+    required this.carColor,
+    required this.vehicleId,
+    required this.lisenseNumber,
   });
 
   @override
@@ -164,6 +213,13 @@ class CarCard extends StatelessWidget {
                           carType!,
                           style: const TextStyle(color: Colors.grey),
                         ),
+                        const SizedBox(height: 10,),
+                        Text(
+                          carColor!,
+                          style: const TextStyle(color: Color.fromARGB(255, 218, 218, 218)),
+                        ),
+
+
                         // const SizedBox(height: 5,),
                         // Text(
                         //   lisenseNumber!,
@@ -190,7 +246,7 @@ class CarCard extends StatelessWidget {
                       // Edit button logic here
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const EditVehiclePage(),
+                          builder: (_) => EditVehiclePage(brand: carName!, model: carType!, color: carColor!, license: lisenseNumber!, vehicleId: vehicleId ),
                         ),
                       );
                     },

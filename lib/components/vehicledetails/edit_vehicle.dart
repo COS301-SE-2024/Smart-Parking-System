@@ -2,44 +2,49 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/settings/settings.dart';
+import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
 class EditVehiclePage extends StatefulWidget {
-  const EditVehiclePage({super.key});
+  final String brand;
+  final String model;
+  final String color;
+  final String license;
+  final String vehicleId;
+
+  const EditVehiclePage({
+    super.key,
+    required this.brand,
+    required this.model,
+    required this.color,
+    required this.license,
+    required this.vehicleId,
+  });
 
   @override
   State<EditVehiclePage> createState() => _CarDetailsPageState();
 }
 
 class _CarDetailsPageState extends State<EditVehiclePage> {
-  final TextEditingController _brandController = TextEditingController();
-  final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _colorController = TextEditingController();
-  final TextEditingController _licenseController = TextEditingController();
+  late final TextEditingController _brandController;
+  late final TextEditingController _modelController;
+  late final TextEditingController _colorController;
+  late final TextEditingController _licenseController;
+  late String imageDirect;
 
   Future<void> _updateVehicleDetails() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-
-        //Place code here
-
-
-        
-
-        QuerySnapshot vehiclesSnapshot = await FirebaseFirestore.instance.collection('vehicles').get();
-        for (var vehicle in vehiclesSnapshot.docs) {
-          if (vehicle.get('userId') == user.uid) {
-            await vehicle.reference.update({
-              'licenseNumber': _licenseController.text,
-              'vehicleBrand': _brandController.text,
-              'vehicleColor': _colorController.text,
-              'vehicleModel': _modelController.text,
-              'userId': user.uid,
-            });
-          }
-        }
+        await FirebaseFirestore.instance
+            .collection('vehicles')
+            .doc(widget.vehicleId)
+            .update({
+          'vehicleBrand': _brandController.text,
+          'vehicleModel': _modelController.text,
+          'vehicleColor': _colorController.text,
+          'licenseNumber': _licenseController.text,
+        });
 
         if (mounted){
             showDialog(
@@ -75,17 +80,26 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
     }
   }
 
-  void getInformation(){
-    _brandController.text = 'VW';
-    _colorController.text = 'Blue';
-    _licenseController.text = 'TX029GP';
-    _modelController.text = 'Citi Golf';
-  }
+
 
   @override
   void initState() {
     super.initState();
-    getInformation();
+    _brandController = TextEditingController(text: widget.brand);
+    _modelController = TextEditingController(text: widget.model);
+    _colorController = TextEditingController(text: widget.color);
+    _licenseController = TextEditingController(text: widget.license);
+
+    switch (widget.brand.toLowerCase()) {
+          case 'vw':
+            imageDirect = 'assets/VW_logo.png';
+            break;
+          case 'audi':
+            imageDirect = 'assets/Audi_logo.png';
+            break;
+          default:
+            imageDirect = 'assets/default_logo.png'; // You might want to have a default logo
+        }
   }
 
   
@@ -110,7 +124,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                         // Add your onPressed logic here
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => const SettingsPage(),
+                            builder: (_) => const ViewVehiclePage(),
                           ),
                         );
                       },
@@ -148,7 +162,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
               ),
               child: Center(
                 child: Image.asset(
-                  'assets/Audio_r8.png', // Make sure this path is correct
+                  imageDirect, // Make sure this path is correct
                   width: 150, // Adjust the image size as needed
                   height: 150,
                   fit: BoxFit.contain, // This will ensure the image fits within the circle

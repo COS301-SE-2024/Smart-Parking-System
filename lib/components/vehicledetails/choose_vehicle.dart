@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class ChooseVehiclePage extends StatefulWidget {
@@ -11,41 +12,66 @@ class ChooseVehiclePage extends StatefulWidget {
 
 
 class _ViewVehiclePageState extends State<ChooseVehiclePage> {
-  
-
-  final List<Map<String, String>> cars = [
-    {
-      'carName': 'Audi R8',
-      'carType': 'Black',
-      'lisenseNumber': 'BW26CZGP',
-      'imagePath':'assets/Audi_Logo.png'
-    },
-    {
-      'carName': 'VW Tiguan',
-      'carType': 'Black',
-      'lisenseNumber': 'OP34CZGP',
-      'imagePath':'assets/VW_Logo.png'
-    },
-    {
-      'carName': 'VW Citi Golf',
-      'carType': 'Blue',
-      'lisenseNumber': 'TXGASGP',
-      'imagePath':'assets/VW_Logo.png'
-    }
-  ];
-  String? selectedCarLicense;
+  late List<Map<String, dynamic>> cars = [];
+  String? selectedCarVehicleId;
+  bool isLoading = false;
    
 
-  void selectCar(String license) {
+  void selectCar(String vehicleId) {
     setState(() {
-      selectedCarLicense = license;
+      selectedCarVehicleId = vehicleId;
     });
+  }
+
+  Future<void> fetchUserVehicles() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('vehicles')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+      List<Map<String, dynamic>> fetchedCars = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        
+        // Add the imageDirector based on the vehicleBrand
+        String imageDirector;
+        switch (data['vehicleBrand']?.toLowerCase()) {
+          case 'vw':
+            imageDirector = 'assets/VW_logo.png';
+            break;
+          case 'audi':
+            imageDirector = 'assets/Audi_logo.png';
+            break;
+          default:
+            imageDirector = 'assets/default_logo.png'; // You might want to have a default logo
+        }
+        
+        // Add the imageDirector to the data map
+        data['imageDirector'] = imageDirector;
+        data['vehicleId'] = doc.id;
+        
+        return data;
+      }).toList();
+    
+      setState(() {
+        cars = fetchedCars;
+        isLoading = false;
+      });
+    } catch (e) {
+      // print('Error fetching vehicles: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    selectedCarLicense = cars.isNotEmpty ? cars[0]['lisenseNumber'] : null;
+    selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
   }
 
   @override
@@ -116,11 +142,11 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         for (var car in cars)
                           Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                             child:   CarCard(
-                              carName: car['carName'],
-                              carType: car['carType'],
-                              imagePath: car['imagePath'],
-                              isSelected: selectedCarLicense == car['lisenseNumber'],
-                              onSelect: () => selectCar(car['lisenseNumber']!),
+                              carName: car['vehicleBrand'],
+                              carType: car['vehicleModel'],
+                              imagePath: car['imageDirector'],
+                              isSelected: selectedCarVehicleId == car['vehicleId'],
+                              onSelect: () => selectCar(car['vehicleId']!),
                             ),
                           )
                           
