@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+// import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -97,7 +98,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 ),
               ),
               const SizedBox(height: 13),
-              _buildRowButton(context, 'Row A', '3 Slots Available'),
+              _buildRowButton(context, 'A', '3 Slots Available'),
               const SizedBox(height: 13),
               Center(
                 child: SizedBox(
@@ -109,7 +110,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 ),
               ),
               const SizedBox(height: 13),
-              _buildRowButton(context, 'Row B', '0 Slots Available'),
+              _buildRowButton(context, 'B', '0 Slots Available'),
               const SizedBox(height: 13),
               Center(
                 child: SizedBox(
@@ -121,7 +122,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 ),
               ),
               const SizedBox(height: 13),
-              _buildRowButton(context, 'Row C', '5 Slots Available'),
+              _buildRowButton(context, 'C', '5 Slots Available'),
               const SizedBox(height: 13),
               Center(
                 child: SizedBox(
@@ -133,7 +134,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 ),
               ),
               const SizedBox(height: 13),
-              _buildRowButton(context, 'Row D', '1 Slot Available'),
+              _buildRowButton(context, 'D', '1 Slot Available'),
               const SizedBox(height: 20),
               Center(
                 child: SizedBox(
@@ -147,9 +148,14 @@ class SelectRowPageState extends State<SelectRowPage> {
                     ),
                     onPressed: selectedRow != null
                         ? () {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (_) => const ChooseVehiclePage(),
+                      //   ),
+                      // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const ChooseVehiclePage(),
+                          builder: (_) => ConfirmBookingPage(bookedAddress: widget.bookedAddress, price: widget.price, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
                         ),
                       );
                     }
@@ -165,11 +171,12 @@ class SelectRowPageState extends State<SelectRowPage> {
     );
   }
 
-  Widget _buildRowButton(BuildContext context, String rowLabel, String slotInfo) {
+  Widget _buildRowButton(BuildContext context, String rowL, String slotInfo) {
+    String rowLabel = 'Row $rowL';
     int slotsAvailable = int.parse(slotInfo.split(' ')[0]);
 
     bool isDisabled = slotsAvailable == 0;
-    bool isSelected = selectedRow == rowLabel;
+    bool isSelected = selectedRow == rowL;
     Color buttonColor = isDisabled ? const Color(0xFFC0C0C0) : (isSelected ? const Color(0xFF58C6A9) : const Color(0xFF39C16B));
     String buttonText = isSelected ? '$rowLabel Selected' : rowLabel;
 
@@ -190,7 +197,7 @@ class SelectRowPageState extends State<SelectRowPage> {
           ),
           onPressed: isDisabled ? null : () {
             setState(() {
-              selectedRow = rowLabel;
+              selectedRow = rowL;
             });
           },
           child: Stack(

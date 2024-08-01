@@ -332,13 +332,13 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
@@ -347,7 +347,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   // Do nothing, already on this page
                 } else if (_selectedIndex == 3) {
                   // Handle settings navigation
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const SettingsPage(),
                     ),

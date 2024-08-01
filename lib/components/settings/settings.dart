@@ -121,7 +121,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Edit profile', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
               onTap: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const UserProfilePage(),
                   ),
@@ -132,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Update vehicle details', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
               onTap: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const ViewVehiclePage(),
                   ),
@@ -143,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Add a payment method', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.add, color: Colors.white, size: 20),
               onTap: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const PaymentMethodPage(),
                   ),
@@ -228,19 +228,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
