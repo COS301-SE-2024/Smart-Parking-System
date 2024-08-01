@@ -151,7 +151,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: isAvailable
               ? (isSelected ? const Color(0xFF58C6A9) : const Color(0xFF39C16B))
-              : const Color(0xFFA81D1D),
+              : const Color(0xFFC0C0C0),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         ),

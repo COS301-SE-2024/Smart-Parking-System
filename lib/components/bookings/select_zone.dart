@@ -266,6 +266,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/bookings/select_level.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   final double price;
@@ -480,20 +481,31 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
               ),
             ],
             const Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            Center(
+              child: SizedBox(
+                width: 160,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selectedZone != null ? const Color(0xFF58C6A9) : const Color(0xFF5B5B5B),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
+                  onPressed: selectedZone != null
+                      ? () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => LevelSelectPage( // 导航到 SelectRowPage
+                          bookedAddress: widget.bookedAddress,
+                          price: widget.price,
+                          selectedZone: selectedZone!,
+                        ),
+                      ),
+                    );
+                  }
+                      : null,
+                  child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
-              ),
-              onPressed: selectedZone != null ? () {
-                // Handle continue action
-              } : null,
-              child: const Text(
-                'Continue',
-                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             ),
             const SizedBox(height: 20),
