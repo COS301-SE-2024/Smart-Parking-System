@@ -20,13 +20,28 @@ class SelectRowPage extends StatefulWidget {
   SelectRowPageState createState() => SelectRowPageState();
 }
 
+class RowSpace {
+  final String row;
+  final int slots;
+
+  RowSpace(this.row, this.slots);
+}
+
 class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
+  int totalSlots = 12;
+
+  List<RowSpace> rows = [
+    RowSpace('A', 4),
+    RowSpace('B', 0),
+    RowSpace('C', 6),
+    RowSpace('D', 2),
+    RowSpace('E', 0),
+    // Add more rows here
+  ];
 
   @override
   Widget build(BuildContext context) {
-    int totalSlots = 8;
-
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
       body: SingleChildScrollView(
@@ -87,54 +102,12 @@ class SelectRowPageState extends State<SelectRowPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300, // 控制虚线的总体长度
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: rows.expand((rows) => [
+                  _buildRowButton(rows),
+                ]).toList(),
               ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'A', '3 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'B', '0 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'C', '5 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'D', '1 Slot Available'),
               const SizedBox(height: 20),
               Center(
                 child: SizedBox(
@@ -171,81 +144,92 @@ class SelectRowPageState extends State<SelectRowPage> {
     );
   }
 
-  Widget _buildRowButton(BuildContext context, String rowL, String slotInfo) {
-    String rowLabel = 'Row $rowL';
-    int slotsAvailable = int.parse(slotInfo.split(' ')[0]);
+  Widget _buildRowButton(RowSpace rows) {
+    String row = rows.row;
 
-    bool isDisabled = slotsAvailable == 0;
-    bool isSelected = selectedRow == rowL;
+    bool isDisabled = rows.slots == 0;
+    bool isSelected = selectedRow == row;
     Color buttonColor = isDisabled ? const Color(0xFFC0C0C0) : (isSelected ? const Color(0xFF58C6A9) : const Color(0xFF39C16B));
-    String buttonText = isSelected ? '$rowLabel Selected' : rowLabel;
 
     return Center(
-      child: Container(
-        width: 290,
-        height: 90,
-        decoration: BoxDecoration(
-          color: buttonColor,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: buttonColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+      child: Column(
+        children: [ 
+          const SizedBox(height: 13),
+          SizedBox(
+            width: 300,
+            height: 1,
+            child: CustomPaint(
+              painter: DottedLinePainter(),
             ),
           ),
-          onPressed: isDisabled ? null : () {
-            setState(() {
-              selectedRow = rowL;
-            });
-          },
-          child: Stack(
-            children: [
-              if (isSelected)
-                Center(
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              else ...[
-                Positioned(
-                  left: 2,
-                  top: 8,
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.left,
-                  ),
+          const SizedBox(height: 13),
+          Container(
+            width: 290,
+            height: 90,
+            decoration: BoxDecoration(
+              color: buttonColor,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: buttonColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                Positioned(
-                  right: 2,
-                  top: 8,
-                  child: Text(
-                    slotInfo,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-                Positioned(
-                  bottom: 8,
-                  left: 2,
-                  child: Row(
-                    children: List.generate(6, (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Image.asset(
-                        'assets/smallCar.png',
-                        width: 30,
-                        height: 50,
+              ),
+              onPressed: isDisabled ? null : () {
+                setState(() {
+                  selectedRow = row;
+                });
+              },
+              child: Stack(
+                children: [
+                  if (isSelected)
+                    Center(
+                      child: Text(
+                        'Row $row Selected',
+                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
-                    )),
-                  ),
-                ),
-              ],
-            ],
+                    )
+                  else ...[
+                    Positioned(
+                      left: 2,
+                      top: 8,
+                      child: Text(
+                        'Row $row',
+                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Positioned(
+                      right: 2,
+                      top: 8,
+                      child: Text(
+                        '${rows.slots} Slots Available',
+                        style: const TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      left: 2,
+                      child: Row(
+                        children: List.generate(6, (index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Image.asset(
+                            'assets/smallCar.png',
+                            width: 30,
+                            height: 50,
+                          ),
+                        )),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
-        ),
+        ]
       ),
     );
   }
