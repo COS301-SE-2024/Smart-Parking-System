@@ -28,24 +28,33 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   Future<void> _fetchCards() async {
     String userId = "lhfXz2ynvue4ZOQJ5XQ9QT6oghu1"; // 替换为实际的用户 ID
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('cards')
-        .where('userId', isEqualTo: userId)
-        .get();
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('cards')
+          .where('userId', isEqualTo: userId)
+          .get();
 
-    final List<Map<String, String>> fetchedCards = [];
-    for (var doc in querySnapshot.docs) {
-      fetchedCards.add({
-        'id': doc.id,
-        'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
-        'number': '**** **** **** ' + doc['cardNumber'].substring(doc['cardNumber'].length - 4),
-        'image': 'assets/mastercard.png' // 默认图片，您可以根据实际情况进行修改
+      final List<Map<String, String>> fetchedCards = [];
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        fetchedCards.add({
+          'id': doc.id,
+          'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
+          'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
+          'cvv': data['cvv'] ?? '',
+          'name': data['holderName'] ?? '',
+          'expiry': data['expiry'] ?? '',
+          'image': 'assets/mastercard.png' // 默认图片，您可以根据实际情况进行修改
+        });
+      }
+
+      setState(() {
+        cards = fetchedCards;
       });
+    } catch (e) {
+      print('Error fetching cards: $e');
+      // 这里可以添加更多错误处理逻辑
     }
-
-    setState(() {
-      cards = fetchedCards;
-    });
   }
 
   Future<void> _showTopUpDialog() async {
@@ -94,6 +103,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
   Future<void> _showEditCardDialog(String cardId) async {
     String? newCardNumber;
+    String? newCvv;
+    String? newName;
+    String? newExpiry;
 
     await showDialog(
       context: context,
@@ -101,16 +113,57 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         return AlertDialog(
           backgroundColor: const Color(0xFF35344A),
           title: const Text('Edit Card', style: TextStyle(color: Colors.white)),
-          content: TextField(
-            keyboardType: TextInputType.number,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              hintText: 'Enter new card number',
-              hintStyle: TextStyle(color: Colors.grey),
-            ),
-            onChanged: (value) {
-              newCardNumber = value;
-            },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new card number',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newCardNumber = value;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new CVV',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newCvv = value;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.text,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new name',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newName = value;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.text,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new expiry (MM/YY)',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newExpiry = value;
+                },
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -123,10 +176,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               child: const Text('Save', style: TextStyle(color: Colors.tealAccent)),
               onPressed: () async {
                 if (newCardNumber != null && newCardNumber!.isNotEmpty) {
+                  Map<String, String> updatedData = {
+                    'cardNumber': newCardNumber!,
+                    if (newCvv != null && newCvv!.isNotEmpty) 'cvv': newCvv!,
+                    if (newName != null && newName!.isNotEmpty) 'holderName': newName!,
+                    if (newExpiry != null && newExpiry!.isNotEmpty) 'expiry': newExpiry!,
+                  };
+
                   await FirebaseFirestore.instance
                       .collection('cards')
                       .doc(cardId)
-                      .update({'cardNumber': newCardNumber});
+                      .update(updatedData);
 
                   await _fetchCards();
                   Navigator.of(context).pop();
@@ -277,7 +337,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                                 child: Image.asset(card['image']!),
                               ),
                               title: Text(
-                                '${card['bank']}\n${card['number']}',
+                                '${card['bank']}\n${card['number']}\n${card['name']}\n${card['expiry']}',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
