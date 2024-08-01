@@ -27,6 +27,7 @@ dependencies:
   sign_in_with_apple: ^6.1.1
   the_apple_sign_in: ^1.1.1
   intl: ^0.17.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -60,3 +61,5 @@ flutter:
     - assets/Audio_r8.png
     - assets/Audi_Logo.png
     - assets/VW_Logo.png
+    - assets/s-map.png
+    - assets/smallCar.png

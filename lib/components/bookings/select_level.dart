@@ -1,195 +1,197 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/bookings/make_booking.dart';
-// import 'package:smart_parking_system/components/bookings/select_zone.dart';
+import 'package:smart_parking_system/components/bookings/select_row.dart';
 
 class LevelSelectPage extends StatefulWidget {
   final String bookedAddress;
   final double price;
   final String selectedZone;
-  
+
   const LevelSelectPage({required this.bookedAddress, required this.price, required this.selectedZone, super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LevelSelectPageState createState() => _LevelSelectPageState();
+  State<LevelSelectPage> createState() => _LevelSelectPageState();
+}
+
+class Level {
+  final String level;
+  final int slots;
+
+  Level(this.level, this.slots);
 }
 
 class _LevelSelectPageState extends State<LevelSelectPage> {
+  String? selectedLevel;
+  int totalSlots = 110;
+
+  List<Level> levels = [
+    Level('L3', 0),
+    Level('L2', 30),
+    Level('L1', 20),
+    Level('Ground', 10),
+    Level('B1', 20),
+    Level('B2', 30),
+    // Add more levels here
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: Container(
-        color: const Color(0xFF2D2F41),
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
-              color: const Color(0xFF2D2F41),
-              child: Stack(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Row(
                 children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
-                        onPressed: () {
-                          // Replace this with your main page route
-                          // Navigator.of(context).pushReplacement(
-                          //   MaterialPageRoute(
-                          //     builder: (_) => const ZoneSelectPage(),
-                          //   ),
-                          // );
-                          Navigator.of(context).pop();
-                        },
-                      );
-                    },
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  const Align(
-                    alignment: Alignment.center,
+                  const Expanded(
                     child: Text(
-                      'Parking Slot (Level)',
-                      style: TextStyle(
-                        color: Colors.tealAccent,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Parking Floors',
+                      style: TextStyle(color: Color(0xFF58C6A9), fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
                     ),
                   ),
+                  const SizedBox(width: 48), // To balance the back button
                 ],
               ),
-            ),
-            Text(
-              'Select prefered Level (Zone ${widget.selectedZone})',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 40),
+              const Center(
+                child: Text(
+                  'Choose your parking',
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildZoneCard(
-                  context: context,
-                  level: '1',
-                  availableSlots: 2,
-                  isAvailable: true,
+              Center(
+                child: Text(
+                  'Floor on Zone ${widget.selectedZone}',
+                  style: const TextStyle(color: Colors.white, fontSize: 30),
                 ),
-                _buildZoneCard(
-                  context: context,
-                  level: '2',
-                  availableSlots: 2,
-                  isAvailable: true,
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+                  decoration: BoxDecoration(
+                    // color: Colors.white,
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    '$totalSlots spaces available',
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildZoneCard(
-                  context: context,
-                  level: '3',
-                  availableSlots: 1,
-                  isAvailable: true,
+              ),
+              const SizedBox(height: 32),
+              Center(
+                child: Container(
+                  width: 330,
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: levels.expand((levels) => [
+                      _buildLevelButton(levels),
+                    ]).toList(),
+                  ),
                 ),
-                _buildZoneCard(
-                  context: context,
-                  level: '4',
-                  availableSlots: 0,
-                  isAvailable: false,
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: SizedBox(
+                  width: 160,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedLevel != null ? const Color(0xFF58C6A9) : const Color(0xFF5B5B5B),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                    onPressed: selectedLevel != null
+                        ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SelectRowPage( // 导航到 SelectRowPage
+                            bookedAddress: widget.bookedAddress,
+                            price: widget.price,
+                            selectedZone: widget.selectedZone,
+                            selectedLevel: selectedLevel!,
+                          ),
+                        ),
+                      );
+                    }
+                        : null,
+                    child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  ),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
-        ),
-        
       ),
     );
   }
 
-  Widget _buildZoneCard({
-    required BuildContext context,
-    required String level,
-    required int availableSlots,
-    required bool isAvailable,
-  }) {
-    return GestureDetector(
-      onTap: isAvailable
-          ? () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => BookingPage(bookedAddress: widget.bookedAddress, price: widget.price, selectedZone: widget.selectedZone, selectedLevel: level,),
-                ),
-              );
-            }
-          : () {
-          showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: const Color(0xFF2D2F41),
-              title: const Center(
-                child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
-              ),
-              actions: [
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        width: 200,
-        height: 200,
-        decoration: BoxDecoration(
-          color: isAvailable ? const Color(0xFF2A4037) : const Color(0xFF490517),
-          borderRadius: BorderRadius.circular(16),
+  Widget _buildLevelButton(Level levels) {
+    bool isSelected = selectedLevel == levels.level;
+    bool isAvailable = levels.slots > 0;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isAvailable
+              ? (isSelected ? const Color(0xFF58C6A9) : const Color(0xFF39C16B))
+              : const Color(0xFFA81D1D),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
+        onPressed: isAvailable
+            ? () {
+          setState(() {
+            selectedLevel = levels.level;
+          });
+        }
+            : () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Center(
+                  child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Row(
             children: [
-              Text(
-                level,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'Level: $level',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'Available Slots: $availableSlots',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              const Icon(Icons.directions_car, color: Colors.white),
+              const SizedBox(width: 10),
+              Text(levels.level, style: const TextStyle(color: Colors.white, fontSize: 18)),
+              const Spacer(),
+              Text('${levels.slots} Slots', style: const TextStyle(color: Colors.white, fontSize: 18)),
+            ]
         ),
       ),
     );
