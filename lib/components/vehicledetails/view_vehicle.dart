@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/vehicledetails/add_vehicle.dart';
 import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
 
 class ViewVehiclePage extends StatefulWidget {
@@ -12,25 +13,25 @@ class ViewVehiclePage extends StatefulWidget {
 
 
 class _ViewVehiclePageState extends State<ViewVehiclePage> {
-  final List<Map<String, String>> cars = [
-    {
-      'carName': 'Audi R8',
-      'carType': 'Black',
-      'lisenseNumber': 'BW26CZGP',
-      'imagePath':'assets/Audi_Logo.png'
-    },
-    {
-      'carName': 'VW Tiguan',
-      'carType': 'Black',
-      'lisenseNumber': 'OP34CZGP',
-      'imagePath':'assets/VW_Logo.png'
-    },
-    {
-      'carName': 'VW Citi Golf',
-      'carType': 'Blue',
-      'lisenseNumber': 'TXGASGP',
-      'imagePath':'assets/VW_Logo.png'
-    }
+  late List<Map<String, String>> cars = [
+    // {
+    //   'carName': 'Audi R8',
+    //   'carType': 'Black',
+    //   'lisenseNumber': 'BW26CZGP',
+    //   'imagePath':'assets/Audi_Logo.png'
+    // },
+    // {
+    //   'carName': 'VW Tiguan',
+    //   'carType': 'Black',
+    //   'lisenseNumber': 'OP34CZGP',
+    //   'imagePath':'assets/VW_Logo.png'
+    // },
+    // {
+    //   'carName': 'VW Citi Golf',
+    //   'carType': 'Blue',
+    //   'lisenseNumber': 'TXGASGP',
+    //   'imagePath':'assets/VW_Logo.png'
+    // }
   ];
 
 
@@ -85,6 +86,11 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
                             icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
                             onPressed: () {
                               // Add new vehicle logic here
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const AddVehiclePage(),
+                                ),
+                              );
                             },
                           ),
                         ),
