@@ -36,6 +36,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     final List<Map<String, String>> fetchedCards = [];
     for (var doc in querySnapshot.docs) {
       fetchedCards.add({
+        'id': doc.id,
         'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
         'number': '**** **** **** ' + doc['cardNumber'].substring(doc['cardNumber'].length - 4),
         'image': 'assets/mastercard.png' // 默认图片，您可以根据实际情况进行修改
@@ -81,6 +82,53 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   setState(() {
                     creditAmount += topUpAmount!;
                   });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showEditCardDialog(String cardId) async {
+    String? newCardNumber;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF35344A),
+          title: const Text('Edit Card', style: TextStyle(color: Colors.white)),
+          content: TextField(
+            keyboardType: TextInputType.number,
+            style: const TextStyle(color: Colors.white),
+            decoration: const InputDecoration(
+              hintText: 'Enter new card number',
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            onChanged: (value) {
+              newCardNumber = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save', style: TextStyle(color: Colors.tealAccent)),
+              onPressed: () async {
+                if (newCardNumber != null && newCardNumber!.isNotEmpty) {
+                  await FirebaseFirestore.instance
+                      .collection('cards')
+                      .doc(cardId)
+                      .update({'cardNumber': newCardNumber});
+
+                  await _fetchCards();
                   Navigator.of(context).pop();
                 }
               },
@@ -238,7 +286,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               ),
                               trailing: TextButton(
                                 onPressed: () {
-                                  // Add your onPressed logic here for editing the card
+                                  _showEditCardDialog(card['id']!);
                                 },
                                 child: const Text(
                                   'Edit Card',
