@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class ChooseVehiclePage extends StatefulWidget {
@@ -11,41 +12,67 @@ class ChooseVehiclePage extends StatefulWidget {
 
 
 class _ViewVehiclePageState extends State<ChooseVehiclePage> {
-  
-
-  final List<Map<String, String>> cars = [
-    {
-      'carName': 'Audi R8',
-      'carType': 'Black',
-      'lisenseNumber': 'BW26CZGP',
-      'imagePath':'assets/Audi_Logo.png'
-    },
-    {
-      'carName': 'VW Tiguan',
-      'carType': 'Black',
-      'lisenseNumber': 'OP34CZGP',
-      'imagePath':'assets/VW_Logo.png'
-    },
-    {
-      'carName': 'VW Citi Golf',
-      'carType': 'Blue',
-      'lisenseNumber': 'TXGASGP',
-      'imagePath':'assets/VW_Logo.png'
-    }
-  ];
-  String? selectedCarLicense;
+  late List<Map<String, dynamic>> cars = [];
+  String? selectedCarVehicleId;
+  bool isLoading = false;
    
 
-  void selectCar(String license) {
+  void selectCar(String vehicleId) {
     setState(() {
-      selectedCarLicense = license;
+      selectedCarVehicleId = vehicleId;
     });
+  }
+
+  Future<void> fetchUserVehicles() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('vehicles')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+      List<Map<String, dynamic>> fetchedCars = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        
+        // Add the imageDirector based on the vehicleBrand
+        String imageDirector;
+        switch (data['vehicleBrand']?.toLowerCase()) {
+          case 'vw':
+            imageDirector = 'assets/VW_Logo.png';
+            break;
+          case 'audi':
+            imageDirector = 'assets/Audi_Logo.png';
+            break;
+          default:
+            imageDirector = 'assets/default_logo.png'; // You might want to have a default logo
+        }
+        
+        // Add the imageDirector to the data map
+        data['imageDirector'] = imageDirector;
+        data['vehicleId'] = doc.id;
+        
+        return data;
+      }).toList();
+    
+      setState(() {
+        cars = fetchedCars;
+        selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
+        isLoading = false;
+      });
+    } catch (e) {
+      // print('Error fetching vehicles: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    selectedCarLicense = cars.isNotEmpty ? cars[0]['lisenseNumber'] : null;
+    fetchUserVehicles();
   }
 
   @override
@@ -100,33 +127,93 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                       const SizedBox(width: 48),
                     ],
                   ),
+                  
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 130, horizontal: 20),
                     child: Column(
                       children: [
-                        Center(
-                          child: IconButton(
-                            icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
-                            onPressed: () {
-                              // Add new vehicle logic here
-                            },
-                          ),
-                        ),
+                        // Center(
+                        //   child: IconButton(
+                        //     icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
+                        //     onPressed: () {
+                        //       // Add new vehicle logic here
+                        //     },
+                        //   ),
+                        // ),
                         const SizedBox(height: 20,),
+                        
                         for (var car in cars)
                           Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                             child:   CarCard(
-                              carName: car['carName'],
-                              carType: car['carType'],
-                              imagePath: car['imagePath'],
-                              isSelected: selectedCarLicense == car['lisenseNumber'],
-                              onSelect: () => selectCar(car['lisenseNumber']!),
+                              carName: car['vehicleBrand'],
+                              carType: car['vehicleModel'],
+                              imagePath: car['imageDirector'],
+                              isSelected: selectedCarVehicleId == car['vehicleId'],
+                              onSelect: () => selectCar(car['vehicleId']!),
                             ),
                           )
                           
                       ],
                     ),
                   ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      child: Column(
+                      children: [
+                        const SizedBox(height: 40,),
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!isLoading){
+                              // Change to Something:
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                              vertical: 24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          child: isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.0,
+                                    ),
+                                  )
+                                : const Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20,),
+                        !isLoading && cars.isEmpty ?
+                          const Text(
+                            'Sorry, you have no Vehicles.'
+                          ) 
+                            : const Text(''),
+                          isLoading
+                          ? const Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Colors.white
+                            ),
+                          )
+                          :  const Text(''),
+                      ],
+                    ),
+                    ),
+                  ),
+                  
                   
                 ],
               ),

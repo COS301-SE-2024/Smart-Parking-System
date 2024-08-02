@@ -14,7 +14,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_map: ^7.0.2 # Ensure you check for the latest version
   latlong2: ^0.9.1
-  google_maps_flutter: ^2.1.0
+  google_maps_flutter: ^2.7.0
   cupertino_icons: ^1.0.6
   font_awesome_flutter: ^10.7.0
   flutter_dash: ^1.0.0
@@ -28,6 +28,7 @@ dependencies:
   the_apple_sign_in: ^1.1.1
   intl: ^0.19.0
   flutter_dotenv: ^5.1.0
+  location: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -66,3 +67,4 @@ flutter:
     - assets/team-photo.png
     - assets/brush1.png
     - assets/brush2.png
+    - assets/default_logo.png
