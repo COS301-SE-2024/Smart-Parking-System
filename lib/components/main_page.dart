@@ -67,7 +67,7 @@ class _MainPageState extends State<MainPage> {
       }
     } catch (e) {
       // Handle any errors
-      showToast(message: 'Error retrieving booking details: $e');
+      showToast(message: 'Error retrieving parkings details: $e');
     }
 
     setState((){}); // This will trigger a rebuild with the new values
@@ -195,7 +195,7 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => ZoneSelectPage(bookedAddress: parking.location, price: double.parse(parking.price)),
+                        builder: (_) => ZoneSelectPage(bookedAddress: parking.name, price: double.parse(parking.price)),
                       ),
                     );
                   },
