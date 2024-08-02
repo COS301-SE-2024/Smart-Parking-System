@@ -9,11 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.6
-  flutter_svg: ^1.0.3
-  google_fonts: ^3.0.1
-  flutter_map: ^3.1.0 # Ensure you check for the latest version
-  latlong2: ^0.8.1
+  http: ^1.2.2
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+  flutter_map: ^7.0.2 # Ensure you check for the latest version
+  latlong2: ^0.9.1
   google_maps_flutter: ^2.1.0
   cupertino_icons: ^1.0.6
   font_awesome_flutter: ^10.7.0
@@ -26,13 +26,13 @@ dependencies:
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.1
   the_apple_sign_in: ^1.1.1
-  intl: ^0.17.0
+  intl: ^0.19.0
   flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
@@ -63,3 +63,6 @@ flutter:
     - assets/VW_Logo.png
     - assets/s-map.png
     - assets/smallCar.png
+    - assets/team-photo.png
+    - assets/brush1.png
+    - assets/brush2.png
