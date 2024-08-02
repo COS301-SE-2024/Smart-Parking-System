@@ -31,11 +31,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         showToast(message: 'Profile Updated Successfully!');
         // Optionally, navigate back or to another page
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const SettingsPage(),
-          ),
-        );
+        if (mounted) {  // Check if the widget is still in the tree
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const SettingsPage(),
+            ),
+          );
+        }
       }
     } catch (e) {
       showToast(message: 'Error: $e');

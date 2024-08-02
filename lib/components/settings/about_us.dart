@@ -8,10 +8,10 @@ class AboutUsPage extends StatefulWidget {
   const AboutUsPage({super.key});
 
   @override
-  _AboutUsPageState createState() => _AboutUsPageState();
+  AboutUsPageState createState() => AboutUsPageState();
 }
 
-class _AboutUsPageState extends State<AboutUsPage> {
+class AboutUsPageState extends State<AboutUsPage> {
   int _selectedIndex = 3; // Set to 3 to highlight the Settings icon
 
   @override
