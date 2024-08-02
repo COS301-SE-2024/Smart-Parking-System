@@ -3,7 +3,6 @@ import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
-// import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,28 +67,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     try {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      
-      // Query the 'vehicles' collection for a document with matching userId
+
+      // Query the 'bookings' collection for a document with matching userId
       QuerySnapshot querySnapshot = await firestore
           .collection('bookings')
           .where('userId', isEqualTo: userId)
           .get();
       // Check if a matching document was found
       if (querySnapshot.docs.isNotEmpty) {
-        // // Get the first (and should be only) document
-        // DocumentSnapshot document = querySnapshot.docs.first;
-        // // Retrieve the fields
-        //   bookedLocation = document.get('address') as String;
-        //   bookedZone = document.get('zone') as String;
-        //   bookedLevel = document.get('level') as String;
-        //   bookedRow = document.get('row') as String;
-        //   bookedDate = document.get('date') as String;
-        //   bookedTime = document.get('time') as String;
-        //   bookedPrice = document.get('price') as double;
-        //   bookedDuration = document.get('duration') as double;
-
-        //   //total price calc
-        //   totalPrice = (bookedPrice * bookedDuration).toInt();
         // // Loop through each document
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
@@ -125,11 +110,65 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         });
       } else {
         // No matching document found
-        showToast(message: 'No bookings found for userId: $userName');
+        showToast(message: 'No bookings found for user: $userName');
       }
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving booking details: $e');
+    }
+
+
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Query the 'past_bookings' collection for a document with matching userId
+      QuerySnapshot querySnapshot = await firestore
+          .collection('past_bookings')
+          .where('userId', isEqualTo: userId)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // // Loop through each document
+        for (var document in querySnapshot.docs) {
+          // Retrieve the fields
+          String bookedLocation = document.get('address') as String;
+          String bookedZone = document.get('zone') as String;
+          String bookedLevel = document.get('level') as String;
+          String bookedRow = document.get('row') as String;
+          String bookedDate = document.get('date') as String;
+          String bookedTime = document.get('time') as String;
+          int bookedPrice = document.get('price') as int;
+          int bookedDuration = document.get('duration') as int;
+
+          // Calculate total price
+          int totalPrice = (bookedPrice * bookedDuration).toInt();
+
+          // Add to reservedspots list
+          completedsessions.add(CompletedSession(
+            bookedDate,
+            bookedTime,
+            'R $totalPrice',
+            bookedLocation,
+            'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+          ));
+        }
+
+        completedsessions.sort((a, b) {
+          int dateComparison = a.date.compareTo(b.date);
+          if (dateComparison != 0) {
+            return dateComparison;
+          } else {
+            return a.time.compareTo(b.time);
+          }
+        });
+      } else {
+        // No matching document found
+        showToast(message: 'No bookings found for user: $userName');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving past booking details: $e');
     }
 
     setState((){}); // This will trigger a rebuild with the new values
@@ -142,8 +181,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   ];
 
   List<ReservedSpot> reservedspots = [
-    // ReservedSpot(bookedDate, bookedTime, totalPrice, bookedLocation, 'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow'),
-    // ReservedSpot('02/09/2019', '02:00pm', 'R100', 'Sandton City', 'A3C'),
     // Add more sessions here
   ];
 
@@ -151,21 +188,10 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     // Add more sessions here
   ];
 
-  // void initReservedSpots() {
-  //   reservedspots = [
-  //     ReservedSpot(bookedDate, bookedTime, 'R $totalPrice', bookedLocation, 'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow'),
-  //     // Add more sessions here
-  //   ];
-  //   setState((){}); // This will trigger a rebuild with the new values
-  // }
-
   @override
   void initState() {
     super.initState();
     getDetails();
-    // .then((_) {
-    //   initReservedSpots();
-    // });
   }
   @override
   Widget build(BuildContext context) {
@@ -225,26 +251,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             ),
             const SizedBox(height: 20),
             // Reserved Spots
-             const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Reserved Spots',
-                        style: TextStyle(
-                          color: Colors.tealAccent,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'View all',
-                        style: TextStyle(
-                          color: Colors.tealAccent,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+             const Text(
+                'Reserved Spots',
+                style: TextStyle(
+                  color: Colors.tealAccent,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,25 +269,13 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             ),
             const SizedBox(height: 20),
             // Completed Sessions
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Completed Sessions',
-                  style: TextStyle(
-                    color: Colors.tealAccent,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'View all',
-                  style: TextStyle(
-                    color: Colors.tealAccent,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+            const Text(
+              'Completed Sessions',
+              style: TextStyle(
+                color: Colors.tealAccent,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 20),          
             Column(
