@@ -5,7 +5,7 @@ import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
 class AboutUsPage extends StatefulWidget {
-  const AboutUsPage({Key? key}) : super(key: key);
+  const AboutUsPage({super.key});
 
   @override
   _AboutUsPageState createState() => _AboutUsPageState();
@@ -17,11 +17,11 @@ class _AboutUsPageState extends State<AboutUsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2D2F3E),
+      backgroundColor: const Color(0xFF2D2F3E),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: const Size.fromHeight(100),
         child: AppBar(
-          backgroundColor: Color(0xFF2D2F3E),
+          backgroundColor: const Color(0xFF2D2F3E),
           elevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: SafeArea(
@@ -29,24 +29,24 @@ class _AboutUsPageState extends State<AboutUsPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                      Text(
+                      const Text(
                         'About us',
                         style: TextStyle(
-                          color: const Color(0xFF58C6A9),
+                          color: Color(0xFF58C6A9),
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 48), // To balance the layout
+                      const SizedBox(width: 48), // To balance the layout
                     ],
                   ),
                 ),
@@ -82,12 +82,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
                         ),
                       ),
                       CustomPaint(
-                        size: Size(300, 300),
+                        size: const Size(300, 300),
                         painter: CircleWithSplashes(),
                       ),
                       Column(
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(width: 90),
@@ -105,7 +105,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
@@ -119,9 +119,9 @@ class _AboutUsPageState extends State<AboutUsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                  const SizedBox(height: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Text(
                       'We are a passionate team of developers who thrive on overcoming challenges together. With creativity and bright solutions, we turn every obstacle into an opportunity for innovation.',
                       textAlign: TextAlign.center,
@@ -227,7 +227,7 @@ class CircleWithSplashes extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFF23223A)
+      ..color = const Color(0xFF23223A)
       ..style = PaintingStyle.fill;
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;

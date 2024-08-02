@@ -5,23 +5,23 @@ import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
 class PrivacyPolicyPage extends StatefulWidget {
-  const PrivacyPolicyPage({Key? key}) : super(key: key);
+  const PrivacyPolicyPage({super.key});
 
   @override
-  _PrivacyPolicyPageState createState() => _PrivacyPolicyPageState();
+  PrivacyPolicyPageState createState() => PrivacyPolicyPageState();
 }
 
-class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
+class PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   int _selectedIndex = 3; // Assuming this is a new tab or under settings
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2D2F3E),
+      backgroundColor: const Color(0xFF2D2F3E),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: const Size.fromHeight(100),
         child: AppBar(
-          backgroundColor: Color(0xFF2D2F3E),
+          backgroundColor: const Color(0xFF2D2F3E),
           elevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: SafeArea(
@@ -29,16 +29,16 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                      Text(
+                      const Text(
                         'Privacy policy',
                         style: TextStyle(
                           color: Color(0xFF5CEAD8),
@@ -46,7 +46,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 48), // To balance the layout
+                      const SizedBox(width: 48), // To balance the layout
                     ],
                   ),
                 ),
@@ -57,18 +57,18 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSection('Introduction', 'We are committed to protecting your privacy. This policy outlines how we collect, use, and secure your data.'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildSection('Information We Collect', 'We collect certain information, including your vehicle\'s number plate, to improve our app\'s functionality.'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildSection('Data Usage', 'Your data is used solely within the app and is never shared with third parties.'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildSection('Data Security', 'All data is encrypted to ensure your privacy and security.'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildSection('Your Rights', 'You can access or request the deletion of your data at any time.'),
             ],
           ),
@@ -165,16 +165,16 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           content,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 14,
           ),

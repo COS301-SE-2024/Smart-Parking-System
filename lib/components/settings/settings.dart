@@ -274,7 +274,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/settings/aboutUs.dart'; 
+import 'package:smart_parking_system/components/settings/aboutus.dart'; 
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
@@ -446,7 +446,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => AboutUsPage(),
+                    builder: (_) => const AboutUsPage(),
                   ),
                 );
               },
