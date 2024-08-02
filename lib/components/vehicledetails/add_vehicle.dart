@@ -2,104 +2,51 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
-class EditVehiclePage extends StatefulWidget {
-  final String brand;
-  final String model;
-  final String color;
-  final String license;
-  final String vehicleId;
-
-  const EditVehiclePage({
-    super.key,
-    required this.brand,
-    required this.model,
-    required this.color,
-    required this.license,
-    required this.vehicleId,
-  });
+class AddVehiclePage extends StatefulWidget {
+  const AddVehiclePage({super.key});
 
   @override
-  State<EditVehiclePage> createState() => _CarDetailsPageState();
+  State<AddVehiclePage> createState() => _CarDetailsPageState();
 }
 
-class _CarDetailsPageState extends State<EditVehiclePage> {
-  late final TextEditingController _brandController;
-  late final TextEditingController _modelController;
-  late final TextEditingController _colorController;
-  late final TextEditingController _licenseController;
-  late String imageDirect;
+class _CarDetailsPageState extends State<AddVehiclePage> {
+  final TextEditingController _brandController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
 
-  Future<void> _updateVehicleDetails() async {
+  Future<void> _addVehicleDetails() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('vehicles')
-            .doc(widget.vehicleId)
-            .update({
-          'vehicleBrand': _brandController.text,
-          'vehicleModel': _modelController.text,
-          'vehicleColor': _colorController.text,
+        await FirebaseFirestore.instance.collection('vehicles').add({
           'licenseNumber': _licenseController.text,
+          'vehicleBrand': _brandController.text,
+          'vehicleColor': _colorController.text,
+          'vehicleModel': _modelController.text,
+          'userId': user.uid,
         });
-
-        if (mounted){
-            showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: const Color(0xFF2D2F41),
-                title: const Text(
-                  'Successfully Updated!',
-                  style: TextStyle(color: Colors.white),
-                ),
-                actions: [
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        'OK',
-                        style: TextStyle(color: Color(0xFF58C6A9)),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-        
       }
     } catch (e) {
       showToast(message: 'Error: $e');
     }
   }
 
-
+  // void getInformation(){
+  //   _brandController.text = 'VW';
+  //   _colorController.text = 'Blue';
+  //   _licenseController.text = 'TX029GP';
+  //   _modelController.text = 'Citi Golf';
+  // }
 
   @override
   void initState() {
     super.initState();
-    _brandController = TextEditingController(text: widget.brand);
-    _modelController = TextEditingController(text: widget.model);
-    _colorController = TextEditingController(text: widget.color);
-    _licenseController = TextEditingController(text: widget.license);
-
-    switch (widget.brand.toLowerCase()) {
-          case 'vw':
-            imageDirect = 'assets/VW_Logo.png';
-            break;
-          case 'audi':
-            imageDirect = 'assets/Audi_Logo.png';
-            break;
-          default:
-            imageDirect = 'assets/default_logo.png'; // You might want to have a default logo
-        }
+    // getInformation();
   }
 
   
@@ -124,7 +71,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                         // Add your onPressed logic here
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => const ViewVehiclePage(),
+                            builder: (_) => const SettingsPage(),
                           ),
                         );
                       },
@@ -162,7 +109,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
               ),
               child: Center(
                 child: Image.asset(
-                  imageDirect, // Make sure this path is correct
+                  'assets/Audio_r8.png', // Make sure this path is correct
                   width: 150, // Adjust the image size as needed
                   height: 150,
                   fit: BoxFit.contain, // This will ensure the image fits within the circle
@@ -186,50 +133,34 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                   children: [
                     ProfileField(
                       label: 'Vehicle Brand',
-                      value: 'BMW',
+                      value: '',
                       controller: _brandController,
                     ),
                     ProfileField(
                       label: 'Vehicle Model',
-                      value: 'M3',
+                      value: '',
                       controller: _modelController,
                     ),
                     ProfileField(
                       label: 'Color',
-                      value: 'Grey White',
+                      value: '',
                       controller: _colorController,
                     ),
                     ProfileField(
                       label: 'License Number',
-                      value: 'NFSMW',
+                      value: '',
                       controller: _licenseController,
                     ),
                     const SizedBox(height: 30,),
                     ElevatedButton(
                       onPressed: () {
-                        // Handle save button
-                        _updateVehicleDetails();
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return AlertDialog(
-                        //       backgroundColor: const Color(0xFF2D2F41),
-                              
-                        //       title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
-                              
-                        //       actions: [
-                        //         Center(
-                        //           child: TextButton(
-                        //             onPressed: () {
-                        //               Navigator.of(context).pop();
-                        //             },
-                        //             child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     );
-                        //   },
-                        // );
+                        // Handle add button
+                        _addVehicleDetails();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const ViewVehiclePage(),
+                          ),
+                        );
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF58C6A9),
@@ -242,7 +173,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                       ),
                     ),
                     child: const Text(
-                      'Save',
+                      'Add Vehicle',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
