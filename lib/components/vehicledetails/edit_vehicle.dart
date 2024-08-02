@@ -92,10 +92,10 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
 
     switch (widget.brand.toLowerCase()) {
           case 'vw':
-            imageDirect = 'assets/VW_logo.png';
+            imageDirect = 'assets/VW_Logo.png';
             break;
           case 'audi':
-            imageDirect = 'assets/Audi_logo.png';
+            imageDirect = 'assets/Audi_Logo.png';
             break;
           default:
             imageDirect = 'assets/default_logo.png'; // You might want to have a default logo
