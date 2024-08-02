@@ -52,7 +52,7 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                 const SizedBox(height: 60),
                  ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ParkingHistoryPage(),
                         ),

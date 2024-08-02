@@ -390,6 +390,36 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Insert here what Top Up does
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.add,
+                            color: Color(0xFF58C6A9),
+                          ),
+                          const SizedBox(width: 10),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const AddCardPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Add New Card',
+                              style: TextStyle(color: Color(0xFF58C6A9)),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -443,25 +473,25 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const SettingsPage(),
                     ),
