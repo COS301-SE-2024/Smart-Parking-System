@@ -34,24 +34,8 @@ class SelectRowPageState extends State<SelectRowPage> {
   int totalSlots = 0;
 
   List<RowSpace> rows = [
-    // RowSpace('A', 4),
-    // RowSpace('B', 0),
-    // RowSpace('C', 6),
-    // RowSpace('D', 2),
-    // RowSpace('E', 0),
     // Add more rows here
   ];
-
-
-
-
-
-
-
-
-
-
-
 
   static String extractSlotsAvailable(String slots) {
     // Use a regular expression to match the first number
@@ -66,89 +50,6 @@ class SelectRowPageState extends State<SelectRowPage> {
     // Return a default value if no match is found
     return "0";
   }
-  //   // Get details on load
-  // Future<void> getDetails() async {
-  //   try {
-  //     // Get a reference to the Firestore instance
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  //     // Query the 'parkings' collection for a document with matching name
-  //     QuerySnapshot querySnapshot = await firestore
-  //         .collection('parkings')
-  //         .where('name', isEqualTo: widget.bookedAddress)
-  //         .get();
-
-  //     // Check if a matching document was found
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       // Get the document snapshot
-  //       DocumentSnapshot parkingDocumentSnapshot = querySnapshot.docs[0];
-
-  //       // Get the subcollection 'zones'
-  //       CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');
-
-  //       // Query the 'zones' subcollection for a document with matching id
-  //       DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();
-
-  //       // Check if a matching document was found
-  //       if (zoneDocumentSnapshot.exists) {
-  //         // Get the subcollection 'levels'
-  //         CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');
-
-  //         // Query the 'levels' subcollection for all documents
-  //         QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();
-
-  //         // Check if there are any documents
-  //         if (levelsQuerySnapshot.docs.isNotEmpty) {
-  //           // Loop through each document
-  //           for (var levelDocument in levelsQuerySnapshot.docs) {
-  //             // Retrieve the fields
-  //             String level = levelDocument.id;
-  //             String slots = levelDocument.get('slots') as String;
-
-  //             // Calculate total price
-  //             int availableSlots = int.parse(extractSlotsAvailable(slots));
-
-  //             // Add to levels list
-  //             rows.add(RowSpace(
-  //               level,
-  //               availableSlots,
-  //             ));
-  //           }
-
-  //           // Sort the levels list
-  //           rows.sort((a, b) {
-  //             int comparison = a.row.compareTo(b.row);
-  //             if (comparison != 0) {
-  //               return comparison;
-  //             } else {
-  //               return a.row.compareTo(b.row);
-  //             }
-  //           });
-  //         } else {
-  //           // No levels found
-  //           showToast(message: 'No levels found for zone: ${widget.selectedZone}');
-  //         }
-  //       } else {
-  //         // No zone found
-  //         showToast(message: 'No zone found: ${widget.selectedZone}');
-  //       }
-  //     } else {
-  //       // No parking found
-  //       showToast(message: 'No parking found: ${widget.bookedAddress}');
-  //     }
-
-  //     // Calculate total slots
-  //     totalSlots = rows.fold(0, (tot, row) => tot + row.slots);
-  //   } catch (e) {
-  //     // Handle any errors
-  //     showToast(message: 'Error retrieving level details: $e');
-  //   }
-
-  //   setState(() {}); // This will trigger a rebuild with the new values
-  // }
-
-
-
     // Get details on load
   Future<void> getDetails() async {
     try {
@@ -241,18 +142,6 @@ class SelectRowPageState extends State<SelectRowPage> {
 
     setState(() {}); // This will trigger a rebuild with the new values
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   void initState() {

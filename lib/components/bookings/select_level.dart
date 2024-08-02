@@ -94,7 +94,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
 
             // Sort the levels list
             levels.sort((a, b) {
-              int comparison = a.level.compareTo(b.level);
+              int comparison = b.level.compareTo(a.level);
               if (comparison != 0) {
                 return comparison;
               } else {
@@ -123,19 +123,6 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
 
     setState(() {}); // This will trigger a rebuild with the new values
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   void initState() {

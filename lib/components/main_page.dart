@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   final TextEditingController _destinationController = TextEditingController();
 
-  late Parking parking;
+  Parking parking = Parking('', '', '', '');
   final String distanceToVenue = '3 mins drive';                            ///Adjust with maps implementation
     // Get details on load
   Future<void> getDetails() async {
