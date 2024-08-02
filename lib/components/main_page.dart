@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -15,6 +19,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool _isModalVisible = false;
   int _selectedIndex = 0;
+  LocationData? locationData;
+  final Completer<GoogleMapController> _controller = Completer();
 
   final TextEditingController _destinationController = TextEditingController();
 
@@ -27,6 +33,43 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    requestLocation();
+  }
+
+  void requestLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    locationData = await location.getLocation();
+    setState(() {}); // Notify the framework that the internal state of this object has changed.
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(locationData!.latitude!, locationData!.longitude!),
+          zoom: 15.0,
+        ),
+      ),
+    );
   }
 
   @override
@@ -175,13 +218,20 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/map.webp'),
-                fit: BoxFit.cover,
-              ),
+          GoogleMap(
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(-26.270760, 28.112268), // Default location
+              zoom: 10,
             ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+              if (locationData != null) {
+                controller.animateCamera(CameraUpdate.newLatLngZoom(
+                  LatLng(locationData!.latitude!, locationData!.longitude!), 15.0,
+                ));
+              }
+            },
+            myLocationEnabled: true,
           ),
           Positioned(
             top: 80.0,
