@@ -362,6 +362,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                           const SizedBox(height: 20),
                         ],
                       ),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GestureDetector(
@@ -377,7 +378,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                             const SizedBox(width: 10),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) => const AddCardPage(),
                                   ),
@@ -390,37 +391,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Insert here what Top Up does
-                      },
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.add,
-                            color: Color(0xFF58C6A9),
-                          ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const AddCardPage(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Add New Card',
-                              style: TextStyle(color: Color(0xFF58C6A9)),
-                            ),
-                          ),
-                        ],
                       ),
+                      
                     ),
                     const SizedBox(height: 20),
                   ],
