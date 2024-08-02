@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
 class AddCardPage extends StatefulWidget {
   const AddCardPage({super.key});
 
   @override
-  _AddCardPageState createState() => _AddCardPageState();
+  AddCardPageState createState() => AddCardPageState();
 }
 
-class _AddCardPageState extends State<AddCardPage> {
+class AddCardPageState extends State<AddCardPage> {
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _holderNameController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
@@ -28,11 +27,13 @@ class _AddCardPageState extends State<AddCardPage> {
       'userId': userId,
     });
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const PaymentMethodPage(),
-      ),
-    );
+    if (mounted) {  // Check if the widget is still in the tree
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => const PaymentMethodPage(),
+        ),
+      );
+    }
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_parking_system/components/card/add_card.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -40,6 +39,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         fetchedCards.add({
           'id': doc.id,
           'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
+          // ignore: prefer_interpolation_to_compose_strings
           'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
@@ -52,6 +52,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         cards = fetchedCards;
       });
     } catch (e) {
+      // ignore: avoid_print
       print('Error fetching cards: $e');
       // 这里可以添加更多错误处理逻辑
     }
@@ -189,6 +190,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       .update(updatedData);
 
                   await _fetchCards();
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },
