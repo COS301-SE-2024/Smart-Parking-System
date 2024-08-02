@@ -4,6 +4,9 @@ import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
+//Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -12,22 +15,89 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+class Parking {
+  final String location;
+  final String name;
+  final String price;
+  final String slots;
+
+  Parking(this.location, this.name, this.price, this.slots);
+}
+
 class _MainPageState extends State<MainPage> {
   bool _isModalVisible = false;
   int _selectedIndex = 0;
-
   final TextEditingController _destinationController = TextEditingController();
 
+  late Parking parking;
+  final String distanceToVenue = '3 mins drive';                            ///Adjust with maps implementation
+    // Get details on load
+  Future<void> getDetails() async {
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final double pricePerHour = 10;
-  final String parkingLocation = 'Sandton City Centre';
-  final String spacesAvailable = '5 slots';
-  final String distanceToVenue = '3 mins drive';
+      // Query the 'bookings' collection for a document with matching userId
+      QuerySnapshot querySnapshot = await firestore
+          .collection('parkings')
+          .limit(1)
+          .get();
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // // Loop through each document
+        var document = querySnapshot.docs.first;
+
+        // Retrieve the fields
+        String location = document.get('location') as String;
+        String name = document.get('name') as String;
+        String price = document.get('price') as String;
+        String slots = document.get('slots_available') as String;
+
+        // Add to reservedspots list
+        parking = Parking(
+          location,
+          name,
+          price,
+          slots,
+        );
+        spacesAvailable = extractSlotsAvailable(parking.slots);
+      } else {
+        // No matching document found
+        showToast(message: 'No parkings found');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving booking details: $e');
+    }
+
+    setState((){}); // This will trigger a rebuild with the new values
+  }
+
 
   @override
   void initState() {
     super.initState();
+    getDetails();
   }
+
+  static String extractSlotsAvailable(String slots) {
+    // Use a regular expression to match the first number
+    RegExp regex = RegExp(r'^\d+');
+    Match? match = regex.firstMatch(slots);
+    
+    if (match != null) {
+      String number = match.group(0)!;
+      return "$number slots";
+    }
+    
+    // Return a default value if no match is found
+    return "0 slots";
+  }
+
+  // final double pricePerHour = 10;
+  // final String parkingLocation = 'Sandton City Centre';
+  // final String spacesAvailable = '5 slots';
+  String spacesAvailable = "";
 
   @override
   void dispose() {
@@ -53,7 +123,7 @@ class _MainPageState extends State<MainPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'R${pricePerHour.toInt()} /Hr',
+                    'R${parking.price} /Hr',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -61,7 +131,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   Text(
-                    parkingLocation,
+                    parking.name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -125,7 +195,7 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (_) => ZoneSelectPage(bookedAddress: parkingLocation, price: pricePerHour),
+                        builder: (_) => ZoneSelectPage(bookedAddress: parking.location, price: double.parse(parking.price)),
                       ),
                     );
                   },
@@ -240,9 +310,9 @@ class _MainPageState extends State<MainPage> {
                         const Divider(color: Colors.white),
                         ListTile(
                           leading: const Icon(Icons.circle, color: Colors.white, size: 12),
-                          title: const Text(
-                            'Sandton City, Johannesburg, South Africa',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          title:  Text(
+                            parking.location,
+                            style: const TextStyle(color: Colors.white, fontSize: 14),
                           ),
                           onTap: () {
                             setState(() {
