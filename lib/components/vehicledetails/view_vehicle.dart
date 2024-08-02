@@ -35,10 +35,10 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
         String imageDirector;
         switch (data['vehicleBrand']?.toLowerCase()) {
           case 'vw':
-            imageDirector = 'assets/VW_logo.png';
+            imageDirector = 'assets/VW_Logo.png';
             break;
           case 'audi':
-            imageDirector = 'assets/Audi_logo.png';
+            imageDirector = 'assets/Audi_Logo.png';
             break;
           default:
             imageDirector = 'assets/default_logo.png'; // You might want to have a default logo

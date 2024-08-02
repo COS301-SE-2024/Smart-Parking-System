@@ -21,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   LocationData? locationData;
   final Completer<GoogleMapController> _controller = Completer();
+  bool _locationPermissionGranted = false;
 
   final TextEditingController _destinationController = TextEditingController();
 
@@ -57,7 +58,7 @@ class _MainPageState extends State<MainPage> {
         return;
       }
     }
-
+    _locationPermissionGranted = true;
     locationData = await location.getLocation();
     setState(() {}); // Notify the framework that the internal state of this object has changed.
 
@@ -231,7 +232,7 @@ class _MainPageState extends State<MainPage> {
                 ));
               }
             },
-            myLocationEnabled: true,
+            myLocationEnabled: _locationPermissionGranted,
           ),
           Positioned(
             top: 80.0,
