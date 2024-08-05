@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,15 +18,15 @@ class _AddCardPageState extends State<AddCardPage> {
   final TextEditingController _cvvController = TextEditingController();
 
   Future<void> _saveCardDetails() async {
-    // Replace 'userId' with the actual user ID
-    String userId = "lhfXz2ynvue4ZOQJ5XQ9QT6oghu1";
 
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
     await FirebaseFirestore.instance.collection('cards').add({
       'cardNumber': _cardNumberController.text,
       'holderName': _holderNameController.text,
       'expiry': _expiryController.text,
       'cvv': _cvvController.text,
-      'userId': userId,
+      'userId': user.uid,
     });
 
     Navigator.of(context).pushReplacement(
@@ -33,7 +34,7 @@ class _AddCardPageState extends State<AddCardPage> {
         builder: (_) => const PaymentMethodPage(),
       ),
     );
-  }
+  }}
 
   @override
   Widget build(BuildContext context) {

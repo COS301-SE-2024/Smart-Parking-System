@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,12 +27,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   }
 
   Future<void> _fetchCards() async {
-    String userId = "lhfXz2ynvue4ZOQJ5XQ9QT6oghu1"; // 替换为实际的用户 ID
+    User? user = FirebaseAuth.instance.currentUser;
 
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('cards')
-          .where('userId', isEqualTo: userId)
+          .where('userId', isEqualTo: user?.uid)
           .get();
 
       final List<Map<String, String>> fetchedCards = [];
@@ -39,12 +40,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         final data = doc.data() as Map<String, dynamic>;
         fetchedCards.add({
           'id': doc.id,
-          'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
+          'bank': data['bank'] ?? '',
           'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
-          'image': 'assets/mastercard.png' // 默认图片，您可以根据实际情况进行修改
+          'image': 'assets/mastercard.png'
         });
       }
 
