@@ -17,13 +17,14 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
-  double creditAmount = 60.00; // Changed to double for calculation
+  double creditAmount = 0.00; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
 
   @override
   void initState() {
     super.initState();
     _fetchCards();
+    _fetchCreditAmount();
   }
 
   Future<void> _fetchCards() async {
@@ -58,6 +59,25 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     }
   }
 
+  Future<void> _fetchCreditAmount() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final data = userDoc.data() as Map<String, dynamic>;
+      setState(() {
+        creditAmount = data['balance']?.toDouble() ?? 0.00;
+      });
+    } catch (e) {
+      print('Error fetching credit amount: $e');
+      // 这里可以添加更多错误处理逻辑
+    }
+  }
+
   Future<void> _showTopUpDialog() async {
     double? topUpAmount;
 
@@ -87,11 +107,24 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             ),
             TextButton(
               child: const Text('Top Up', style: TextStyle(color: Colors.tealAccent)),
-              onPressed: () {
+              onPressed: () async {
                 if (topUpAmount != null && topUpAmount! > 0) {
+                  User? user = FirebaseAuth.instance.currentUser;
                   setState(() {
                     creditAmount += topUpAmount!;
                   });
+
+                  // Update credit amount in Firestore
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid)
+                        .update({'balance': creditAmount});
+                  } catch (e) {
+                    print('Error updating credit amount: $e');
+                    // 这里可以添加更多错误处理逻辑
+                  }
+
                   Navigator.of(context).pop();
                 }
               },
