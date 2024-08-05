@@ -104,6 +104,22 @@ class AddCardRegistrationPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
+                    controller: bankController,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      labelText: 'Bank',
+                      labelStyle: TextStyle(color: Colors.grey),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextField(
                     controller: holderNameController,
                     decoration: const InputDecoration(
                       filled: true,

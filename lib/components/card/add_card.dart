@@ -121,7 +121,7 @@ class _AddCardPageState extends State<AddCardPage> {
                   ),
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: 10.0),
                 TextField(
                   controller: _bankController,
                   decoration: const InputDecoration(
