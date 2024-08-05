@@ -140,6 +140,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     String? newCvv;
     String? newName;
     String? newExpiry;
+    String? newBank;
 
     await showDialog(
       context: context,
@@ -197,6 +198,18 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   newExpiry = value;
                 },
               ),
+              const SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.text,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new bank',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newBank = value;
+                },
+              ),
             ],
           ),
           actions: [
@@ -215,6 +228,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     if (newCvv != null && newCvv!.isNotEmpty) 'cvv': newCvv!,
                     if (newName != null && newName!.isNotEmpty) 'holderName': newName!,
                     if (newExpiry != null && newExpiry!.isNotEmpty) 'expiry': newExpiry!,
+                    if (newBank != null && newBank!.isNotEmpty) 'bank': newBank!,
                   };
 
                   await FirebaseFirestore.instance
