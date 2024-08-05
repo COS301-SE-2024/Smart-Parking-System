@@ -16,25 +16,38 @@ class _AddCardPageState extends State<AddCardPage> {
   final TextEditingController _holderNameController = TextEditingController();
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
+  final TextEditingController _bankController = TextEditingController();
 
   Future<void> _saveCardDetails() async {
-
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-    await FirebaseFirestore.instance.collection('cards').add({
-      'cardNumber': _cardNumberController.text,
-      'holderName': _holderNameController.text,
-      'expiry': _expiryController.text,
-      'cvv': _cvvController.text,
-      'userId': user.uid,
-    });
+      try {
+        await FirebaseFirestore.instance.collection('cards').add({
+          'cardNumber': _cardNumberController.text,
+          'holderName': _holderNameController.text,
+          'expiry': _expiryController.text,
+          'cvv': _cvvController.text,
+          'userId': user.uid,
+          'bank': _bankController.text,
+        });
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const PaymentMethodPage(),
-      ),
-    );
-  }}
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => const PaymentMethodPage(),
+          ),
+        );
+      } catch (e) {
+        print('Error saving card details: $e');
+        // 这里可以添加更多错误处理逻辑，例如显示错误消息给用户
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save card details: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +104,7 @@ class _AddCardPageState extends State<AddCardPage> {
                     child: Image.asset('assets/main_add_card.png'),
                   ),
                 ),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: 10.0),
                 TextField(
                   controller: _cardNumberController,
                   decoration: const InputDecoration(
@@ -107,6 +120,22 @@ class _AddCardPageState extends State<AddCardPage> {
                     ),
                   ),
                   keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 40.0),
+                TextField(
+                  controller: _bankController,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: Colors.transparent,
+                    labelText: 'Bank',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10.0),
                 TextField(

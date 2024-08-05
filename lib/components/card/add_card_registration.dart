@@ -13,6 +13,7 @@ class AddCardRegistrationPage extends StatelessWidget {
     final TextEditingController holderNameController = TextEditingController();
     final TextEditingController expiryController = TextEditingController();
     final TextEditingController cvvController = TextEditingController();
+    final TextEditingController bankController = TextEditingController();
 
     Future<void> addCardDetails() async {
       try {
@@ -25,6 +26,7 @@ class AddCardRegistrationPage extends StatelessWidget {
             'holderName': holderNameController.text,
             'expiry': expiryController.text,
             'cvv': cvvController.text,
+            'bank': bankController.text,
           });
 
           showToast(message: 'Card Added Successfully!');
