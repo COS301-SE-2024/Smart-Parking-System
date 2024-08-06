@@ -7,6 +7,7 @@ import 'package:smart_parking_system/components/sidebar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'dart:async';
 
 class ParkingHistoryPage extends StatefulWidget {
   const ParkingHistoryPage({super.key});
@@ -19,9 +20,10 @@ class ActiveSession {
   final String rate;
   final String address;
   final String parkingslot;
-  final String remainingtime;
+  String remainingtime;
+  final DateTime endTime;
 
-  ActiveSession(this.rate, this.address, this.parkingslot, this.remainingtime);
+  ActiveSession(this.rate, this.address, this.parkingslot, this.remainingtime, this.endTime);
 }
 
 class ReservedSpot {
@@ -44,19 +46,40 @@ class CompletedSession {
   CompletedSession(this.date, this.time, this.amount, this.address, this.parkingslot);
 }
 
-
-
 class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   // Variables
-  String bookedLocation = '';
-  String bookedZone = '';
-  String bookedLevel = '';
-  String bookedRow = '';
-  String bookedDate = '';
-  String bookedTime = '';
-  double bookedPrice = 0;
-  double bookedDuration = 0;
-  int totalPrice = 0;
+  List<ActiveSession> activesessions = [];
+  List<ReservedSpot> reservedspots = [];
+  List<CompletedSession> completedsessions = [];
+
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    getDetails().then((_) {
+      _startTimer();
+    });
+  }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      setState(() {
+        for (var session in activesessions) {
+          Duration remaining = session.endTime.difference(DateTime.now());
+          if (remaining.isNegative) {
+            session.remainingtime = '0h 0m';
+          } else {
+            session.remainingtime = '${remaining.inHours}h ${remaining.inMinutes % 60}m';
+          }
+        }
+      });
+    });
+  }
 
   // Get details on load
   Future<void> getDetails() async {
@@ -75,7 +98,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           .get();
       // Check if a matching document was found
       if (querySnapshot.docs.isNotEmpty) {
-        // // Loop through each document
+        // Loop through each document
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
           String bookedLocation = document.get('address') as String;
@@ -90,16 +113,41 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           // Calculate total price
           int totalPrice = (bookedPrice * bookedDuration).toInt();
 
-          // Add to reservedspots list
-          reservedspots.add(ReservedSpot(
-            bookedDate,
-            bookedTime,
-            'R $totalPrice',
-            bookedLocation,
-            'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
-          ));
+          // Parse booking date and time
+          DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
+          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: bookedDuration.toInt()));
+          DateTime currentDateTime = DateTime.now();
+
+          // Check booking status
+          if (currentDateTime.isAfter(bookingEndDateTime)) {
+            // Booking is in the past, add to 'past_bookings' and remove from 'bookings'
+            await firestore.collection('past_bookings').add(document.data() as Map<String, dynamic>);
+            await document.reference.delete();
+          } else if (currentDateTime.isAfter(bookingDateTime) && currentDateTime.isBefore(bookingEndDateTime)) {
+            // Booking is currently in progress, add to 'activesessions'
+            Duration remainingDuration = bookingEndDateTime.difference(currentDateTime);
+            activesessions.add(ActiveSession(
+              'R ${bookedPrice.toInt()}',
+              bookedLocation,
+              'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+              '${remainingDuration.inHours}h ${remainingDuration.inMinutes % 60}m',
+              bookingEndDateTime,
+            ));
+          } else {
+            // Booking is in the future, add to 'reservedspots'
+            reservedspots.add(ReservedSpot(
+              bookedDate,
+              bookedTime,
+              'R $totalPrice',
+              bookedLocation,
+              'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+            ));
+          }
         }
 
+        activesessions.sort((a, b) {
+          return a.remainingtime.compareTo(b.remainingtime);
+        });
         reservedspots.sort((a, b) {
           int dateComparison = a.date.compareTo(b.date);
           if (dateComparison != 0) {
@@ -117,11 +165,10 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       showToast(message: 'Error retrieving booking details: $e');
     }
 
-
     try {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      
+
       // Query the 'past_bookings' collection for a document with matching userId
       QuerySnapshot querySnapshot = await firestore
           .collection('past_bookings')
@@ -129,7 +176,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           .get();
       // Check if a matching document was found
       if (querySnapshot.docs.isNotEmpty) {
-        // // Loop through each document
+        // Loop through each document
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
           String bookedLocation = document.get('address') as String;
@@ -138,13 +185,21 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           String bookedRow = document.get('row') as String;
           String bookedDate = document.get('date') as String;
           String bookedTime = document.get('time') as String;
-          int bookedPrice = document.get('price') as int;
-          int bookedDuration = document.get('duration') as int;
-
           // Calculate total price
-          int totalPrice = (bookedPrice * bookedDuration).toInt();
+          int totalPrice;
+          try{
+            int bookedPrice = document.get('price') as int;
+            int bookedDuration = document.get('duration') as int;
+          // Calculate total price
+            totalPrice = (bookedPrice * bookedDuration).toInt();
+          } catch (e) {
+            double bookedPrice = document.get('price') as double;
+            double bookedDuration = document.get('duration') as double;
+          // Calculate total price
+            totalPrice = (bookedPrice * bookedDuration).toInt();
+          }
 
-          // Add to reservedspots list
+          // Add to completedsessions list
           completedsessions.add(CompletedSession(
             bookedDate,
             bookedTime,
@@ -154,7 +209,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           ));
         }
 
-        completedsessions.sort((a, b) {
+        completedsessions.sort((b, a) {
           int dateComparison = a.date.compareTo(b.date);
           if (dateComparison != 0) {
             return dateComparison;
@@ -171,28 +226,73 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       showToast(message: 'Error retrieving past booking details: $e');
     }
 
-    setState((){}); // This will trigger a rebuild with the new values
+    setState(() {}); // This will trigger a rebuild with the new values
+  }
+
+  void _showDeleteConfirmation(BuildContext context, ReservedSpot reservedspot) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Cancel Booking"),
+          content: const Text("Are you sure you want to cancel this booking?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Yes"),
+              onPressed: () {
+                _deleteBooking(reservedspot);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteBooking(ReservedSpot reservedspot) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Query the 'bookings' collection to find the document to delete
+      QuerySnapshot querySnapshot = await firestore
+          .collection('bookings')
+          .where('date', isEqualTo: reservedspot.date)
+          .where('time', isEqualTo: reservedspot.time)
+          .where('address', isEqualTo: reservedspot.address)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Delete the document
+        await querySnapshot.docs.first.reference.delete();
+        
+        // Remove the booking from the local list
+        setState(() {
+          reservedspots.removeWhere((spot) => 
+            spot.date == reservedspot.date && 
+            spot.time == reservedspot.time && 
+            spot.address == reservedspot.address
+          );
+        });
+
+        showToast(message: 'Booking cancelled successfully');
+      } else {
+        showToast(message: 'Booking not found');
+      }
+    } catch (e) {
+      showToast(message: 'Error cancelling booking: $e');
+    }
   }
 
   int _selectedIndex = 2;
 
-  List<ActiveSession> activesessions = [
-    // Add more sessions here
-  ];
-
-  List<ReservedSpot> reservedspots = [
-    // Add more sessions here
-  ];
-
-  List<CompletedSession> completedsessions = [
-    // Add more sessions here
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    getDetails();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -263,7 +363,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: reservedspots.expand((reservedspot) => [
-                _buildReservedSpotItem(reservedspot),
+                _buildReservedSessionItem(reservedspot),
                 const SizedBox(height: 10),
               ]).toList(),
             ),
@@ -281,7 +381,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: completedsessions.expand((completedsession) => [
-                _buildSessionItem(completedsession),
+                _buildCompletedSessionItem(completedsession),
                 const SizedBox(height: 10),
               ]).toList(),
             ),
@@ -378,7 +478,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     );
   }
 
-    Widget _buildSessionItem(CompletedSession completedsession) {
+  Widget _buildCompletedSessionItem(CompletedSession completedsession) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -402,7 +502,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               const Icon(Icons.check_circle, color: Colors.tealAccent, size: 30),
               const SizedBox(width: 10),
               Text(
-                '${completedsession.address} Car Park A\nSpace ${completedsession.parkingslot}',
+                '${completedsession.address}\nSpace ${completedsession.parkingslot}',
                 style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.right, 
               ),
@@ -436,21 +536,21 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     );
   }
 
-  Widget _buildReservedSpotItem(ReservedSpot reservedspot) {
+  Widget _buildReservedSessionItem(ReservedSpot reservedspot) {
     return Container(
       padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF35344A),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF35344A),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -476,16 +576,16 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                    reservedspot.date,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-              Text(
-                reservedspot.time,
+                '${reservedspot.date} @ ${reservedspot.time}',
                 style: const TextStyle(color: Colors.grey),
               ),
               Text(
                 reservedspot.amount,
                 style: const TextStyle(color: Colors.white),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _showDeleteConfirmation(context, reservedspot),
               ),
             ],
           ),
@@ -493,74 +593,74 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       ),
     );
   }
-}
 
-Widget _buildActiveSessionItem(ActiveSession activeSession) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: const Color(0xFF35344A),
-      borderRadius: BorderRadius.circular(8),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.white.withOpacity(0.2),
-          spreadRadius: 1,
-          blurRadius: 8,
-          offset: const Offset(0, 3), // changes position of shadow
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF58C6A9),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'R20/Hr',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+  Widget _buildActiveSessionItem(ActiveSession activeSession) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF35344A),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF58C6A9),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  '${activeSession.rate}/Hr',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Sandton City Car Park A\nSpace 4c',
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.right,  
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        const Divider(
-          color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-          thickness: 1, // Thickness of the lines
-        ),
-        const SizedBox(height: 10),      
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Time Remaining',
-              style: TextStyle(color: Colors.grey),
-            ),
-            Text(
-              '01hr : 30min',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ],
-    ),
-  
-  );
+              const SizedBox(width: 10),
+              Text(
+                '${activeSession.address}\n${activeSession.parkingslot}',
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.right,  
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(
+            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+            thickness: 1, // Thickness of the lines
+          ),
+          const SizedBox(height: 10),      
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Time Remaining',
+                style: TextStyle(color: Colors.grey),
+              ),
+              Text(
+                activeSession.remainingtime,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
+      ),
+    
+    );
+  }
 }
 
 class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
