@@ -4,6 +4,7 @@ import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
+import 'notificationfunction.dart';
 
 class NotificationApp extends StatefulWidget {
   const NotificationApp({super.key});
@@ -123,6 +124,18 @@ class _NotificationPageState extends State<NotificationApp> {
                 _buildNotification(notification),
                 
               ],
+            ),
+            ElevatedButton(
+              onPressed: (){
+                DateTime now = DateTime.now();
+  
+                // Create a DateTime for today at 17:00
+                DateTime bookingTime = DateTime(now.year, now.month, now.day, 15, 0);
+                
+                // Call the bookSlot function
+                bookSlot(bookingTime);
+              },
+              child: Text("Book time slot"),
             ),
           ],
         ),
