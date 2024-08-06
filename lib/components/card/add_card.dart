@@ -30,20 +30,23 @@ class AddCardPageState extends State<AddCardPage> {
           'bank': _bankController.text,
         });
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => const PaymentMethodPage(),
-          ),
-        );
+        if (mounted) {  // Check if the widget is still mounted
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const PaymentMethodPage(),
+            ),
+          );
+        }
       } catch (e) {
-        print('Error saving card details: $e');
         // 这里可以添加更多错误处理逻辑，例如显示错误消息给用户
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to save card details: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (mounted) {  // Check if the widget is still mounted
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to save card details: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }

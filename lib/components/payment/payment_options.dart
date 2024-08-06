@@ -41,6 +41,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         fetchedCards.add({
           'id': doc.id,
           'bank': data['bank'] ?? '',
+          // ignore: prefer_interpolation_to_compose_strings
           'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
@@ -73,7 +74,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         creditAmount = data['balance']?.toDouble() ?? 0.00;
       });
     } catch (e) {
-      print('Error fetching credit amount: $e');
       // 这里可以添加更多错误处理逻辑
     }
   }
@@ -121,10 +121,10 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         .doc(user?.uid)
                         .update({'balance': creditAmount});
                   } catch (e) {
-                    print('Error updating credit amount: $e');
                     // 这里可以添加更多错误处理逻辑
                   }
 
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },
