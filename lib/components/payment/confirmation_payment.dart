@@ -61,7 +61,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
-      _updateSlotAvailability();
+      // _updateSlotAvailability();
 
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
@@ -94,112 +94,112 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
 
-  // Function to update slots field
-  String updateSlot(String slot) {
-    List<String> slotsSplit = slot.split('/');
-    int availableSlots = int.parse(slotsSplit[0]);
-    int totalSlots = int.parse(slotsSplit[1]);
+  // // Function to update slots field
+  // String updateSlot(String slot) {
+  //   List<String> slotsSplit = slot.split('/');
+  //   int availableSlots = int.parse(slotsSplit[0]);
+  //   int totalSlots = int.parse(slotsSplit[1]);
   
-    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
-    // Decrement available slots
-    return '$updatedSlots/$totalSlots';
-  }
-    // Get details on load
-  Future<void> _updateSlotAvailability() async {
-    try {
-      // Get a reference to the Firestore instance
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
+  //   // Decrement available slots
+  //   return '$updatedSlots/$totalSlots';
+  // }
+  //   // Get details on load
+  // Future<void> _updateSlotAvailability() async {
+  //   try {
+  //     // Get a reference to the Firestore instance
+  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Query the 'parkings' collection for a document with matching name
-      QuerySnapshot parkingQuerySnapshot = await firestore
-          .collection('parkings')
-          .where('name', isEqualTo: widget.bookedAddress)
-          .limit(1)
-          .get();
+  //     // Query the 'parkings' collection for a document with matching name
+  //     QuerySnapshot parkingQuerySnapshot = await firestore
+  //         .collection('parkings')
+  //         .where('name', isEqualTo: widget.bookedAddress)
+  //         .limit(1)
+  //         .get();
 
-      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
-        var parkingDocument = parkingQuerySnapshot.docs.first;
-        String updatedSlot = updateSlot(parkingDocument.get('slots_available') as String);
-        parkingDocument.reference.update({'slots_available': updatedSlot});
-      } else {
-        // No parking found
-        showToast(message: 'No parking found for update: ${widget.bookedAddress}');
-      }
+  //     if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+  //       var parkingDocument = parkingQuerySnapshot.docs.first;
+  //       String updatedSlot = updateSlot(parkingDocument.get('slots_available') as String);
+  //       parkingDocument.reference.update({'slots_available': updatedSlot});
+  //     } else {
+  //       // No parking found
+  //       showToast(message: 'No parking found for update: ${widget.bookedAddress}');
+  //     }
 
 
-      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if a matching document was found
-        DocumentSnapshot parkingDocumentSnapshot = parkingQuerySnapshot.docs[0];  // Get the document snapshot
+  //     if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if a matching document was found
+  //       DocumentSnapshot parkingDocumentSnapshot = parkingQuerySnapshot.docs[0];  // Get the document snapshot
 
-        CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');  // Get the subcollection 'zones'
-        DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();  // Query the 'zones' subcollection for a document with matching id
+  //       CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');  // Get the subcollection 'zones'
+  //       DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();  // Query the 'zones' subcollection for a document with matching id
 
-        QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();  // Query the 'rows' subcollection for all documents
-        if (zonesQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
-          for (var zoneDocument in zonesQuerySnapshot.docs) {  // Loop through each document
-            // Update the fields
-            String updatedSlot = updateSlot(zoneDocument.get('slots') as String);
-            if( zoneDocument.id == widget.selectedZone){
-              zoneDocument.reference.update({'slots': updatedSlot});
-            }
-          }
-        } else {
-          // No zones found
-          showToast(message: 'No zone found for update: ${widget.selectedZone}');
-        }
+  //       QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();  // Query the 'rows' subcollection for all documents
+  //       if (zonesQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+  //         for (var zoneDocument in zonesQuerySnapshot.docs) {  // Loop through each document
+  //           // Update the fields
+  //           String updatedSlot = updateSlot(zoneDocument.get('slots') as String);
+  //           if( zoneDocument.id == widget.selectedZone){
+  //             zoneDocument.reference.update({'slots': updatedSlot});
+  //           }
+  //         }
+  //       } else {
+  //         // No zones found
+  //         showToast(message: 'No zone found for update: ${widget.selectedZone}');
+  //       }
       
-        if (zoneDocumentSnapshot.exists) {  // Check if a matching document was found
-          CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');  // Get the subcollection 'levels'
-          DocumentSnapshot levelDocumentSnapshot = await levelsCollection.doc(widget.selectedLevel).get();  // Query the 'levels' subcollection for a document with matching id
+  //       if (zoneDocumentSnapshot.exists) {  // Check if a matching document was found
+  //         CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');  // Get the subcollection 'levels'
+  //         DocumentSnapshot levelDocumentSnapshot = await levelsCollection.doc(widget.selectedLevel).get();  // Query the 'levels' subcollection for a document with matching id
 
-          QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();  // Query the 'rows' subcollection for all documents
-          if (levelsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
-            for (var levelDocument in levelsQuerySnapshot.docs) {  // Loop through each document
-              // Update the fields
-              String updatedSlot = updateSlot(levelDocument.get('slots') as String);
-              if( levelDocument.id == widget.selectedLevel){
-                levelDocument.reference.update({'slots': updatedSlot});
-              }
-            }
-          } else {
-            // No levels found
-            showToast(message: 'No level found for update: ${widget.selectedLevel}');
-          }
+  //         QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();  // Query the 'rows' subcollection for all documents
+  //         if (levelsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+  //           for (var levelDocument in levelsQuerySnapshot.docs) {  // Loop through each document
+  //             // Update the fields
+  //             String updatedSlot = updateSlot(levelDocument.get('slots') as String);
+  //             if( levelDocument.id == widget.selectedLevel){
+  //               levelDocument.reference.update({'slots': updatedSlot});
+  //             }
+  //           }
+  //         } else {
+  //           // No levels found
+  //           showToast(message: 'No level found for update: ${widget.selectedLevel}');
+  //         }
         
-          if (levelDocumentSnapshot.exists) {  // Check if a matching document was found
+  //         if (levelDocumentSnapshot.exists) {  // Check if a matching document was found
 
-            CollectionReference rowsCollection = levelDocumentSnapshot.reference.collection('rows');  // Get the subcollection 'rows'
-            QuerySnapshot rowsQuerySnapshot = await rowsCollection.get();  // Query the 'rows' subcollection for all documents
-            if (rowsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
-              for (var rowDocument in rowsQuerySnapshot.docs) {  // Loop through each document
-                // Update the fields
-                String updatedSlot = updateSlot(rowDocument.get('slots') as String);
-                if( rowDocument.id == widget.selectedRow){
-                  rowDocument.reference.update({'slots': updatedSlot});
-                }
-              }
-            } else {
-              // No rows found
-              showToast(message: 'No row found for update: ${widget.selectedRow}');
-            }
-          } else {
-            // No level found
-            showToast(message: 'No level found: ${widget.selectedLevel}');
-          }
-        } else {
-          // No zone found
-          showToast(message: 'No zone found: ${widget.selectedZone}');
-        }
-      } else {
-        // No parking found
-        showToast(message: 'No parking found: ${widget.bookedAddress}');
-      }
-    } catch (e) {
-      // Handle any errors
-      showToast(message: 'Error updating slot availability: $e');
-    }
+  //           CollectionReference rowsCollection = levelDocumentSnapshot.reference.collection('rows');  // Get the subcollection 'rows'
+  //           QuerySnapshot rowsQuerySnapshot = await rowsCollection.get();  // Query the 'rows' subcollection for all documents
+  //           if (rowsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+  //             for (var rowDocument in rowsQuerySnapshot.docs) {  // Loop through each document
+  //               // Update the fields
+  //               String updatedSlot = updateSlot(rowDocument.get('slots') as String);
+  //               if( rowDocument.id == widget.selectedRow){
+  //                 rowDocument.reference.update({'slots': updatedSlot});
+  //               }
+  //             }
+  //           } else {
+  //             // No rows found
+  //             showToast(message: 'No row found for update: ${widget.selectedRow}');
+  //           }
+  //         } else {
+  //           // No level found
+  //           showToast(message: 'No level found: ${widget.selectedLevel}');
+  //         }
+  //       } else {
+  //         // No zone found
+  //         showToast(message: 'No zone found: ${widget.selectedZone}');
+  //       }
+  //     } else {
+  //       // No parking found
+  //       showToast(message: 'No parking found: ${widget.bookedAddress}');
+  //     }
+  //   } catch (e) {
+  //     // Handle any errors
+  //     showToast(message: 'Error updating slot availability: $e');
+  //   }
 
-    setState(() {}); // This will trigger a rebuild with the new values
-  }
+  //   setState(() {}); // This will trigger a rebuild with the new values
+  // }
 
 
   Future<void> getDetails() async {
@@ -238,11 +238,11 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           .get();
       if (querySnapshot.docs.isNotEmpty) {
         cards = querySnapshot.docs.map((doc) {
-          String cardNumber = doc.get('cardNumber') as String;
-          String cardType = doc.get('cardType') as String; // Assuming you store card type
-          String bank = doc.get('bank') as String; // Assuming you store bank name
+          cardNumber = doc.get('cardNumber') as String;
+          String cardType = doc.get('cardType') as String;
+          String bank = doc.get('bank') as String;
 
-          String cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
+          cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
           cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
             RegExp(r'.{4}'), (match) => '${match.group(0)} '
           ).trim();

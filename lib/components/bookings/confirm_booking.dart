@@ -25,7 +25,7 @@ class ConfirmBookingPage extends StatefulWidget {
 class _ConfirmBookingState extends State<ConfirmBookingPage> {
   double _currentSliderValue = 1;
   bool _disabledParking = false;
-  String _checkInTime = "12:00";
+  String _checkInTime = "12:00 PM";
   DateTime _checkInDate = DateTime.now();
 
   // use the variable to replace the text
