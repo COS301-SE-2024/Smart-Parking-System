@@ -30,7 +30,7 @@ Future<void> main() async {
     await Firebase.initializeApp();
   }
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // // Initialize FCM service
   await FCMService().init();
