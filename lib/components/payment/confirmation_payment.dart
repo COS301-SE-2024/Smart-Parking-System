@@ -17,8 +17,23 @@ class ConfirmPaymentPage extends StatefulWidget {
   final DateTime selectedDate;
   final double selectedDuration;
   final bool selectedDisabled;
+  final String vehicleId;
+  final String vehicleLogo;
 
-  const ConfirmPaymentPage({required this.bookedAddress, required this.selectedZone, required this.selectedLevel, required this.selectedRow, required this.selectedTime, required this.selectedDate, required this.selectedDuration, required this.price, required this.selectedDisabled, super.key});
+  const ConfirmPaymentPage({
+    required this.bookedAddress,
+    required this.selectedZone,
+    required this.selectedLevel,
+    required this.selectedRow,
+    required this.selectedTime,
+    required this.selectedDate,
+    required this.selectedDuration,
+    required this.price,
+    required this.selectedDisabled,
+    required this.vehicleId,
+    required this.vehicleLogo,
+    super.key
+    });
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
@@ -29,6 +44,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   String? licenseNum = '';
   String? carMake = '';
   String? carModel = '';
+  String carLogo = 'assets/default_logo.png';
   String? startTime = '';
   String? endTime = '';
   String? bookingDate = '';
@@ -59,6 +75,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'price': widget.price,
           'address': widget.bookedAddress,
           'disabled': widget.selectedDisabled,
+          'vehicleId': widget.vehicleId,
+          'vehicleLogo': widget.vehicleLogo,
           'card': cardNumber,
         });
 
@@ -74,77 +92,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       showToast(message: 'Error: $e');
     }
   }
-
-  
-  // Future<void> _updateSlotAvailability() async {
-  //   try {
-  //     // Get Firestore instance
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  //     // Get the document references
-  //     DocumentReference parkingDoc = firestore.collection('parkings').doc(widget.bookedAddress);
-  //     DocumentReference zoneDoc = parkingDoc.collection('zones').doc(widget.selectedZone);
-  //     DocumentReference levelDoc = zoneDoc.collection('levels').doc(widget.selectedLevel);
-  //     DocumentReference rowDoc = levelDoc.collection('rows').doc(widget.selectedRow);
-
-  //     // Function to update slots field
-  //     Future<void> updateSlots(DocumentReference docRef) async {
-  //       DocumentSnapshot docSnapshot = await docRef.get();
-  //       if (docSnapshot.exists) {
-  //         String slots = docSnapshot['slots'];
-  //         List<String> slotsSplit = slots.split('/');
-  //         int availableSlots = int.parse(slotsSplit[0]);
-  //         int totalSlots = int.parse(slotsSplit[1]);
-
-  //         // Decrement available slots
-  //         availableSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
-
-  //         // Update the slots field
-  //         await docRef.update({'slots': '$availableSlots/$totalSlots'});
-  //       }
-  //     }
-
-  //     // Update the slots for row, level, zone, and parking
-  //     await updateSlots(rowDoc);
-  //     await updateSlots(levelDoc);
-  //     await updateSlots(zoneDoc);
-  //     await updateSlots(parkingDoc);
-
-  //   } catch (e) {
-  //     showToast(message: 'Error updating slot availability: $e');
-  //   }
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   // Function to update slots field
@@ -255,51 +202,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   Future<void> getDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
     String? userName = user?.displayName;
@@ -310,28 +212,27 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       
       // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-      // Query the 'vehicles' collection for a document with matching userId
-      QuerySnapshot querySnapshot = await firestore
+      // Get the document with the ID matching widget.vehicleId
+      DocumentSnapshot document = await firestore
           .collection('vehicles')
-          .where('userId', isEqualTo: userId)
-          .limit(1)
+          .doc(widget.vehicleId)
           .get();
-      // Check if a matching document was found
-      if (querySnapshot.docs.isNotEmpty) {
-        // Get the first (and should be only) document
-        DocumentSnapshot document = querySnapshot.docs.first;
+
+      // Check if the document exists
+      if (document.exists) {
         // Retrieve the fields
         licenseNum = document.get('licenseNumber') as String?;
         carMake = document.get('vehicleBrand') as String?;
         carModel = document.get('vehicleModel') as String?;
+        carLogo = widget.vehicleLogo;
       } else {
         // No matching document found
-        showToast(message: 'No car found for userId: $userName');
+        showToast(message: 'No car found for vehicleId: ${widget.vehicleId}');
       }
 
       // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
       // Query the 'cards' collection for a document with matching userId
-      querySnapshot = await firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('cards')
           .where('userId', isEqualTo: userId)
           .get();
@@ -363,21 +264,26 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
       // Calculations + Formating
 
-    //endTime calc
-    DateTime tempStartTime;
-    if (widget.selectedTime.toLowerCase().contains('am') || widget.selectedTime.toLowerCase().contains('pm')) {
-      tempStartTime = DateFormat('hh:mm a').parse(widget.selectedTime);
-    } else {
-      tempStartTime = DateFormat('HH:mm').parse(widget.selectedTime);
-    }
-    startTime = DateFormat('HH:mm').format(tempStartTime);
-    endTime = DateFormat('HH:mm').format(tempStartTime.add(Duration(minutes: (widget.selectedDuration * 60).round())));
-    //booking date
-    bookingDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-    //total price calc
-    totalPrice = widget.price * widget.selectedDuration;
+    try {
+      //endTime calc
+      DateTime tempStartTime;
+      if (widget.selectedTime.toLowerCase().contains('am') || widget.selectedTime.toLowerCase().contains('pm')) {
+        tempStartTime = DateFormat('hh:mm a').parse(widget.selectedTime);
+      } else {
+        tempStartTime = DateFormat('HH:mm').parse(widget.selectedTime);
+      }
+      startTime = DateFormat('HH:mm').format(tempStartTime);
+      endTime = DateFormat('HH:mm').format(tempStartTime.add(Duration(minutes: (widget.selectedDuration * 60).round())));
+      //booking date
+      bookingDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+      //total price calc
+      totalPrice = widget.price * widget.selectedDuration;
 
-    setState((){}); // This will trigger a rebuild with the new values
+      setState((){}); // This will trigger a rebuild with the new values
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'ERROR: $e');
+    }
   }
 
     //Output
@@ -445,8 +351,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     height: 100, // Adjust the height as needed
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/car.png'),
+                      image: DecorationImage(
+                        image: AssetImage(carLogo),
                         fit: BoxFit.cover,
                       ),
                     ),

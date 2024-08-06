@@ -1,8 +1,6 @@
-// import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-// import 'package:smart_parking_system/components/bookings/make_booking.dart';
-import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
+// import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
+import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
   final String bookedAddress;
@@ -11,7 +9,14 @@ class ConfirmBookingPage extends StatefulWidget {
   final String selectedLevel;
   final String? selectedRow;
 
-  const ConfirmBookingPage({required this.bookedAddress, required this.price, required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
+  const ConfirmBookingPage({
+    required this.bookedAddress,
+    required this.price,
+    required this.selectedZone,
+    required this.selectedLevel,
+    required this.selectedRow,
+    super.key
+  });
 
   @override
   State<ConfirmBookingPage> createState() => _ConfirmBookingState();
@@ -20,7 +25,7 @@ class ConfirmBookingPage extends StatefulWidget {
 class _ConfirmBookingState extends State<ConfirmBookingPage> {
   double _currentSliderValue = 1;
   bool _disabledParking = false;
-  String _checkInTime = "12:00 am";
+  String _checkInTime = "12:00";
   DateTime _checkInDate = DateTime.now();
 
   // use the variable to replace the text
@@ -168,7 +173,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                       label: '${_currentSliderValue.toInt()} hour(s) - R${_currentSliderValue.toInt() * widget.price.toInt()}',
                       onChanged: (double value) {
                         setState(() {
-                          _currentSliderValue = value;
+                          _currentSliderValue = value != 0 ? value : 1;
                         });
                       },
                     ),
@@ -262,7 +267,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
+                      builder: (_) => ChooseVehiclePage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
                     ),
                   );
                 },
