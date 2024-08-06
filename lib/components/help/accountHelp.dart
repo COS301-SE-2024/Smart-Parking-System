@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Accounthelp extends StatelessWidget {
+  const Accounthelp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +125,7 @@ class Accounthelp extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ConstrainedBox(
-                          constraints: BoxConstraints(
+                          constraints: const BoxConstraints(
                             maxWidth: 140, 
                           ),
                           child: Image.asset(
