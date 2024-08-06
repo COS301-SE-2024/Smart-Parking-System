@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/card/add_card.dart';
@@ -15,22 +16,23 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
-  double creditAmount = 60.00; // Changed to double for calculation
+  double creditAmount = 0.00; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
 
   @override
   void initState() {
     super.initState();
     _fetchCards();
+    _fetchCreditAmount();
   }
 
   Future<void> _fetchCards() async {
-    String userId = "lhfXz2ynvue4ZOQJ5XQ9QT6oghu1"; // 替换为实际的用户 ID
+    User? user = FirebaseAuth.instance.currentUser;
 
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('cards')
-          .where('userId', isEqualTo: userId)
+          .where('userId', isEqualTo: user?.uid)
           .get();
 
       final List<Map<String, String>> fetchedCards = [];
@@ -38,13 +40,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         final data = doc.data() as Map<String, dynamic>;
         fetchedCards.add({
           'id': doc.id,
-          'bank': 'Unknown Bank', // You can add logic to fetch the bank name if needed
-          // ignore: prefer_interpolation_to_compose_strings
+          'bank': data['bank'] ?? '',
           'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
-          'image': 'assets/mastercard.png' // 默认图片，您可以根据实际情况进行修改
+          'image': 'assets/mastercard.png'
         });
       }
 
@@ -54,6 +55,25 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     } catch (e) {
       // ignore: avoid_print
       print('Error fetching cards: $e');
+      // 这里可以添加更多错误处理逻辑
+    }
+  }
+
+  Future<void> _fetchCreditAmount() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final data = userDoc.data() as Map<String, dynamic>;
+      setState(() {
+        creditAmount = data['balance']?.toDouble() ?? 0.00;
+      });
+    } catch (e) {
+      print('Error fetching credit amount: $e');
       // 这里可以添加更多错误处理逻辑
     }
   }
@@ -87,11 +107,24 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             ),
             TextButton(
               child: const Text('Top Up', style: TextStyle(color: Colors.tealAccent)),
-              onPressed: () {
+              onPressed: () async {
                 if (topUpAmount != null && topUpAmount! > 0) {
+                  User? user = FirebaseAuth.instance.currentUser;
                   setState(() {
                     creditAmount += topUpAmount!;
                   });
+
+                  // Update credit amount in Firestore
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid)
+                        .update({'balance': creditAmount});
+                  } catch (e) {
+                    print('Error updating credit amount: $e');
+                    // 这里可以添加更多错误处理逻辑
+                  }
+
                   Navigator.of(context).pop();
                 }
               },
@@ -107,6 +140,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     String? newCvv;
     String? newName;
     String? newExpiry;
+    String? newBank;
 
     await showDialog(
       context: context,
@@ -164,6 +198,18 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   newExpiry = value;
                 },
               ),
+              const SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.text,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Enter new bank',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newBank = value;
+                },
+              ),
             ],
           ),
           actions: [
@@ -182,6 +228,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     if (newCvv != null && newCvv!.isNotEmpty) 'cvv': newCvv!,
                     if (newName != null && newName!.isNotEmpty) 'holderName': newName!,
                     if (newExpiry != null && newExpiry!.isNotEmpty) 'expiry': newExpiry!,
+                    if (newBank != null && newBank!.isNotEmpty) 'bank': newBank!,
                   };
 
                   await FirebaseFirestore.instance
