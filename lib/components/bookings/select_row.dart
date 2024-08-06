@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
+//Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -19,13 +22,134 @@ class SelectRowPage extends StatefulWidget {
   SelectRowPageState createState() => SelectRowPageState();
 }
 
+class RowSpace {
+  final String row;
+  final int slots;
+
+  RowSpace(this.row, this.slots);
+}
+
 class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
+  int totalSlots = 0;
+
+  List<RowSpace> rows = [
+    // Add more rows here
+  ];
+
+  static String extractSlotsAvailable(String slots) {
+    // Use a regular expression to match the first number
+    RegExp regex = RegExp(r'^\d+');
+    Match? match = regex.firstMatch(slots);
+    
+    if (match != null) {
+      String number = match.group(0)!;
+      return number;
+    }
+    
+    // Return a default value if no match is found
+    return "0";
+  }
+    // Get details on load
+  Future<void> getDetails() async {
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Query the 'parkings' collection for a document with matching name
+      QuerySnapshot querySnapshot = await firestore
+          .collection('parkings')
+          .where('name', isEqualTo: widget.bookedAddress)
+          .get();
+
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the document snapshot
+        DocumentSnapshot parkingDocumentSnapshot = querySnapshot.docs[0];
+
+        // Get the subcollection 'zones'
+        CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');
+
+        // Query the 'zones' subcollection for a document with matching id
+        DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();
+
+        // Check if a matching document was found
+        if (zoneDocumentSnapshot.exists) {
+          // Get the subcollection 'levels'
+          CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');
+
+          // Query the 'levels' subcollection for a document with matching id
+          DocumentSnapshot levelDocumentSnapshot = await levelsCollection.doc(widget.selectedLevel).get();
+
+          // Check if a matching document was found
+          if (levelDocumentSnapshot.exists) {
+            // Get the subcollection 'rows'
+            CollectionReference rowsCollection = levelDocumentSnapshot.reference.collection('rows');
+
+            // Query the 'rows' subcollection for all documents
+            QuerySnapshot rowsQuerySnapshot = await rowsCollection.get();
+
+            // Check if there are any documents
+            if (rowsQuerySnapshot.docs.isNotEmpty) {
+              // Loop through each document
+              for (var rowDocument in rowsQuerySnapshot.docs) {
+                // Retrieve the fields
+                String rowId = rowDocument.id;
+                String slots = rowDocument.get('slots') as String;
+
+                // Calculate total price
+                int availableSlots = int.parse(extractSlotsAvailable(slots));
+
+                // Add to rows list
+                rows.add(RowSpace(
+                  rowId,
+                  availableSlots,
+                ));
+              }
+
+              // Sort the rows list
+              rows.sort((a, b) {
+                int comparison = a.row.compareTo(b.row);
+                if (comparison != 0) {
+                  return comparison;
+                } else {
+                  return a.row.compareTo(b.row);
+                }
+              });
+            } else {
+              // No rows found
+              showToast(message: 'No rows found for level: ${widget.selectedLevel}');
+            }
+          } else {
+            // No level found
+            showToast(message: 'No level found: ${widget.selectedLevel}');
+          }
+        } else {
+          // No zone found
+          showToast(message: 'No zone found: ${widget.selectedZone}');
+        }
+      } else {
+        // No parking found
+        showToast(message: 'No parking found: ${widget.bookedAddress}');
+      }
+
+      // Calculate total slots
+      totalSlots = rows.fold(0, (tot, row) => tot + row.slots);
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving row details: $e');
+    }
+
+    setState(() {}); // This will trigger a rebuild with the new values
+  }
 
   @override
+  void initState() {
+    super.initState();
+    getDetails();
+  }
+  @override
   Widget build(BuildContext context) {
-    int totalSlots = 8;
-
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
       body: SingleChildScrollView(
@@ -86,54 +210,12 @@ class SelectRowPageState extends State<SelectRowPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300, // 控制虚线的总体长度
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: rows.expand((rows) => [
+                  _buildRowButton(rows),
+                ]).toList(),
               ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'Row A', '3 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'Row B', '0 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'Row C', '5 Slots Available'),
-              const SizedBox(height: 13),
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 1,
-                  child: CustomPaint(
-                    painter: DottedLinePainter(),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 13),
-              _buildRowButton(context, 'Row D', '1 Slot Available'),
               const SizedBox(height: 20),
               Center(
                 child: SizedBox(
@@ -147,9 +229,14 @@ class SelectRowPageState extends State<SelectRowPage> {
                     ),
                     onPressed: selectedRow != null
                         ? () {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (_) => const ChooseVehiclePage(),
+                      //   ),
+                      // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const ChooseVehiclePage(),
+                          builder: (_) => ConfirmBookingPage(bookedAddress: widget.bookedAddress, price: widget.price, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
                         ),
                       );
                     }
@@ -165,80 +252,92 @@ class SelectRowPageState extends State<SelectRowPage> {
     );
   }
 
-  Widget _buildRowButton(BuildContext context, String rowLabel, String slotInfo) {
-    int slotsAvailable = int.parse(slotInfo.split(' ')[0]);
+  Widget _buildRowButton(RowSpace rows) {
+    String row = rows.row;
 
-    bool isDisabled = slotsAvailable == 0;
-    bool isSelected = selectedRow == rowLabel;
+    bool isDisabled = rows.slots == 0;
+    bool isSelected = selectedRow == row;
     Color buttonColor = isDisabled ? const Color(0xFFC0C0C0) : (isSelected ? const Color(0xFF58C6A9) : const Color(0xFF39C16B));
-    String buttonText = isSelected ? '$rowLabel Selected' : rowLabel;
 
     return Center(
-      child: Container(
-        width: 290,
-        height: 90,
-        decoration: BoxDecoration(
-          color: buttonColor,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: buttonColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+      child: Column(
+        children: [ 
+          const SizedBox(height: 13),
+          SizedBox(
+            width: 300,
+            height: 1,
+            child: CustomPaint(
+              painter: DottedLinePainter(),
             ),
           ),
-          onPressed: isDisabled ? null : () {
-            setState(() {
-              selectedRow = rowLabel;
-            });
-          },
-          child: Stack(
-            children: [
-              if (isSelected)
-                Center(
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              else ...[
-                Positioned(
-                  left: 2,
-                  top: 8,
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.left,
-                  ),
+          const SizedBox(height: 13),
+          Container(
+            width: 290,
+            height: 90,
+            decoration: BoxDecoration(
+              color: buttonColor,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: buttonColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                Positioned(
-                  right: 2,
-                  top: 8,
-                  child: Text(
-                    slotInfo,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-                Positioned(
-                  bottom: 8,
-                  left: 2,
-                  child: Row(
-                    children: List.generate(6, (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Image.asset(
-                        'assets/smallCar.png',
-                        width: 30,
-                        height: 50,
+              ),
+              onPressed: isDisabled ? null : () {
+                setState(() {
+                  selectedRow = row;
+                });
+              },
+              child: Stack(
+                children: [
+                  if (isSelected)
+                    Center(
+                      child: Text(
+                        'Row $row Selected',
+                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
-                    )),
-                  ),
-                ),
-              ],
-            ],
+                    )
+                  else ...[
+                    Positioned(
+                      left: 2,
+                      top: 8,
+                      child: Text(
+                        'Row $row',
+                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Positioned(
+                      right: 2,
+                      top: 8,
+                      child: Text(
+                        '${rows.slots} Slots Available',
+                        style: const TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      left: 2,
+                      child: Row(
+                        children: List.generate(6, (index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Image.asset(
+                            'assets/smallCar.png',
+                            width: 30,
+                            height: 50,
+                          ),
+                        )),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
-        ),
+        ]
       ),
     );
   }

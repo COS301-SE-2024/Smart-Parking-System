@@ -15,6 +15,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _updateUserProfile() async {
     try {
@@ -22,40 +23,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       if (user != null) {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'name': _nameController.text,
+          'fullName': _nameController.text,
           'email': _emailController.text,
-          'phone': _phoneController.text,
-        });
+          'phoneNumber': _phoneController.text,
+          'password': _passwordController.text,
+        }, SetOptions(merge: true));  // Use merge: true to update only the provided fields
 
-
-        if (mounted){
-            showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: const Color(0xFF2D2F41),
-                title: const Text(
-                  'Successfully Updated!',
-                  style: TextStyle(color: Colors.white),
-                ),
-                actions: [
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        'OK',
-                        style: TextStyle(color: Color(0xFF58C6A9)),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
+        showToast(message: 'Profile Updated Successfully!');
+        // Optionally, navigate back or to another page
+        if (mounted) {  // Check if the widget is still in the tree
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const SettingsPage(),
+            ),
           );
         }
-        
       }
     } catch (e) {
       showToast(message: 'Error: $e');
@@ -65,114 +47,137 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 1.0),
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const SettingsPage(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                          size: 30,
+      backgroundColor: const Color(0xFF2D2F3E),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: AppBar(
+          backgroundColor: const Color(0xFF2D2F3E),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          flexibleSpace: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      const Text(
+                        'User Profile',
+                        style: TextStyle(
+                          color: Color(0xFF58C6A9),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const Expanded(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'User Profile',
-                          style: TextStyle(
-                            color: Colors.tealAccent,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 48),
-                  ],
+                      const SizedBox(width: 48), // To balance the layout
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF3A3D5F),
+                      ),
+                    ),
                     CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.grey[200],
+                      radius: 60,
+                      backgroundColor: Colors.grey[300],
                       child: const Icon(
                         Icons.person,
-                        size: 50,
+                        size: 80,
                         color: Colors.grey,
                       ),
                     ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
+              ProfileField(
+                label: 'Full name',
+                controller: _nameController,
+              ),
+              ProfileField(
+                label: 'Email address',
+                controller: _emailController,
+              ),
+              ProfileField(
+                label: 'Phone number',
+                controller: _phoneController,
+              ),
+              ProfileField(
+                label: 'Password',
+                controller: _passwordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 40),
               Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+                width: double.infinity,
+                height: 56, // Increased height for better touch area
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF58C6A9), Color(0xFF4CAF93)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(28), // Half of the height for pill shape
                 ),
-                child: Column(
-                  children: [
-                    ProfileField(
-                      label: 'Full name',
-                      controller: _nameController,
+                child: ElevatedButton(
+                  onPressed: _updateUserProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
                     ),
-                    ProfileField(
-                      label: 'Email address',
-                      controller: _emailController,
+                  ),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    ProfileField(
-                      label: 'Phone number',
-                      controller: _phoneController,
-                    ),
-                    const SizedBox(height: 40.0),
-                    ElevatedButton(
-                      onPressed: _updateUserProfile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF58C6A9),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 24,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -198,21 +203,20 @@ class ProfileField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: TextFormField(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: TextField(
         controller: controller,
         obscureText: obscureText,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(
-            color: Color(0xFF757F8C),
-            fontSize: 18,
+          labelStyle: const TextStyle(color: Colors.grey),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
           ),
-          contentPadding: const EdgeInsets.only(top: 0),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
       ),
     );

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/select_row.dart';
+//Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class LevelSelectPage extends StatefulWidget {
   final String bookedAddress;
@@ -21,18 +24,111 @@ class Level {
 
 class _LevelSelectPageState extends State<LevelSelectPage> {
   String? selectedLevel;
-  int totalSlots = 110;
+  int totalSlots = 0;
 
   List<Level> levels = [
-    Level('L3', 0),
-    Level('L2', 30),
-    Level('L1', 20),
-    Level('Ground', 10),
-    Level('B1', 20),
-    Level('B2', 30),
     // Add more levels here
   ];
 
+  static String extractSlotsAvailable(String slots) {
+    // Use a regular expression to match the first number
+    RegExp regex = RegExp(r'^\d+');
+    Match? match = regex.firstMatch(slots);
+    
+    if (match != null) {
+      String number = match.group(0)!;
+      return number;
+    }
+    
+    // Return a default value if no match is found
+    return "0";
+  }
+    // Get details on load
+  Future<void> getDetails() async {
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Query the 'parkings' collection for a document with matching name
+      QuerySnapshot querySnapshot = await firestore
+          .collection('parkings')
+          .where('name', isEqualTo: widget.bookedAddress)
+          .get();
+
+      // Check if a matching document was found
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the document snapshot
+        DocumentSnapshot parkingDocumentSnapshot = querySnapshot.docs[0];
+
+        // Get the subcollection 'zones'
+        CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');
+
+        // Query the 'zones' subcollection for a document with matching id
+        DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();
+
+        // Check if a matching document was found
+        if (zoneDocumentSnapshot.exists) {
+          // Get the subcollection 'levels'
+          CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');
+
+          // Query the 'levels' subcollection for all documents
+          QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();
+
+          // Check if there are any documents
+          if (levelsQuerySnapshot.docs.isNotEmpty) {
+            // Loop through each document
+            for (var levelDocument in levelsQuerySnapshot.docs) {
+              // Retrieve the fields
+              String level = levelDocument.id;
+              String slots = levelDocument.get('slots') as String;
+
+              // Calculate total price
+              int availableSlots = int.parse(extractSlotsAvailable(slots));
+
+              // Add to levels list
+              levels.add(Level(
+                level,
+                availableSlots,
+              ));
+            }
+
+            // Sort the levels list
+            levels.sort((a, b) {
+              int comparison = b.level.compareTo(a.level);
+              if (comparison != 0) {
+                return comparison;
+              } else {
+                return a.level.compareTo(b.level);
+              }
+            });
+          } else {
+            // No levels found
+            showToast(message: 'No levels found for zone: ${widget.selectedZone}');
+          }
+        } else {
+          // No zone found
+          showToast(message: 'No zone found: ${widget.selectedZone}');
+        }
+      } else {
+        // No parking found
+        showToast(message: 'No parking found: ${widget.bookedAddress}');
+      }
+
+      // Calculate total slots
+      totalSlots = levels.fold(0, (tot, level) => tot + level.slots);
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error retrieving level details: $e');
+    }
+
+    setState(() {}); // This will trigger a rebuild with the new values
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDetails();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

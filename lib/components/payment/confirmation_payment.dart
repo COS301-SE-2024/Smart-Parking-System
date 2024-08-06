@@ -12,7 +12,7 @@ class ConfirmPaymentPage extends StatefulWidget {
   final double price;
   final String selectedZone;
   final String selectedLevel;
-  final String selectedRow;
+  final String? selectedRow;
   final String selectedTime;
   final DateTime selectedDate;
   final double selectedDuration;
@@ -36,10 +36,16 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
   String cardNumber = '';
   String cardNumberFormatted = '';
+  List<Map<String, dynamic>> cards = [];
+  int _selectedCard = 0;
+
+
     //Functions
   Future<void> _bookspace() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
+
+      _updateSlotAvailability();
 
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
@@ -58,7 +64,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
         showToast(message: 'Booked Successfully!');
         // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const PaymentSuccessionPage(),
           ),
@@ -69,6 +75,231 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     }
   }
 
+  
+  // Future<void> _updateSlotAvailability() async {
+  //   try {
+  //     // Get Firestore instance
+  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  //     // Get the document references
+  //     DocumentReference parkingDoc = firestore.collection('parkings').doc(widget.bookedAddress);
+  //     DocumentReference zoneDoc = parkingDoc.collection('zones').doc(widget.selectedZone);
+  //     DocumentReference levelDoc = zoneDoc.collection('levels').doc(widget.selectedLevel);
+  //     DocumentReference rowDoc = levelDoc.collection('rows').doc(widget.selectedRow);
+
+  //     // Function to update slots field
+  //     Future<void> updateSlots(DocumentReference docRef) async {
+  //       DocumentSnapshot docSnapshot = await docRef.get();
+  //       if (docSnapshot.exists) {
+  //         String slots = docSnapshot['slots'];
+  //         List<String> slotsSplit = slots.split('/');
+  //         int availableSlots = int.parse(slotsSplit[0]);
+  //         int totalSlots = int.parse(slotsSplit[1]);
+
+  //         // Decrement available slots
+  //         availableSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
+
+  //         // Update the slots field
+  //         await docRef.update({'slots': '$availableSlots/$totalSlots'});
+  //       }
+  //     }
+
+  //     // Update the slots for row, level, zone, and parking
+  //     await updateSlots(rowDoc);
+  //     await updateSlots(levelDoc);
+  //     await updateSlots(zoneDoc);
+  //     await updateSlots(parkingDoc);
+
+  //   } catch (e) {
+  //     showToast(message: 'Error updating slot availability: $e');
+  //   }
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Function to update slots field
+  String updateSlot(String slot) {
+    List<String> slotsSplit = slot.split('/');
+    int availableSlots = int.parse(slotsSplit[0]);
+    int totalSlots = int.parse(slotsSplit[1]);
+  
+    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
+    // Decrement available slots
+    return '$updatedSlots/$totalSlots';
+  }
+    // Get details on load
+  Future<void> _updateSlotAvailability() async {
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Query the 'parkings' collection for a document with matching name
+      QuerySnapshot parkingQuerySnapshot = await firestore
+          .collection('parkings')
+          .where('name', isEqualTo: widget.bookedAddress)
+          .limit(1)
+          .get();
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+        var parkingDocument = parkingQuerySnapshot.docs.first;
+        String updatedSlot = updateSlot(parkingDocument.get('slots_available') as String);
+        parkingDocument.reference.update({'slots_available': updatedSlot});
+      } else {
+        // No parking found
+        showToast(message: 'No parking found for update: ${widget.bookedAddress}');
+      }
+
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if a matching document was found
+        DocumentSnapshot parkingDocumentSnapshot = parkingQuerySnapshot.docs[0];  // Get the document snapshot
+
+        CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');  // Get the subcollection 'zones'
+        DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(widget.selectedZone).get();  // Query the 'zones' subcollection for a document with matching id
+
+        QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();  // Query the 'rows' subcollection for all documents
+        if (zonesQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+          for (var zoneDocument in zonesQuerySnapshot.docs) {  // Loop through each document
+            // Update the fields
+            String updatedSlot = updateSlot(zoneDocument.get('slots') as String);
+            if( zoneDocument.id == widget.selectedZone){
+              zoneDocument.reference.update({'slots': updatedSlot});
+            }
+          }
+        } else {
+          // No zones found
+          showToast(message: 'No zone found for update: ${widget.selectedZone}');
+        }
+      
+        if (zoneDocumentSnapshot.exists) {  // Check if a matching document was found
+          CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');  // Get the subcollection 'levels'
+          DocumentSnapshot levelDocumentSnapshot = await levelsCollection.doc(widget.selectedLevel).get();  // Query the 'levels' subcollection for a document with matching id
+
+          QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();  // Query the 'rows' subcollection for all documents
+          if (levelsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+            for (var levelDocument in levelsQuerySnapshot.docs) {  // Loop through each document
+              // Update the fields
+              String updatedSlot = updateSlot(levelDocument.get('slots') as String);
+              if( levelDocument.id == widget.selectedLevel){
+                levelDocument.reference.update({'slots': updatedSlot});
+              }
+            }
+          } else {
+            // No levels found
+            showToast(message: 'No level found for update: ${widget.selectedLevel}');
+          }
+        
+          if (levelDocumentSnapshot.exists) {  // Check if a matching document was found
+
+            CollectionReference rowsCollection = levelDocumentSnapshot.reference.collection('rows');  // Get the subcollection 'rows'
+            QuerySnapshot rowsQuerySnapshot = await rowsCollection.get();  // Query the 'rows' subcollection for all documents
+            if (rowsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+              for (var rowDocument in rowsQuerySnapshot.docs) {  // Loop through each document
+                // Update the fields
+                String updatedSlot = updateSlot(rowDocument.get('slots') as String);
+                if( rowDocument.id == widget.selectedRow){
+                  rowDocument.reference.update({'slots': updatedSlot});
+                }
+              }
+            } else {
+              // No rows found
+              showToast(message: 'No row found for update: ${widget.selectedRow}');
+            }
+          } else {
+            // No level found
+            showToast(message: 'No level found: ${widget.selectedLevel}');
+          }
+        } else {
+          // No zone found
+          showToast(message: 'No zone found: ${widget.selectedZone}');
+        }
+      } else {
+        // No parking found
+        showToast(message: 'No parking found: ${widget.bookedAddress}');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error updating slot availability: $e');
+    }
+
+    setState(() {}); // This will trigger a rebuild with the new values
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Future<void> getDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
     String? userName = user?.displayName;
@@ -78,6 +309,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       
+      // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
       // Query the 'vehicles' collection for a document with matching userId
       QuerySnapshot querySnapshot = await firestore
           .collection('vehicles')
@@ -97,34 +329,39 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
         showToast(message: 'No car found for userId: $userName');
       }
 
+      // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
       // Query the 'cards' collection for a document with matching userId
       querySnapshot = await firestore
           .collection('cards')
           .where('userId', isEqualTo: userId)
-          .limit(1)
           .get();
-      // Check if a matching document was found
       if (querySnapshot.docs.isNotEmpty) {
-        // Get the first (and should be only) document
-        DocumentSnapshot document = querySnapshot.docs.first;
-        // Retrieve the fields
-        cardNumber = document.get('cardNumber') as String;
+        cards = querySnapshot.docs.map((doc) {
+          String cardNumber = doc.get('cardNumber') as String;
+          String cardType = doc.get('cardType') as String; // Assuming you store card type
+          String bank = doc.get('bank') as String; // Assuming you store bank name
+
+          String cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
+          cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
+            RegExp(r'.{4}'), (match) => '${match.group(0)} '
+          ).trim();
+
+          return {
+            'cardNumber': cardNumberFormatted,
+            'cardType': cardType,
+            'bank': bank,
+          };
+        }).toList();
       } else {
-        // No matching document found
-        showToast(message: 'No cards found for userId: $userName');
+        // No matching documents found
+        showToast(message: 'No cards found for user: $userName');
       }
-
-      cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
-      // Insert spaces every 4 characters
-      cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
-        RegExp(r'.{4}'), (match) => '${match.group(0)} '
-      ).trim();
-
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving user details: $e');
     }
 
+      // Calculations + Formating
 
     //endTime calc
     DateTime tempStartTime;
@@ -140,15 +377,10 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     //total price calc
     totalPrice = widget.price * widget.selectedDuration;
 
-    setState((){
-      // This will trigger a rebuild with the new values
-    });
+    setState((){}); // This will trigger a rebuild with the new values
   }
 
-
     //Output
-  int _selectedCard = 1;
-
   @override
   void initState() {
     super.initState();
@@ -270,55 +502,16 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 1),
-                      //
-                      // Row(
-                      //   crossAxisAlignment: CrossAxisAlignment.start,
-                      //   children: [
-                      //     Expanded(
-                      //       child: Column(
-                      //         crossAxisAlignment: CrossAxisAlignment.start,
-                      //         children: [
-                      //           Text(
-                      //             'Zone: ${widget.selectedZone}',
-                      //             style: const TextStyle(color: Colors.white),
-                      //           ),
-                      //           const SizedBox(height: 5),
-                      //           Text(
-                      //             'Level: ${widget.selectedLevel}',
-                      //             style: const TextStyle(color: Colors.white),
-                      //           ),
-                      //           const SizedBox(height: 5),
-                      //           Text(
-                      //             'Row: ${widget.selectedRow}',
-                      //             style: const TextStyle(color: Colors.white),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //     Expanded(
-                      //       child: Text(
-                      //         widget.bookedAddress,
-                      //         style: const TextStyle(color: Colors.white),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      //
                       RichText(
                         text: TextSpan(
                           style: const TextStyle(color: Colors.white),
                           children: [
-                            
                             TextSpan(
                               text: widget.bookedAddress,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold, 
                               ),
                             ),
-                            
-
-                            
-
                           ],
                         ),
                       ),
@@ -427,7 +620,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               title: const Text('Offers', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
               onTap: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const OfferPage(),
                   ),
@@ -464,87 +657,40 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 5),
-                  Card(
-                    elevation: 0, // Set elevation to 0
-                    color: Colors.transparent, // Set color to transparent
-                    child: ListTile(
-                      leading: SizedBox(
-                        width: 50, // Set the desired width of the image
-                        child: Image.asset('assets/mastercard.png'),
-                      ),
-                      title: Text(
-                        'FNB Bank $cardNumberFormatted',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
+                  ...cards.asMap().entries.map((entry) {
+                    int idx = entry.key;
+                    Map<String, dynamic> card = entry.value;
+                    return Card(
+                      elevation: 0,
+                      color: Colors.transparent,
+                      child: ListTile(
+                        leading: SizedBox(
+                          width: 50,
+                          child: Image.asset('assets/${card['cardType'].toLowerCase()}.png'),
+                        ),
+                        title: Text(
+                          '${card['bank']} ${card['cardNumber']}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
+                        ),
+                        trailing: Radio(
+                          value: idx,
+                          groupValue: _selectedCard,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCard = value as int;
+                            });
+                          },
+                          activeColor: const Color(0xFF58C6A9),
                         ),
                       ),
-                      trailing: Radio(
-                        value: 1,
-                        groupValue: _selectedCard,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCard = value as int;
-                          });
-                        },
-                        activeColor: const Color(0xFF58C6A9), // Set the color here
-                      ),
-                    ),
-                  ),
+                    );
+                  }),
                   const SizedBox(height: 5),
-                  // Card(
-                  //   elevation: 0, // Set elevation to 0
-                  //   color: Colors.transparent, // Set color to transparent
-                  //   child: ListTile(
-                  //     leading: SizedBox(
-                  //       width: 50, // Set the desired width of the image
-                  //       child: Image.asset('assets/visa.png'),
-                  //     ),
-                  //     title: const Text(
-                  //       'Capitec Bank **** **** **** 6246',
-                  //       style: TextStyle(
-                  //         fontSize: 13,
-                  //         fontWeight: FontWeight.w400,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //     trailing: Radio(
-                  //       value: 2,
-                  //       groupValue: _selectedCard,
-                  //       onChanged: (value) {
-                  //         setState(() {
-                  //           _selectedCard = value as int;
-                  //         });
-                  //       },
-                  //       activeColor: const Color(0xFF58C6A9), // Set the color here
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 5),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Insert here what Top Up does
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.add,
-                            color: Color(0xFF58C6A9),
-                          ),
-                          SizedBox(width: 10),
-                          Text('Add New Card',
-                            style: TextStyle(
-                              color: Color(0xFF58C6A9)
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 20),
+                  // ... (Add New Card button)
                 ],
               ),
             ),

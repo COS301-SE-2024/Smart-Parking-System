@@ -9,7 +9,7 @@ class ConfirmBookingPage extends StatefulWidget {
   final double price;
   final String selectedZone;
   final String selectedLevel;
-  final String selectedRow;
+  final String? selectedRow;
 
   const ConfirmBookingPage({required this.bookedAddress, required this.price, required this.selectedZone, required this.selectedLevel, required this.selectedRow, super.key});
 
@@ -260,7 +260,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
                     ),

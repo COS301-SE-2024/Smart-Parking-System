@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_parking_system/components/card/add_card.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -54,6 +53,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         cards = fetchedCards;
       });
     } catch (e) {
+      // ignore: avoid_print
       print('Error fetching cards: $e');
       // 这里可以添加更多错误处理逻辑
     }
@@ -237,6 +237,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       .update(updatedData);
 
                   await _fetchCards();
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },
@@ -408,6 +409,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                           const SizedBox(height: 20),
                         ],
                       ),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GestureDetector(
@@ -423,7 +425,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                             const SizedBox(width: 10),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) => const AddCardPage(),
                                   ),
@@ -437,6 +439,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                           ],
                         ),
                       ),
+                      
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -489,25 +492,25 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const SettingsPage(),
                     ),
