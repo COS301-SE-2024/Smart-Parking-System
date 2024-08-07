@@ -17,33 +17,36 @@ class ParkingHistoryPage extends StatefulWidget {
 }
 
 class ActiveSession {
+  final String documentId;
   final String rate;
   final String address;
   final String parkingslot;
   String remainingtime;
   final DateTime endTime;
 
-  ActiveSession(this.rate, this.address, this.parkingslot, this.remainingtime, this.endTime);
+  ActiveSession(this.documentId, this.rate, this.address, this.parkingslot, this.remainingtime, this.endTime);
 }
 
 class ReservedSpot {
+  final String documentId;
   final String date;
   final String time;
   final String amount;
   final String address;
   final String parkingslot;
 
-  ReservedSpot(this.date, this.time, this.amount, this.address, this.parkingslot);
+  ReservedSpot(this.documentId, this.date, this.time, this.amount, this.address, this.parkingslot);
 }
 
 class CompletedSession {
+  final String documentId;
   final String date;
   final String time;
   final String amount;
   final String address;
   final String parkingslot;
 
-  CompletedSession(this.date, this.time, this.amount, this.address, this.parkingslot);
+  CompletedSession(this.documentId, this.date, this.time, this.amount, this.address, this.parkingslot);
 }
 
 class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
@@ -69,16 +72,111 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   void _startTimer() {
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       setState(() {
+        List<ActiveSession> finishedSessions = [];
         for (var session in activesessions) {
           Duration remaining = session.endTime.difference(DateTime.now());
           if (remaining.isNegative) {
-            session.remainingtime = '0h 0m';
+            finishedSessions.add(session);
           } else {
-            session.remainingtime = '${remaining.inHours}h ${remaining.inMinutes % 60}m';
+            if (remaining.inHours < 1 && remaining.inMinutes % 60 < 1) {
+              session.remainingtime = 'less than 1 minute';
+            } else {
+              session.remainingtime = '${remaining.inHours}h ${remaining.inMinutes % 60}m';
+            }
           }
         }
+        if (finishedSessions.isNotEmpty) {
+          _moveFinishedSessionsToCompleted(finishedSessions);
+        }
+
+        // Check and update reserved spots
+        _checkAndUpdateReservedSpots();
       });
     });
+  }
+  void _moveFinishedSessionsToCompleted(List<ActiveSession> finishedSessions) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    for (var session in finishedSessions) {
+      try {
+        // Find the corresponding booking document
+        DocumentSnapshot bookingDoc = await firestore.collection('bookings').doc(session.documentId).get();
+
+        if (bookingDoc.exists) {
+          var bookingData = bookingDoc.data() as Map<String, dynamic>;
+
+          // Move the booking to past_bookings collection
+          await firestore.collection('past_bookings').add(bookingData);
+
+          // Delete the booking from bookings collection
+          await bookingDoc.reference.delete();
+
+          // Add to completedsessions list
+          completedsessions.add(CompletedSession(
+            session.documentId,
+            bookingData['date'],
+            bookingData['time'],
+            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
+            session.address,
+            session.parkingslot,
+          ));
+
+          // Remove from activesessions list
+          activesessions.remove(session);
+        }
+      } catch (e) {
+        showToast(message: 'Error moving finished session: $e');
+      }
+    }
+
+    // Sort completedsessions list
+    completedsessions.sort((b, a) {
+      int dateComparison = a.date.compareTo(b.date);
+      if (dateComparison != 0) {
+        return dateComparison;
+      } else {
+        return a.time.compareTo(b.time);
+      }
+    });
+
+    // Trigger a rebuild
+    setState(() {});
+  }
+  void _checkAndUpdateReservedSpots() {
+    DateTime now = DateTime.now();
+    List<ReservedSpot> spotsToActivate = [];
+
+    for (var spot in reservedspots) {
+      DateTime spotDateTime = DateTime.parse('${spot.date} ${spot.time}');
+      if (now.isAfter(spotDateTime) || now.isAtSameMomentAs(spotDateTime)) {
+        spotsToActivate.add(spot);
+      }
+    }
+
+    if (spotsToActivate.isNotEmpty) {
+      setState(() {
+        for (var spot in spotsToActivate) {
+          // Calculate end time (assuming duration is stored somewhere, let's say it's 2 hours for this example)
+          DateTime endTime = DateTime.parse('${spot.date} ${spot.time}').add(const Duration(hours: 2));
+          
+          // Add to active sessions
+          activesessions.add(ActiveSession(
+            spot.documentId,
+            spot.amount,
+            spot.address,
+            spot.parkingslot,
+            '2h 0m', // Initial remaining time
+            endTime,
+          ));
+
+          // Remove from reserved spots
+          reservedspots.remove(spot);
+        }
+
+        // Sort active sessions
+        activesessions.sort((a, b) => a.endTime.compareTo(b.endTime));
+      });
+    }
   }
 
   // Get details on load
@@ -101,6 +199,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         // Loop through each document
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
+          String documentId = document.id;
           String bookedLocation = document.get('address') as String;
           String bookedZone = document.get('zone') as String;
           String bookedLevel = document.get('level') as String;
@@ -127,6 +226,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             // Booking is currently in progress, add to 'activesessions'
             Duration remainingDuration = bookingEndDateTime.difference(currentDateTime);
             activesessions.add(ActiveSession(
+              documentId,
               'R ${bookedPrice.toInt()}',
               bookedLocation,
               'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
@@ -136,6 +236,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           } else {
             // Booking is in the future, add to 'reservedspots'
             reservedspots.add(ReservedSpot(
+              documentId,
               bookedDate,
               bookedTime,
               'R $totalPrice',
@@ -179,6 +280,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         // Loop through each document
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
+          String documentId = document.id;
           String bookedLocation = document.get('address') as String;
           String bookedZone = document.get('zone') as String;
           String bookedLevel = document.get('level') as String;
@@ -190,24 +292,41 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           try{
             int bookedPrice = document.get('price') as int;
             int bookedDuration = document.get('duration') as int;
-          // Calculate total price
+            // Calculate total price
             totalPrice = (bookedPrice * bookedDuration).toInt();
           } catch (e) {
-            double bookedPrice = document.get('price') as double;
-            double bookedDuration = document.get('duration') as double;
-          // Calculate total price
-            totalPrice = (bookedPrice * bookedDuration).toInt();
+            try {
+              int bookedPrice = document.get('price') as int;
+              double bookedDuration = document.get('duration') as double;
+              // Calculate total price
+              totalPrice = (bookedPrice * bookedDuration).toInt();
+            } catch (e) {
+              try {
+                double bookedPrice = document.get('price') as double;
+                int bookedDuration = document.get('duration') as int;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+              } catch (e) {
+                double bookedPrice = document.get('price') as double;
+                double bookedDuration = document.get('duration') as double;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+              }
+            }
           }
 
           // Add to completedsessions list
           completedsessions.add(CompletedSession(
+            documentId,
             bookedDate,
             bookedTime,
             'R $totalPrice',
             bookedLocation,
             'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
           ));
+           // showToast(message: 'HERE1');
         }
+            // showToast(message: 'HERE1');
 
         completedsessions.sort((b, a) {
           int dateComparison = a.date.compareTo(b.date);
@@ -255,40 +374,112 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       },
     );
   }
-
   void _deleteBooking(ReservedSpot reservedspot) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       
       // Query the 'bookings' collection to find the document to delete
-      QuerySnapshot querySnapshot = await firestore
-          .collection('bookings')
-          .where('date', isEqualTo: reservedspot.date)
-          .where('time', isEqualTo: reservedspot.time)
-          .where('address', isEqualTo: reservedspot.address)
-          .limit(1)
-          .get();
+      await firestore.collection('bookings').doc(reservedspot.documentId).delete();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Delete the document
-        await querySnapshot.docs.first.reference.delete();
+      // Remove the booking from the local list
+      setState(() {
+        reservedspots.removeWhere((spot) => spot.documentId == reservedspot.documentId);
+      });
+
+      showToast(message: 'Booking cancelled successfully');
+    } catch (e) {
+      showToast(message: 'Error cancelling booking: $e');
+    }
+  }
+
+  void _showEndConfirmation(BuildContext context, ActiveSession activesession) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("End Sesssion Early"),
+          content: const Text("Are you sure you want to end this session early?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Yes"),
+              onPressed: () {
+                _endSession(activesession);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void _endSession(ActiveSession activesession) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      
+      // Get the current booking document
+      DocumentSnapshot bookingDoc = await firestore.collection('bookings').doc(activesession.documentId).get();
+      
+      if (bookingDoc.exists) {
+        Map<String, dynamic> bookingData = bookingDoc.data() as Map<String, dynamic>;
         
-        // Remove the booking from the local list
+        // Calculate the actual duration
+        DateTime startTime = DateTime.parse('${bookingData['date']} ${bookingData['time']}');
+        DateTime endTime = DateTime.now();
+        double actualDurationHours = endTime.difference(startTime).inHours + ((endTime.difference(startTime).inMinutes % 60) / 60);
+        
+        double oldDuration = bookingData['duration'];
+        // Update the duration and calculate the final price
+        bookingData['duration'] = actualDurationHours;
+        double price = bookingData['price'] as double;
+        int finalPrice = (price * actualDurationHours).toInt();
+
+        _refund(price, oldDuration, finalPrice);
+        
+        // Add the booking to past_bookings
+        await firestore.collection('past_bookings').add(bookingData);
+        
+        // Delete the booking from bookings
+        await firestore.collection('bookings').doc(activesession.documentId).delete();
+
+        // Update local lists
         setState(() {
-          reservedspots.removeWhere((spot) => 
-            spot.date == reservedspot.date && 
-            spot.time == reservedspot.time && 
-            spot.address == reservedspot.address
-          );
+          activesessions.removeWhere((session) => session.documentId == activesession.documentId);
+          completedsessions.add(CompletedSession(
+            activesession.documentId,
+            bookingData['date'],
+            bookingData['time'],
+            'R $finalPrice',
+            activesession.address,
+            activesession.parkingslot,
+          ));
+          
+          // Sort completedsessions
+          completedsessions.sort((b, a) {
+            int dateComparison = a.date.compareTo(b.date);
+            return dateComparison != 0 ? dateComparison : a.time.compareTo(b.time);
+          });
         });
 
-        showToast(message: 'Booking cancelled successfully');
+        showToast(message: 'Session ended successfully');
       } else {
         showToast(message: 'Booking not found');
       }
     } catch (e) {
-      showToast(message: 'Error cancelling booking: $e');
+      showToast(message: 'Error ending session: $e');
     }
+  }
+  
+  void _refund(double price, double oldDuration, int finalPrice) {                                                //Add code for refund here
+    double refundAmount = (price * oldDuration) - finalPrice;
+    showToast(message: "Refund : $refundAmount");
+
+    //Refund Amount as credit here
   }
 
   int _selectedIndex = 2;
@@ -557,7 +748,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.star, color: Colors.amber, size: 30),
+              const Icon(Icons.star, color: Colors.tealAccent, size: 30),
               const SizedBox(width: 10),
               Text(
                 '${reservedspot.address}\n${reservedspot.parkingslot}',
@@ -594,7 +785,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     );
   }
 
-  Widget _buildActiveSessionItem(ActiveSession activeSession) {
+  Widget _buildActiveSessionItem(ActiveSession activesession) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -622,7 +813,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  '${activeSession.rate}/Hr',
+                  '${activesession.rate}/Hr',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -631,7 +822,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               ),
               const SizedBox(width: 10),
               Text(
-                '${activeSession.address}\n${activeSession.parkingslot}',
+                '${activesession.address}\n${activesession.parkingslot}',
                 style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.right,  
               ),
@@ -646,13 +837,22 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Time Remaining',
-                style: TextStyle(color: Colors.grey),
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Time Remaining : ',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                Text(
+                  activesession.remainingtime,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ]
               ),
-              Text(
-                activeSession.remainingtime,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _showEndConfirmation(context, activesession),
               ),
             ],
           ),
