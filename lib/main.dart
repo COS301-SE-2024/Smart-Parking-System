@@ -7,7 +7,7 @@ import 'package:smart_parking_system/components/splashscreen/splash_screen.dart'
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: ".env");
   // Initialize Firebase
   if (kIsWeb) {
     await Firebase.initializeApp(
