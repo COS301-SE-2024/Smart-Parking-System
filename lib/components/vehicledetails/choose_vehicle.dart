@@ -140,7 +140,6 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         //   ),
                         // ),
                         const SizedBox(height: 20,),
-                        
                         for (var car in cars)
                           Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                             child:   CarCard(
@@ -150,48 +149,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                               isSelected: selectedCarVehicleId == car['vehicleId'],
                               onSelect: () => selectCar(car['vehicleId']!),
                             ),
-                          ),
-                        const SizedBox(height: 20,),
-                        Center( 
-                          child: ElevatedButton(
-                                onPressed: () {
-                                  if(!isLoading){
-                                    // Change to Something:
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 120,
-                                    vertical: 24,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                ),
-                                child: isLoading
-                                      ? const Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 18),
-                                        child: SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 2.0,
-                                          ),
-                                        )
-                                      ) 
-                                      : const Text(
-                                  'Continue',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                        ),
-                        
-                          
+                          ),                   
                       ],
                     ),
                   ),
@@ -204,11 +162,18 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         const SizedBox(height: 40,),
                         !isLoading && cars.isEmpty ?
                           const Text(
-                            'Sorry, you have no Vehicles.'
+                            'Sorry, you have no Vehicles.',
+                            style: TextStyle(
+                                color: Colors.white,
+                              )
                           ) 
                             : const Text(''),
                           isLoading
-                          ? const Text('')
+                          ? const Text('Loading...',
+                              style: TextStyle(
+                                color: Colors.white,
+                              )
+                            )
                           :  const Text(''),
                       ],
                     ),
@@ -224,43 +189,43 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         ),   
       ),
       drawer: const SideMenu(),
-      // bottomNavigationBar: BottomAppBar(
-      // color: const Color(0xFF35344A),
-      // shape: const CircularNotchedRectangle(),
-      // child:                  ElevatedButton(
-      //                           onPressed: () {
-      //                             if(!isLoading){
-      //                               // Change to Something:
-      //                             }
-      //                           },
-      //                           style: ElevatedButton.styleFrom(
-      //                             backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
-      //                             padding: const EdgeInsets.symmetric(
-      //                               horizontal: 120,
-      //                               vertical: 24,
-      //                             ),
-      //                             shape: RoundedRectangleBorder(
-      //                               borderRadius: BorderRadius.circular(40),
-      //                             ),
-      //                           ),
-      //                           child: isLoading
-      //                                 ? const SizedBox(
-      //                                     width: 24,
-      //                                     height: 24,
-      //                                     child: CircularProgressIndicator(
-      //                                       color: Colors.white,
-      //                                       strokeWidth: 2.0,
-      //                                     ),
-      //                                   )
-      //                                 : const Text(
-      //                             'Continue',
-      //                             style: TextStyle(
-      //                               fontSize: 16,
-      //                               color: Colors.white,
-      //                             ),
-      //                           ),
-      //                         ),
-      // )
+      bottomNavigationBar: BottomAppBar(
+      color: const Color(0xFF35344A),
+      shape: const CircularNotchedRectangle(),
+      child: ElevatedButton(
+          onPressed: () {
+            if(!isLoading){
+              // Change to Something:
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 120,
+              vertical: 24,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40),
+            ),
+          ),
+          child: isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
+            'Continue',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      )
     );
   }
 }
