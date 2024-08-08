@@ -85,9 +85,8 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 30),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               color: const Color(0xFF35344A),
               child: Stack(
                 children: [
@@ -129,7 +128,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                   ),
                   
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 130, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
                     child: Column(
                       children: [
                         // Center(
@@ -151,7 +150,47 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                               isSelected: selectedCarVehicleId == car['vehicleId'],
                               onSelect: () => selectCar(car['vehicleId']!),
                             ),
-                          )
+                          ),
+                        const SizedBox(height: 20,),
+                        Center( 
+                          child: ElevatedButton(
+                                onPressed: () {
+                                  if(!isLoading){
+                                    // Change to Something:
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 120,
+                                    vertical: 24,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                ),
+                                child: isLoading
+                                      ? const Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 18),
+                                        child: SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2.0,
+                                          ),
+                                        )
+                                      ) 
+                                      : const Text(
+                                  'Continue',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                        ),
+                        
                           
                       ],
                     ),
@@ -160,54 +199,16 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30),
                       child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const SizedBox(height: 40,),
-                        ElevatedButton(
-                          onPressed: () {
-                            if(!isLoading){
-                              // Change to Something:
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 150,
-                              vertical: 24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                          ),
-                          child: isLoading
-                                ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2.0,
-                                    ),
-                                  )
-                                : const Text(
-                            'Continue',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20,),
                         !isLoading && cars.isEmpty ?
                           const Text(
                             'Sorry, you have no Vehicles.'
                           ) 
                             : const Text(''),
                           isLoading
-                          ? const Text(
-                            'Loading...',
-                            style: TextStyle(
-                              color: Colors.white
-                            ),
-                          )
+                          ? const Text('')
                           :  const Text(''),
                       ],
                     ),
@@ -223,6 +224,43 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         ),   
       ),
       drawer: const SideMenu(),
+      // bottomNavigationBar: BottomAppBar(
+      // color: const Color(0xFF35344A),
+      // shape: const CircularNotchedRectangle(),
+      // child:                  ElevatedButton(
+      //                           onPressed: () {
+      //                             if(!isLoading){
+      //                               // Change to Something:
+      //                             }
+      //                           },
+      //                           style: ElevatedButton.styleFrom(
+      //                             backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
+      //                             padding: const EdgeInsets.symmetric(
+      //                               horizontal: 120,
+      //                               vertical: 24,
+      //                             ),
+      //                             shape: RoundedRectangleBorder(
+      //                               borderRadius: BorderRadius.circular(40),
+      //                             ),
+      //                           ),
+      //                           child: isLoading
+      //                                 ? const SizedBox(
+      //                                     width: 24,
+      //                                     height: 24,
+      //                                     child: CircularProgressIndicator(
+      //                                       color: Colors.white,
+      //                                       strokeWidth: 2.0,
+      //                                     ),
+      //                                   )
+      //                                 : const Text(
+      //                             'Continue',
+      //                             style: TextStyle(
+      //                               fontSize: 16,
+      //                               color: Colors.white,
+      //                             ),
+      //                           ),
+      //                         ),
+      // )
     );
   }
 }
