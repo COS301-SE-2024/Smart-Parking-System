@@ -130,7 +130,7 @@ class _NotificationPageState extends State<NotificationApp> {
                 DateTime now = DateTime.now();
   
                 // Create a DateTime for today at 17:00
-                DateTime bookingTime = DateTime(now.year, now.month, now.day, 15, 0);
+                DateTime bookingTime = DateTime(now.year, now.month, now.day, 20, 20);
                 
                 // Call the bookSlot function
                 bookSlot(bookingTime);

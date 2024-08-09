@@ -7,23 +7,33 @@ import 'package:firebase_auth/firebase_auth.dart';
 Future<void> bookSlot(DateTime parkingTime) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) {
+    print("No user logged in");
     return;
   }
 
-  final notificationTime = parkingTime.subtract(const Duration(hours: 2)); // 2 hours before parking time
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  if (fcmToken == null) {
+    print("Failed to get FCM token");
+    return;
+  }
+
+  // Ensure parkingTime is in UTC
+  final parkingTimeUtc = parkingTime.toUtc();
+  final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
   try {
     await FirebaseFirestore.instance.collection('notifications').add({
       'userId': user.uid,
-      'parkingTime': Timestamp.fromDate(parkingTime),
-      'notificationTime': Timestamp.fromDate(notificationTime),
+      'fcmToken': fcmToken,
+      'parkingTime': Timestamp.fromDate(parkingTimeUtc),
+      'notificationTime': Timestamp.fromDate(notificationTimeUtc),
       'sent': false,
     });
+    print("Slot booked successfully for ${parkingTimeUtc.toString()}");
   } catch (e) {
-    // print("Error booking slot: $e");
+    print("Error booking slot: $e");
   }
 }
-
 
 class FCMService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
