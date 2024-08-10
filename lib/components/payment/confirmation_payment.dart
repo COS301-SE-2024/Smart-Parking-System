@@ -473,13 +473,12 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              
                               RichText(
                                 text: TextSpan(
                                   style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '$startTime         ',
+                                      text: '$startTime  ',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
@@ -501,7 +500,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                   style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '$endTime         ',
+                                      text: endTime,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18

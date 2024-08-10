@@ -136,178 +136,185 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
       body: Container(
         color: const Color(0xFF2D2F41),
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
-              color: const Color(0xFF2D2F41),
-              child: Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+        child: SingleChildScrollView( // Wrap the content with SingleChildScrollView
+          child: Container(
+            color: const Color(0xFF2D2F41),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+                  color: const Color(0xFF2D2F41),
+                  child: Stack(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Parking Zones',
+                          style: TextStyle(
+                            color: Colors.tealAccent,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Parking Zones',
+                ),
+                const Text(
+                  'Choose Your Parking\nZone',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(color: Colors.white),
+                  ),
+                  child: Text(
+                    '$totalSlots spaces available',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: selectedZone == null ? Colors.green : const Color(0xFF58C6A9),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.local_parking, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Denotes a Parking Zone',
                       style: TextStyle(
                         color: Colors.tealAccent,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 300, // Fixed width to ensure positions don't change with screen size
+                  height: 200, // Fixed height to ensure positions don't change with screen size
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        'assets/s-map.png', // Update this with your image path
+                        height: 200,
+                        width: 300,
+                        fit: BoxFit.contain,
+                      ),
+                      ...zones.map((zone) => _buildZoneButton(zone)),
+                    ],
+                  ),
+                ),
+                if (selectedZone != null) ...[
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF34354A),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Zone $selectedZone',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Spaces Available: ${zones.firstWhere((z) => z.zone == selectedZone).slots} slots',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Distance to Zone: ${zones.firstWhere((z) => z.zone == selectedZone).timeDistance} mins drive',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
-              ),
-            ),
-            const Text(
-              'Choose Your Parking\nZone',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                '$totalSlots spaces available',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: selectedZone == null ? Colors.green : const Color(0xFF58C6A9),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.local_parking, color: Colors.white),
+                const SizedBox(height: 20),
+                // const Spacer(),
+                Center(
+                  child: SizedBox(
+                    width: 160,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedZone != null ? const Color(0xFF58C6A9) : const Color(0xFF5B5B5B),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                      onPressed: selectedZone != null
+                          ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => LevelSelectPage(
+                              bookedAddress: widget.bookedAddress,
+                              price: widget.price,
+                              selectedZone: selectedZone!,
+                            ),
+                          ),
+                        );
+                      }
+                          : null,
+                      child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                const Text(
-                  'Denotes a Parking Zone',
-                  style: TextStyle(
-                    color: Colors.tealAccent,
-                    fontSize: 18,
-                  ),
-                ),
+                const SizedBox(height: 20),
               ],
             ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 300, // Fixed width to ensure positions don't change with screen size
-              height: 200, // Fixed height to ensure positions don't change with screen size
-              child: Stack(
-                children: [
-                  Image.asset(
-                    'assets/s-map.png', // Update this with your image path
-                    height: 200,
-                    width: 300,
-                    fit: BoxFit.contain,
-                  ),
-                  ...zones.map((zone) => _buildZoneButton(zone)),
-                ],
-              ),
-            ),
-            if (selectedZone != null) ...[
-              const SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF34354A),
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Zone $selectedZone',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Spaces Available: ${zones.firstWhere((z) => z.zone == selectedZone).slots} slots',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Distance to Zone: ${zones.firstWhere((z) => z.zone == selectedZone).timeDistance} mins drive',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            const Spacer(),
-            Center(
-              child: SizedBox(
-                width: 160,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedZone != null ? const Color(0xFF58C6A9) : const Color(0xFF5B5B5B),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                  ),
-                  onPressed: selectedZone != null
-                      ? () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => LevelSelectPage(
-                          bookedAddress: widget.bookedAddress,
-                          price: widget.price,
-                          selectedZone: selectedZone!,
-                        ),
-                      ),
-                    );
-                  }
-                      : null,
-                  child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
+          ),
         ),
       ),
     );
