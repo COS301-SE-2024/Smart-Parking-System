@@ -23,15 +23,7 @@ class Zone {
   Zone(this.zone, this.slots, this.timeDistance, this.x, this.y);
 }
 
-class _ZoneSelectPageState extends State<ZoneSelectPage> {
-  String? selectedZone;
-  int totalSlots = 0;
-
-  List<Zone> zones = [
-    // Add more levels here
-  ];
-
-  static String extractSlotsAvailable(String slots) {
+  String extractSlotsAvailable(String slots) {
     // Use a regular expression to match the first number
     RegExp regex = RegExp(r'^\d+');
     Match? match = regex.firstMatch(slots);
@@ -44,6 +36,14 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
     // Return a default value if no match is found
     return "0";
   }
+
+class _ZoneSelectPageState extends State<ZoneSelectPage> {
+  String? selectedZone;
+  int totalSlots = 0;
+
+  List<Zone> zones = [
+    // Add more levels here
+  ];
     // Get details on load
   Future<void> getDetails() async {
     try {
