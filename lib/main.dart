@@ -9,7 +9,6 @@ import 'package:smart_parking_system/components/notifications/notificationfuncti
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
   // You can add logic here to handle the background message
 }
 
