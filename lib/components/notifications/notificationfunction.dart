@@ -2,18 +2,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 
 Future<void> bookSlot(DateTime parkingTime) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) {
-    print("No user logged in");
     return;
   }
 
   String? fcmToken = await FirebaseMessaging.instance.getToken();
   if (fcmToken == null) {
-    print("Failed to get FCM token");
     return;
   }
 
@@ -29,9 +28,8 @@ Future<void> bookSlot(DateTime parkingTime) async {
       'notificationTime': Timestamp.fromDate(notificationTimeUtc),
       'sent': false,
     });
-    print("Slot booked successfully for ${parkingTimeUtc.toString()}");
   } catch (e) {
-    print("Error booking slot: $e");
+    showToast(message: 'Error: $e');
   }
 }
 
@@ -46,9 +44,9 @@ class FCMService {
     // Initialize local notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsIOS =
+    const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();
-    final InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -81,7 +79,7 @@ class FCMService {
           notification.hashCode,
           notification.title,
           notification.body,
-          NotificationDetails(
+          const NotificationDetails(
             android: AndroidNotificationDetails(
               'parking_channel',
               'Parking Notifications',
@@ -95,7 +93,7 @@ class FCMService {
 
     // Handle notification clicks when app is in background or terminated
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
+      
       // Navigate to relevant screen based on the notification
     });
 
