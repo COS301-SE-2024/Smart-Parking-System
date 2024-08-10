@@ -6,6 +6,7 @@ import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/splashscreen/splash_screen.dart';
 
 Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
