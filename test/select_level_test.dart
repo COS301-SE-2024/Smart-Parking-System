@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/bookings/select_zone.dart';
+import 'package:smart_parking_system/components/bookings/select_level.dart';
 
 void main() {
   group('extractSlotsAvailable', () {
