@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:location/location.dart' as loc;
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -34,6 +38,7 @@ class _MainPageState extends State<MainPage> {
   LocationData? locationData;
   final Completer<GoogleMapController> _controller = Completer();
   bool _locationPermissionGranted = false;
+  final Set<Marker> _markers = {};
 
   final TextEditingController _destinationController = TextEditingController();
 
@@ -87,10 +92,159 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     getDetails();
     requestLocation();
+    _addCarMarker();
+  }
+
+  void displayPrediction(Prediction? p) async {
+    if (p != null) {
+      GoogleMapsPlaces places = GoogleMapsPlaces(apiKey: dotenv.env['PLACES_API_KEY']!);
+      PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
+      final lat = detail.result.geometry!.location.lat;
+      final lng = detail.result.geometry!.location.lng;
+
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), 15.0));
+
+      setState(() {
+        _destinationController.text = p.description!;
+        _markers.add(
+          Marker(
+            markerId: MarkerId(p.placeId!),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(
+              title: p.description!,
+            ),
+          ),
+        );
+      });
+    }
+  }
+
+  Future<void> _addCarMarker() async {
+    final BitmapDescriptor carIcon = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(100, 100)),
+      'assets/Purple_ParkMe.png',
+    );
+
+    final List<Marker> markers = [
+      Marker(
+        markerId: const MarkerId('car_marker_1'),
+        position: const LatLng(-26.108528752672193, 28.05280562667932), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Sandton City',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-26.108528752672193, 28.05280562667932),
+                zoom: 17.0,
+              ),
+            ),
+          );
+
+          await Future.delayed(const Duration(seconds: 3));
+          _showParkingInfo();
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_2'),
+        position: const LatLng(-25.782702280688465, 28.274768587059818), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Menlyn Park Shopping Centre',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-25.782702280688465, 28.274768587059818),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_3'),
+        position: const LatLng(-33.90776949320457, 18.420081870975576), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'V&A Waterfront',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-33.90776949320457, 18.420081870975576),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_4'),
+        position: const LatLng(-32.97051605731753, 27.901948782757295), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Hemingways Mall',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-32.97051605731753, 27.901948782757295),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_5'),
+        position: const LatLng(-29.114696757582518, 26.21065532493569), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Loch Logan Waterfront',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-29.114696757582518, 26.21065532493569),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+    ];
+
+    setState(() {
+      _markers.addAll(markers);
+
+    });
+
   }
 
   void requestLocation() async {
-    Location location = Location();
+    loc.Location location = loc.Location();
 
     bool serviceEnabled;
     PermissionStatus permissionGranted;
@@ -292,8 +446,8 @@ class _MainPageState extends State<MainPage> {
         children: <Widget>[
           GoogleMap(
             initialCameraPosition: const CameraPosition(
-              target: LatLng(-26.270760, 28.112268), // Default location
-              zoom: 10,
+              target: LatLng(-30.983819953976862, 23.84867659935075), // Default location
+              zoom: 6,
             ),
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -304,6 +458,7 @@ class _MainPageState extends State<MainPage> {
               }
             },
             myLocationEnabled: _locationPermissionGranted,
+            markers: _markers,
           ),
           Positioned(
             top: 80.0,
@@ -319,19 +474,28 @@ class _MainPageState extends State<MainPage> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Center(
-                    child: TextField(
-                      controller: _destinationController, // Added the controller
-                      onTap: () {
-                        setState(() {
-                          _isModalVisible = true;
-                        });
+                    child: GestureDetector(
+                      onTap: () async {
+                        Prediction? p = await PlacesAutocomplete.show(
+                          context: context,
+                          apiKey: dotenv.env['PLACES_API_KEY']!,
+                          mode: Mode.overlay, // Mode.fullscreen
+                          language: "en",
+                          components: [const Component(Component.country, "za")],
+                        );
+                        displayPrediction(p);
                       },
-                      decoration: const InputDecoration(
-                        hintText: 'Where are you going?',
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.white),
+                      child: AbsorbPointer(
+                        child: TextField(
+                          controller: _destinationController,
+                          decoration: const InputDecoration(
+                            hintText: 'Where are you going?',
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: Colors.white),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
-                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),

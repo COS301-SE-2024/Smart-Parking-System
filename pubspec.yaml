@@ -29,8 +29,10 @@ dependencies:
   intl: ^0.19.0
   flutter_dotenv: ^5.1.0
   location: ^7.0.0
+  flutter_google_places_hoc081098: ^2.0.0
   flutter_local_notifications: ^17.2.1+2
   firebase_messaging: ^15.0.4
+
 
 dev_dependencies:
   flutter_test:
@@ -84,3 +86,5 @@ flutter:
     - assets/help8.png
     - assets/help9.png
     - assets/help10.png
+    - assets/Purple_ParkMe.png
+    - .env
