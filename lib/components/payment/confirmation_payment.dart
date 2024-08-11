@@ -39,6 +39,17 @@ class ConfirmPaymentPage extends StatefulWidget {
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
+  // Function to update slots field
+  String updateSlot(String slot) {
+    List<String> slotsSplit = slot.split('/');
+    int availableSlots = int.parse(slotsSplit[0]);
+    int totalSlots = int.parse(slotsSplit[1]);
+  
+    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
+    // Decrement available slots
+    return '$updatedSlots/$totalSlots';
+  }
+
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     //Variables
   String? licenseNum = '';
@@ -93,17 +104,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     }
   }
 
-
-  // Function to update slots field
-  String updateSlot(String slot) {
-    List<String> slotsSplit = slot.split('/');
-    int availableSlots = int.parse(slotsSplit[0]);
-    int totalSlots = int.parse(slotsSplit[1]);
-  
-    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
-    // Decrement available slots
-    return '$updatedSlots/$totalSlots';
-  }
     // Get details on load
   Future<void> _updateSlotAvailability() async {
     try {
