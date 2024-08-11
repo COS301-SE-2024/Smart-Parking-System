@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
@@ -39,6 +40,17 @@ class ConfirmPaymentPage extends StatefulWidget {
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
+  // Function to update slots field
+  String updateSlot(String slot) {
+    List<String> slotsSplit = slot.split('/');
+    int availableSlots = int.parse(slotsSplit[0]);
+    int totalSlots = int.parse(slotsSplit[1]);
+  
+    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
+    // Decrement available slots
+    return '$updatedSlots/$totalSlots';
+  }
+
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     //Variables
   String? licenseNum = '';
@@ -63,6 +75,16 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
       _updateSlotAvailability();
 
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        return;
+      }
+      String dateTime = '$bookingDate ${startTime!}';
+      DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
+
+      final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
+
+
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
           'userId': user.uid, // Add the userId field
@@ -78,6 +100,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'vehicleId': widget.vehicleId,
           'vehicleLogo': widget.vehicleLogo,
           'card': cardNumber,
+          'sent' : false,
+          'fcmToken': fcmToken,
+          'notificationTime' : notificationTimeUtc,
         });
 
         showToast(message: 'Booked Successfully!');
@@ -93,17 +118,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     }
   }
 
-
-  // Function to update slots field
-  String updateSlot(String slot) {
-    List<String> slotsSplit = slot.split('/');
-    int availableSlots = int.parse(slotsSplit[0]);
-    int totalSlots = int.parse(slotsSplit[1]);
-  
-    int updatedSlots = (availableSlots > 0) ? availableSlots - 1 : 0;
-    // Decrement available slots
-    return '$updatedSlots/$totalSlots';
-  }
     // Get details on load
   Future<void> _updateSlotAvailability() async {
     try {
@@ -473,13 +487,12 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              
                               RichText(
                                 text: TextSpan(
                                   style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '$startTime         ',
+                                      text: '$startTime  ',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18
@@ -501,7 +514,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                   style: const TextStyle(color: Colors.white),
                                   children: [
                                     TextSpan(
-                                      text: '$endTime         ',
+                                      text: endTime,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18

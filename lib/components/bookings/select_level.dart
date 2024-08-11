@@ -22,15 +22,7 @@ class Level {
   Level(this.level, this.slots);
 }
 
-class _LevelSelectPageState extends State<LevelSelectPage> {
-  String? selectedLevel;
-  int totalSlots = 0;
-
-  List<Level> levels = [
-    // Add more levels here
-  ];
-
-  static String extractSlotsAvailable(String slots) {
+  String extractSlotsAvailable(String slots) {
     // Use a regular expression to match the first number
     RegExp regex = RegExp(r'^\d+');
     Match? match = regex.firstMatch(slots);
@@ -43,6 +35,15 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
     // Return a default value if no match is found
     return "0";
   }
+
+class _LevelSelectPageState extends State<LevelSelectPage> {
+  String? selectedLevel;
+  int totalSlots = 0;
+
+  List<Level> levels = [
+    // Add more levels here
+  ];
+
     // Get details on load
   Future<void> getDetails() async {
     try {

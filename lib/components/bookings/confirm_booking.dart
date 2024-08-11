@@ -276,7 +276,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 120,
+                    horizontal: 100,
                     vertical: 18,
                   ),
                   backgroundColor: const Color(0xFF58C6A9),

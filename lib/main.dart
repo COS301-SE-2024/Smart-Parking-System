@@ -1,15 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/splashscreen/splash_screen.dart';
+import 'package:smart_parking_system/components/notifications/notificationfunction.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  // You can add logic here to handle the background message
+}
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
-
   // Initialize Firebase
+  //dotenv.env['API_KEY']!
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -22,6 +29,11 @@ Future<void> main() async {
   } else {
     await Firebase.initializeApp();
   }
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // // Initialize FCM service
+  await FCMService().init();
 
   runApp(const MyApp());
 }
