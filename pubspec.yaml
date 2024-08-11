@@ -30,14 +30,18 @@ dependencies:
   flutter_dotenv: ^5.1.0
   location: ^7.0.0
   mocktail: ^0.3.0
+  flutter_google_places_hoc081098: ^2.0.0
+  flutter_local_notifications: ^17.2.1+2
+  firebase_messaging: ^15.0.4
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  mockito: ^5.0.16
- 
+  mockito: ^5.0.17
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true
@@ -72,6 +76,7 @@ flutter:
     - assets/brush1.png
     - assets/brush2.png
     - assets/default_logo.png
+    - assets/Porsche_Logo.png
     - assets/help1.png
     - assets/help2.png
     - assets/help3.png
@@ -82,3 +87,5 @@ flutter:
     - assets/help8.png
     - assets/help9.png
     - assets/help10.png
+    - assets/Purple_ParkMe.png
+    - .env

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/help/paymentsHelp.dart';
+import 'package:smart_parking_system/components/help/paymentshelp.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
-import 'package:smart_parking_system/components/help/bookingHelp.dart'; 
-import 'package:smart_parking_system/components/help/paymentsHelp.dart';
-import 'package:smart_parking_system/components/help/accountHelp.dart';
+import 'package:smart_parking_system/components/help/bookinghelp.dart'; 
+import 'package:smart_parking_system/components/help/accounthelp.dart';
 
 class SupportApp extends StatefulWidget {
   const SupportApp({super.key});
@@ -90,7 +89,7 @@ class _SupportAppState extends State<SupportApp> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>  Bookinghelp(),
+                        builder: (context) =>  const Bookinghelp(),
                       ),
                     );
                   },
@@ -103,7 +102,7 @@ class _SupportAppState extends State<SupportApp> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>  Accounthelp(),
+                        builder: (context) =>  const Accounthelp(),
                       ),
                     );
                   },
@@ -116,7 +115,7 @@ class _SupportAppState extends State<SupportApp> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>  Paymentshelp(),
+                        builder: (context) =>  const Paymentshelp(),
                       ),
                     );
                   },

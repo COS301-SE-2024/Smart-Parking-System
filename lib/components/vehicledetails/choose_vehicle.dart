@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 import 'package:smart_parking_system/components/sidebar.dart';
 
 class ChooseVehiclePage extends StatefulWidget {
-  const ChooseVehiclePage({super.key});
+  final String bookedAddress;
+  final double price;
+  final String selectedZone;
+  final String selectedLevel;
+  final String? selectedRow;
+  final String selectedTime;
+  final DateTime selectedDate;
+  final double selectedDuration;
+  final bool selectedDisabled;
+
+  const ChooseVehiclePage({
+    required this.bookedAddress,
+    required this.selectedZone,
+    required this.selectedLevel,
+    required this.selectedRow,
+    required this.selectedTime,
+    required this.selectedDate,
+    required this.selectedDuration,
+    required this.price,
+    required this.selectedDisabled,
+    super.key
+  });
 
   @override
   State<ChooseVehiclePage> createState() => _ViewVehiclePageState();
@@ -14,12 +36,14 @@ class ChooseVehiclePage extends StatefulWidget {
 class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   late List<Map<String, dynamic>> cars = [];
   String? selectedCarVehicleId;
+  String? logo;
   bool isLoading = false;
    
 
-  void selectCar(String vehicleId) {
+  void selectCar(String vehicleId, String vehicleLogo) {
     setState(() {
       selectedCarVehicleId = vehicleId;
+      logo = vehicleLogo;
     });
   }
 
@@ -45,6 +69,9 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
           case 'audi':
             imageDirector = 'assets/Audi_Logo.png';
             break;
+          case 'porsche':
+            imageDirector = 'assets/Porsche_Logo.png';
+            break;
           default:
             imageDirector = 'assets/default_logo.png'; // You might want to have a default logo
         }
@@ -59,6 +86,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
       setState(() {
         cars = fetchedCars;
         selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
+        logo = cars.isNotEmpty ? cars[0]['imageDirector'] : null;
         isLoading = false;
       });
     } catch (e) {
@@ -98,11 +126,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         padding: const EdgeInsets.only(left: 1.0),
                         child: IconButton(
                           onPressed: () {
-                            // Navigator.of(context).pushReplacement(
-                            //   MaterialPageRoute(
-                            //     builder: (_) => const SettingsPage(),
-                            //   ),
-                            // );
+                            Navigator.of(context).pop();
                           },
                           icon: const Icon(
                             Icons.arrow_back_ios,
@@ -149,7 +173,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                               carType: car['vehicleModel'],
                               imagePath: car['imageDirector'],
                               isSelected: selectedCarVehicleId == car['vehicleId'],
-                              onSelect: () => selectCar(car['vehicleId']!),
+                              onSelect: () => selectCar(car['vehicleId']!, car['imageDirector']!),
                             ),
                           )
                           
@@ -165,13 +189,18 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         ElevatedButton(
                           onPressed: () {
                             if(!isLoading){
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: widget.selectedTime, selectedDate: widget.selectedDate, selectedDuration:  widget.selectedDuration, price: widget.price, selectedDisabled: widget.selectedDisabled, vehicleId: selectedCarVehicleId.toString(), vehicleLogo: logo.toString()),
+                                ),
+                              );
                               // Change to Something:
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 150,
+                              horizontal: 100,
                               vertical: 24,
                             ),
                             shape: RoundedRectangleBorder(
@@ -188,33 +217,31 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                                     ),
                                   )
                                 : const Text(
-                            'Continue',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
+                                    'Continue',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                         ),
                         const SizedBox(height: 20,),
-                        !isLoading && cars.isEmpty ?
-                          const Text(
-                            'Sorry, you have no Vehicles.'
-                          ) 
-                            : const Text(''),
-                          isLoading
+                        !isLoading && cars.isEmpty 
                           ? const Text(
-                            'Loading...',
-                            style: TextStyle(
-                              color: Colors.white
-                            ),
-                          )
-                          :  const Text(''),
+                              'Sorry, you have no Vehicles.'
+                            ) 
+                          : const Text(''),
+                        isLoading
+                          ? const Text(
+                              'Loading...',
+                              style: TextStyle(
+                                color: Colors.white
+                              ),
+                            )
+                          : const Text(''),
                       ],
                     ),
                     ),
                   ),
-                  
-                  
                 ],
               ),
             ),

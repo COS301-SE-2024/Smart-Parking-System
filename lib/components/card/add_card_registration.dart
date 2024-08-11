@@ -13,6 +13,7 @@ class AddCardRegistrationPage extends StatelessWidget {
     final TextEditingController holderNameController = TextEditingController();
     final TextEditingController expiryController = TextEditingController();
     final TextEditingController cvvController = TextEditingController();
+    final TextEditingController bankController = TextEditingController();
 
     Future<void> addCardDetails() async {
       try {
@@ -25,6 +26,7 @@ class AddCardRegistrationPage extends StatelessWidget {
             'holderName': holderNameController.text,
             'expiry': expiryController.text,
             'cvv': cvvController.text,
+            'bank': bankController.text,
           });
 
           showToast(message: 'Card Added Successfully!');
@@ -99,6 +101,22 @@ class AddCardRegistrationPage extends StatelessWidget {
                     ),
                     keyboardType: TextInputType.number,
                     style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextField(
+                    controller: bankController,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      labelText: 'Bank',
+                      labelStyle: TextStyle(color: Colors.grey),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
