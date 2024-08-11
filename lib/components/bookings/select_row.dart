@@ -29,15 +29,7 @@ class RowSpace {
   RowSpace(this.row, this.slots);
 }
 
-class SelectRowPageState extends State<SelectRowPage> {
-  String? selectedRow;
-  int totalSlots = 0;
-
-  List<RowSpace> rows = [
-    // Add more rows here
-  ];
-
-  static String extractSlotsAvailable(String slots) {
+  String extractSlotsAvailable(String slots) {
     // Use a regular expression to match the first number
     RegExp regex = RegExp(r'^\d+');
     Match? match = regex.firstMatch(slots);
@@ -50,6 +42,15 @@ class SelectRowPageState extends State<SelectRowPage> {
     // Return a default value if no match is found
     return "0";
   }
+
+class SelectRowPageState extends State<SelectRowPage> {
+  String? selectedRow;
+  int totalSlots = 0;
+
+  List<RowSpace> rows = [
+    // Add more rows here
+  ];
+
     // Get details on load
   Future<void> getDetails() async {
     try {
