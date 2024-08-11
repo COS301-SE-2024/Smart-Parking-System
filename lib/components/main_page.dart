@@ -472,7 +472,7 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-void main() {
+void main() async {
   runApp(const MaterialApp(
     home: MainPage(),
   ));
