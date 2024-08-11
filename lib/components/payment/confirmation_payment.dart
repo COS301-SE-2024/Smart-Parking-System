@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
@@ -63,6 +64,16 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
       _updateSlotAvailability();
 
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        return;
+      }
+      String dateTime = '$bookingDate ${startTime!}';
+      DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
+
+      final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
+
+
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
           'userId': user.uid, // Add the userId field
@@ -78,6 +89,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'vehicleId': widget.vehicleId,
           'vehicleLogo': widget.vehicleLogo,
           'card': cardNumber,
+          'sent' : false,
+          'fcmToken': fcmToken,
+          'notificationTime' : notificationTimeUtc,
         });
 
         showToast(message: 'Booked Successfully!');
