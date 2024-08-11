@@ -126,22 +126,121 @@ class _MainPageState extends State<MainPage> {
       'assets/Purple_ParkMe.png',
     );
 
-    final Marker marker = Marker(
-      markerId: const MarkerId('car_marker'),
-      position: const LatLng(-26.10499958, 28.05249979), // Specific location
-      icon: carIcon,
-      infoWindow: const InfoWindow(
-        title: 'Sandton City',
-        snippet: 'ParkMe Available', // Additional information
+    final List<Marker> markers = [
+      Marker(
+        markerId: const MarkerId('car_marker_1'),
+        position: const LatLng(-26.108528752672193, 28.05280562667932), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Sandton City',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-26.108528752672193, 28.05280562667932),
+                zoom: 17.0,
+              ),
+            ),
+          );
+
+          await Future.delayed(const Duration(seconds: 3));
+          _showParkingInfo();
+        },
       ),
-    );
+
+      Marker(
+        markerId: const MarkerId('car_marker_2'),
+        position: const LatLng(-25.782702280688465, 28.274768587059818), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Menlyn Park Shopping Centre',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-25.782702280688465, 28.274768587059818),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_3'),
+        position: const LatLng(-33.90776949320457, 18.420081870975576), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'V&A Waterfront',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-33.90776949320457, 18.420081870975576),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_4'),
+        position: const LatLng(-32.97051605731753, 27.901948782757295), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Hemingways Mall',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-32.97051605731753, 27.901948782757295),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+
+      Marker(
+        markerId: const MarkerId('car_marker_5'),
+        position: const LatLng(-29.114696757582518, 26.21065532493569), // Specific location
+        icon: carIcon,
+        infoWindow: const InfoWindow(
+          title: 'Loch Logan Waterfront',
+          snippet: 'ParkMe Available', // Additional information
+        ),
+        onTap: () async {
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              const CameraPosition(
+                target: LatLng(-29.114696757582518, 26.21065532493569),
+                zoom: 17.0,
+              ),
+            ),
+          );
+        },
+      ),
+    ];
 
     setState(() {
-      _markers.add(marker);
+      _markers.addAll(markers);
+
     });
 
-    final GoogleMapController controller = await _controller.future;
-    controller.showMarkerInfoWindow(marker.markerId);
   }
 
   void requestLocation() async {
@@ -347,8 +446,8 @@ class _MainPageState extends State<MainPage> {
         children: <Widget>[
           GoogleMap(
             initialCameraPosition: const CameraPosition(
-              target: LatLng(-26.270760, 28.112268), // Default location
-              zoom: 10,
+              target: LatLng(-30.983819953976862, 23.84867659935075), // Default location
+              zoom: 6,
             ),
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
