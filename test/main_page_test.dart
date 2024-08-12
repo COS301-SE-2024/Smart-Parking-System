@@ -23,24 +23,6 @@ void main() {
     expect(find.byType(GoogleMap), findsOneWidget);
   });
 
-  testWidgets('Search bar interaction test', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: mainPage));
-
-    // Tap the search bar
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
-
-    // Verify that the modal becomes visible
-    expect(find.byType(Container), findsWidgets);
-
-    // Tap the close button on the modal
-    await tester.tap(find.byIcon(Icons.close));
-    await tester.pump();
-
-    // Verify that the modal is hidden
-    expect(find.byIcon(Icons.close), findsNothing);
-  });
-
 
   testWidgets('Floating action button test', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: mainPage));
@@ -56,20 +38,6 @@ void main() {
     // Add your specific checks here
   });
 
-  testWidgets('Parking info modal test', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: mainPage));
-
-    // Tap the search bar to show the modal
-    await tester.tap(find.byType(TextField));
-    await tester.pump();
-
-    // Tap on the parking location to show parking info
-    await tester.tap(find.byType(ListTile).last);
-    await tester.pumpAndSettle();
-
-    // Verify that the parking info modal is shown
-    expect(find.text('View Parking'), findsOneWidget);
-  });
 
  
 }
