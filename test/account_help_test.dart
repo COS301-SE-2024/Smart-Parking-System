@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/help/accountHelp.dart'; // Update this with the correct path
+import 'package:smart_parking_system/components/help/accounthelp.dart'; // Update this with the correct path
 
 void main() {
   testWidgets('Widget initialization test', (WidgetTester tester) async {
