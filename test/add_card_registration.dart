@@ -6,7 +6,7 @@ void main() {
   group('AddCardRegistrationPage Tests', () {
     testWidgets('AddCardRegistrationPage displays initial UI correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AddCardRegistrationPage(),
         ),
       );
@@ -20,7 +20,7 @@ void main() {
 
     testWidgets('AddCardRegistrationPage can input text', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: AddCardRegistrationPage(),
         ),
       );

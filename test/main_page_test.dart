@@ -10,13 +10,9 @@ class MockGoogleMapController extends Mock implements GoogleMapController {}
 
 void main() {
   late MainPage mainPage;
-  late MockLocation mockLocation;
-  late MockGoogleMapController mockMapController;
 
   setUp(() {
     mainPage = const MainPage();
-    mockLocation = MockLocation();
-    mockMapController = MockGoogleMapController();
   });
 
 

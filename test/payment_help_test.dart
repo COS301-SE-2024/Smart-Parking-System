@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_parking_system/components/help/paymentshelp.dart'; // Update this import
-import 'package:smart_parking_system/components/help/bookinghelp.dart'; 
 void main() {
   testWidgets('Paymentshelp displays initial UI correctly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Paymentshelp(),
       ),
     );
@@ -28,7 +27,7 @@ void main() {
 
   testWidgets('Paymentshelp expands question sections', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Paymentshelp(),
       ),
     );
@@ -59,7 +58,7 @@ void main() {
               return ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Paymentshelp(),
+                    builder: (context) => const Paymentshelp(),
                   ));
                 },
                 child: const Text('Go to Paymentshelp'),
@@ -87,7 +86,7 @@ void main() {
 
   testWidgets('Paymentshelp does not display images', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Paymentshelp(),
       ),
     );

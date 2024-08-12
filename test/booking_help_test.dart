@@ -4,7 +4,7 @@ import 'package:smart_parking_system/components/help/bookinghelp.dart';
 void main() {
   testWidgets('Bookinghelp displays initial UI correctly', (WidgetTester tester) async {
     await tester.pumpWidget(
-       MaterialApp(
+       const MaterialApp(
         home: Bookinghelp(),
       ),
     );
@@ -18,7 +18,7 @@ void main() {
 
   testWidgets('Bookinghelp expands "How do I make a booking" section', (WidgetTester tester) async {
     await tester.pumpWidget(
-    MaterialApp(
+    const MaterialApp(
         home: Bookinghelp(),
       ),
     );
@@ -34,7 +34,7 @@ void main() {
 
   testWidgets('Bookinghelp expands "How do I check my booking" section', (WidgetTester tester) async {
     await tester.pumpWidget(
-     MaterialApp(
+     const MaterialApp(
         home: Bookinghelp(),
       ),
     );
@@ -56,7 +56,7 @@ void main() {
               return ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Bookinghelp(),
+                    builder: (context) => const Bookinghelp(),
                   ));
                 },
                 child: const Text('Go to Bookinghelp'),
@@ -84,7 +84,7 @@ void main() {
 
   testWidgets('Bookinghelp displays images in "How do I make a booking" section', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Bookinghelp(),
       ),
     );

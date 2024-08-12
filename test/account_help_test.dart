@@ -4,7 +4,7 @@ import 'package:smart_parking_system/components/help/accounthelp.dart'; // Updat
 
 void main() {
   testWidgets('Widget initialization test', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: Accounthelp(),
     ));
 
@@ -18,7 +18,7 @@ void main() {
   });
 
   testWidgets('Tap on ExpansionTile shows details', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: Accounthelp(),
     ));
 
@@ -34,7 +34,7 @@ void main() {
   });
 
   testWidgets('Tap on back button navigates back', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(const MaterialApp(
       home: Accounthelp(),
     ));
 
