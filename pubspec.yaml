@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.2
+  package_info_plus: ^5.0.0
   flutter_svg: ^2.0.10+1
   google_fonts: ^6.2.1
   flutter_map: ^7.0.2 # Ensure you check for the latest version
