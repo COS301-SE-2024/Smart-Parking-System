@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/help/bookingHelp.dart';
+import 'package:smart_parking_system/components/help/bookinghelp.dart';
 void main() {
   testWidgets('Bookinghelp displays initial UI correctly', (WidgetTester tester) async {
     await tester.pumpWidget(
