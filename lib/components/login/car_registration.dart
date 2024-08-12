@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/login/successmark.dart';
 
 class CarRegistration extends StatefulWidget {
@@ -12,45 +13,39 @@ class CarRegistration extends StatefulWidget {
 }
 
 class _CarRegistrationState extends State<CarRegistration> {
-  final TextEditingController _makeController = TextEditingController();
+  final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _colorController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
 
   Future<void> _register() async {
-    final String make = _makeController.text;
+    final String brand = _brandController.text;
     final String model = _modelController.text;
     final String color = _colorController.text;
     final String license = _licenseController.text;
 
-    final response = await http.post(
-      Uri.parse('http://192.168.11.121:3000/registerVehicle'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'make': make,
-        'model': model,
-        'color': color,
-        'license_number': license,
-      }),
-    );
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    if (mounted) {
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Vehicle registered successfully')),
-        );
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('vehicles').add({
+          'userId': user.uid, // Add the userId field
+          'vehicleBrand': brand,
+          'vehicleModel': model,
+          'vehicleColor': color,
+          'licenseNumber': license,
+        });
+
+        showToast(message: 'Vehicle Added Successfully!');
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const SuccessionPage(),
           ),
         );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Vehicle registration failed')),
-        );
       }
+    } catch (e) {
+      showToast(message: 'Error: $e');
     }
   }
 
@@ -66,6 +61,9 @@ class _CarRegistrationState extends State<CarRegistration> {
             fit: BoxFit.fill,
           ),
           // Foreground elements
+          SingleChildScrollView(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+            child: 
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -78,7 +76,7 @@ class _CarRegistrationState extends State<CarRegistration> {
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
-                height: MediaQuery.of(context).size.height * 0.62,
+                height: MediaQuery.of(context).size.height,
                 width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -102,7 +100,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                     ),
                     const SizedBox(height: 25), // Space between the "Add Vehicle" text and text boxes
                     TextField(
-                      controller: _makeController,
+                      controller: _brandController,
                       decoration: InputDecoration(
                         labelText: 'Vehicle Brand',
                         labelStyle: TextStyle(
@@ -182,7 +180,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                     TextField(
                       controller: _colorController,
                       decoration: InputDecoration(
-                        labelText: 'Colour',
+                        labelText: 'Color',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -274,17 +272,21 @@ class _CarRegistrationState extends State<CarRegistration> {
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(40.0),
                         ),
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 100,
+                          horizontal: 150,
                           vertical: 20,
                         ),
                         backgroundColor: const Color(0xFF58C6A9),
                       ),
                       child: const Text(
                         'Continue',
-                        style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10), // Space between login button and Login with section
@@ -325,6 +327,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                 ),
               ),
             ],
+          ),
           ),
         ],
       ),

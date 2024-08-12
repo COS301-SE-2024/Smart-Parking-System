@@ -11,7 +11,6 @@ class PaymentSuccessionPage extends StatefulWidget {
 }
 
 class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
-
   @override
   void initState() {
     super.initState();
@@ -53,7 +52,7 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                 const SizedBox(height: 60),
                  ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ParkingHistoryPage(),
                         ),

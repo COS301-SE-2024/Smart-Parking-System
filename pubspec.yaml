@@ -9,20 +9,39 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.6
-  flutter_svg: ^1.0.3
-  google_fonts: ^3.0.1
-  flutter_map: ^3.1.0 # Ensure you check for the latest version
-  latlong2: ^0.8.1
-  google_maps_flutter: ^2.1.0
+  http: ^1.2.2
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+  flutter_map: ^7.0.2 # Ensure you check for the latest version
+  latlong2: ^0.9.1
+  google_maps_flutter: ^2.7.0
   cupertino_icons: ^1.0.6
   font_awesome_flutter: ^10.7.0
   flutter_dash: ^1.0.0
+  firebase_core: ^3.1.1
+  cloud_firestore: ^5.1.0
+  firebase_auth: ^5.1.2
+  firebase_storage: ^12.1.1
+  fluttertoast: ^8.2.6
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.1
+  the_apple_sign_in: ^1.1.1
+  intl: ^0.19.0
+  flutter_dotenv: ^5.1.0
+  location: ^7.0.0
+  mocktail: ^0.3.0
+  flutter_google_places_hoc081098: ^2.0.0
+  flutter_local_notifications: ^17.2.1+2
+  firebase_messaging: ^15.0.4
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
+  mockito: ^5.0.17
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true
@@ -47,3 +66,26 @@ flutter:
     - assets/car.png
     - assets/Line-7.png
     - assets/map.webp
+    - assets/VWTiguan.png
+    - assets/Audio_r8.png
+    - assets/Audi_Logo.png
+    - assets/VW_Logo.png
+    - assets/s-map.png
+    - assets/smallCar.png
+    - assets/team-photo.png
+    - assets/brush1.png
+    - assets/brush2.png
+    - assets/default_logo.png
+    - assets/Porsche_Logo.png
+    - assets/help1.png
+    - assets/help2.png
+    - assets/help3.png
+    - assets/help4.png
+    - assets/help5.png
+    - assets/help6.png
+    - assets/help7.png
+    - assets/help8.png
+    - assets/help9.png
+    - assets/help10.png
+    - assets/Purple_ParkMe.png
+    - .env

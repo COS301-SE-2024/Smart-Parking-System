@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
 import 'package:smart_parking_system/components/main_page.dart';
 
@@ -17,48 +19,79 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-Future<void> _login() async {
-  setState(() {
-    _isLoading = true;
-  });
+  final FireBaseAuthServices _auth = FireBaseAuthServices();
 
-  final String email = _emailController.text;
-  final String password = _passwordController.text;
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+   
+  Future<void> _signIn() async {
+    final String password = _passwordController.text;
+    final String email = _emailController.text;
 
-  final response = await http.post(
-    Uri.parse('http://192.168.3.20:3000/login'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': email,
-      'password': password,
-    }),
-  );
+    setState((){
+      _isLoading = true;
+    });
 
-  setState(() {
-    _isLoading = false;
-  });
+    final User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-  if (mounted) { // Add this check
-    if (response.statusCode == 200) {
-      // If the server returns a successful response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login successful')),
-      );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const MainPage(),
-        ),
-      );
+    setState((){
+      _isLoading = false;
+    });
+
+    if (user != null) {
+      if(mounted) { // Check if the widget is still in the tree
+        showToast(message: 'Successfully signed in');
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainPage(),
+          ),
+        );
+      }
     } else {
-      // If the server returns an error response, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login failed')),
-      );
+      // ignore: avoid_print
+      
+    }
+      
+  }
+    
+
+  _signInWithGoogle () async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        final UserCredential authResult = await _auth.signInWithCredential(credential);
+        final User? user = authResult.user;
+
+        if (user != null) {
+          if(mounted) { // Check if the widget is still in the tree
+            showToast(message: 'Google sign in successful ');
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const MainPage(),
+              ),
+            );
+          }
+        }
+      }
+      
+    } catch (e) {
+        showToast(message: 'Some error occurred: $e');
     }
   }
-}
 
 
  @override
@@ -73,7 +106,9 @@ Future<void> _login() async {
             fit: BoxFit.fill,
           ),
           // Foreground elements
-          Column(
+          SingleChildScrollView(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // Logo above the white container
@@ -85,7 +120,7 @@ Future<void> _login() async {
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
               Container(
-                height: MediaQuery.of(context).size.height * 0.60,
+                height: MediaQuery.of(context).size.height,
                 width: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -192,7 +227,7 @@ Future<void> _login() async {
                     // Login Button
                     ElevatedButton(
                       onPressed: () {
-                        _login();
+                       _signIn();
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -246,28 +281,16 @@ Future<void> _login() async {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'assets/F_Logo.png',
-                          height: 50, // Adjust the height as needed
-                          width: 50,  // Adjust the width as needed
-                        ),
                         GestureDetector(
-                          onTap: () {
-                            // Add functionality to signup with Google
-                          },
+                          onTap: _signInWithGoogle,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Image.asset(
                               'assets/G_Logo.png',
-                              height: 50, // Adjust the height as needed
-                              width: 50,  // Adjust the width as needed
+                              height: 100, // Adjust the height as needed
+                              width: 100,  // Adjust the width as needed
                             ),
                           ),
-                        ),
-                        Image.asset(
-                          'assets/A_Logo.png',
-                          height: 50, // Adjust the height as needed
-                          width: 50,  // Adjust the width as needed
                         ),
                       ],
                     ),
@@ -286,11 +309,14 @@ Future<void> _login() async {
                         style: TextStyle(fontSize: 20, color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
                       ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             ],
           ),
+          ),
+          
         ],
       ),
     );

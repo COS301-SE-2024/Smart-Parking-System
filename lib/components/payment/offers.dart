@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
+// import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 
 class OfferPage extends StatefulWidget {
   const OfferPage({super.key});
@@ -25,11 +25,12 @@ class _OfferPageState extends State<OfferPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const ConfirmPaymentPage(),
-                        ),
-                      );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(
+                      //     builder: (_) => const ConfirmPaymentPage(),
+                      //   ),
+                      // );
+                      Navigator.of(context).pop();
                     },
                     icon: const Icon(Icons.arrow_back_ios,
                       color: Colors.white,
@@ -197,8 +198,7 @@ class _OfferPageState extends State<OfferPage> {
                     ),
                   ],
                 ),
-              )
-
+              ),
             ],
           ),
         ),

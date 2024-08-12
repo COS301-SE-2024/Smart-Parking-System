@@ -1,14 +1,88 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
-class CarDetailsPage extends StatelessWidget {
+class CarDetailsPage extends StatefulWidget {
   const CarDetailsPage({super.key});
+
+  @override
+  State<CarDetailsPage> createState() => _CarDetailsPageState();
+}
+
+class _CarDetailsPageState extends State<CarDetailsPage> {
+  final TextEditingController _brandController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
+
+  Future<void> _updateVehicleDetails() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+
+        //Place code here
+
+
+        
+
+        QuerySnapshot vehiclesSnapshot = await FirebaseFirestore.instance.collection('vehicles').get();
+        for (var vehicle in vehiclesSnapshot.docs) {
+          if (vehicle.get('userId') == user.uid) {
+            await vehicle.reference.update({
+              'licenseNumber': _licenseController.text,
+              'vehicleBrand': _brandController.text,
+              'vehicleColor': _colorController.text,
+              'vehicleModel': _modelController.text,
+              'userId': user.uid,
+            });
+          }
+        }
+
+        if (mounted){
+            showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: const Color(0xFF2D2F41),
+                title: const Text(
+                  'Successfully Updated!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xFF58C6A9)),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
+
+  
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
+      backgroundColor: const Color(0xFF2D2F41),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -90,81 +164,85 @@ class CarDetailsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.all(20),
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                child: Column(
+              ),
+              child: Column(
                   children: [
-                    const ProfileField(
+                    ProfileField(
                       label: 'Vehicle Brand',
                       value: 'BMW',
+                      controller: _brandController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'Vehicle Model',
                       value: 'M3',
+                      controller: _modelController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'Color',
                       value: 'Grey White',
+                      controller: _colorController,
                     ),
-                    const ProfileField(
+                    ProfileField(
                       label: 'License Number',
                       value: 'NFSMW',
+                      controller: _licenseController,
                     ),
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {
                         // Handle save button
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: const Color(0xFF2D2F41),
+                        _updateVehicleDetails();
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return AlertDialog(
+                        //       backgroundColor: const Color(0xFF2D2F41),
                               
-                              title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
+                        //       title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
                               
-                              actions: [
-                                Center(
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        //       actions: [
+                        //         Center(
+                        //           child: TextButton(
+                        //             onPressed: () {
+                        //               Navigator.of(context).pop();
+                        //             },
+                        //             child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     );
+                        //   },
+                        // );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF58C6A9),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 24,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF58C6A9),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 150,
+                        vertical: 24,
                       ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                  ],
-                ),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),                  
+                ],
               ),
             ),
           ],
@@ -177,12 +255,14 @@ class CarDetailsPage extends StatelessWidget {
 class ProfileField extends StatelessWidget {
   final String label;
   final String value;
+  final TextEditingController controller;
   final bool obscureText;
 
   const ProfileField({
     super.key,
     required this.label,
     required this.value,
+    required this.controller,
     this.obscureText = false,
   });
 
@@ -191,7 +271,8 @@ class ProfileField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: TextFormField(
-        initialValue: value,
+        // initialValue: value,
+        controller: controller,
         obscureText: obscureText,
         style: const TextStyle(
           fontWeight: FontWeight.w600, // Make the input text bold
