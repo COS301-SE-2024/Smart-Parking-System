@@ -275,12 +275,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/settings/about_us.dart'; 
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
-import 'package:smart_parking_system/components/profile/userprofile.dart';
+import 'package:smart_parking_system/components/settings/user_profile.dart';
 import 'package:smart_parking_system/components/settings/privacy.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
 class SettingsPage extends StatefulWidget {

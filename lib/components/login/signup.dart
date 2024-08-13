@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:smart_parking_system/components/card/add_card_registration.dart';
+import 'package:smart_parking_system/components/login/card_registration.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
+import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
 import 'package:smart_parking_system/components/login/login.dart';
-import 'package:smart_parking_system/components/login/verification.dart';
+import 'package:smart_parking_system/components/login/email_verification.dart';
 
 
 class SignupPage extends StatefulWidget {

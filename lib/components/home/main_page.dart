@@ -10,7 +10,7 @@ import 'package:location/location.dart' as loc;
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';

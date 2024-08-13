@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/login/successmark.dart';
+import 'package:smart_parking_system/components/login/registration_successful.dart';
 
 class CarRegistration extends StatefulWidget {
   const CarRegistration({super.key});
