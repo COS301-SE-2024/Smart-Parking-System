@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
-import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+import 'package:smart_parking_system/components/bookings/select_vehicle.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
   final String bookedAddress;

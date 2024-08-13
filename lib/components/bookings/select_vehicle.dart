@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/payment/confirm_payment.dart';
+// import 'package:smart_parking_system/components/sidebar.dart';
 
 class ChooseVehiclePage extends StatefulWidget {
   final String bookedAddress;
@@ -249,7 +249,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         ),
         ),   
       ),
-      drawer: const SideMenu(),
+      // drawer: const SideMenu(),
     );
   }
 }

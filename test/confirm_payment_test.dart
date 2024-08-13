@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
+import 'package:smart_parking_system/components/payment/confirm_payment.dart';
 
 void main() {
   group('extractSlotsAvailable', () {

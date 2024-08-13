@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/card/add_card_registration.dart';
+import 'package:smart_parking_system/components/login/card_registration.dart';
 
 void main() {
   group('AddCardRegistrationPage Tests', () {

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smart_parking_system/components/card/add_card_registration.dart';
+import 'package:smart_parking_system/components/login/card_registration.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
 class VerificationPage extends StatefulWidget {

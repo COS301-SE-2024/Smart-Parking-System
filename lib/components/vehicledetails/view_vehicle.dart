@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/add_vehicle.dart';
 import 'package:smart_parking_system/components/vehicledetails/edit_vehicle.dart';
 

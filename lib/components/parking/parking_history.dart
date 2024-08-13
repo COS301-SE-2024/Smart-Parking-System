@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
