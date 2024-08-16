@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -55,15 +56,15 @@ class AddCardPageState extends State<AddCardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Center(
+      body: SingleChildScrollView(
+        child: Center(
         child: SizedBox(
           width: 550,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 60),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Spacer(),
                 Stack(
                   children: [
                     Align(
@@ -120,7 +121,9 @@ class AddCardPageState extends State<AddCardPage> {
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey),
                     ),
+
                   ),
+                  style: const TextStyle(color: Colors.white),
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 10.0),
@@ -138,6 +141,7 @@ class AddCardPageState extends State<AddCardPage> {
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 10.0),
                 TextField(
@@ -154,6 +158,7 @@ class AddCardPageState extends State<AddCardPage> {
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 10.0),
                 Row(
@@ -174,8 +179,13 @@ class AddCardPageState extends State<AddCardPage> {
                           ),
                           counterStyle: TextStyle(color: Colors.grey),
                         ),
+                        style: const TextStyle(color: Colors.white),
                         keyboardType: TextInputType.number,
-                        maxLength: 4,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          _ExpiryDateInputFormatter(),
+                        ],
+                        maxLength: 5,
                       ),
                     ),
                     const SizedBox(width: 120.0),
@@ -195,6 +205,7 @@ class AddCardPageState extends State<AddCardPage> {
                           ),
                           counterStyle: TextStyle(color: Colors.grey),
                         ),
+                        style: const TextStyle(color: Colors.white),
                         keyboardType: TextInputType.number,
                         maxLength: 3,
                       ),
@@ -227,6 +238,37 @@ class AddCardPageState extends State<AddCardPage> {
           ),
         ),
       ),
+      )
+      
+    );
+  }
+}
+
+class _ExpiryDateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var text = newValue.text;
+
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    var buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      var nonZeroIndex = i + 1;
+      if (nonZeroIndex % 2 == 0 && nonZeroIndex != text.length) {
+        buffer.write('/');
+      }
+    }
+
+    var string = buffer.toString();
+    return newValue.copyWith(
+      text: string,
+      selection: TextSelection.collapsed(offset: string.length),
     );
   }
 }
