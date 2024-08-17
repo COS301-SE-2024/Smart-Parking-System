@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/bookings/select_add_vehicle.dart';
 import 'package:smart_parking_system/components/payment/confirm_payment.dart';
 // import 'package:smart_parking_system/components/sidebar.dart';
 
@@ -38,7 +39,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   String? selectedCarVehicleId;
   String? logo;
   bool isLoading = false;
-   
+  bool hasCars = false;
 
   void selectCar(String vehicleId, String vehicleLogo) {
     setState(() {
@@ -88,6 +89,11 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         selectedCarVehicleId = cars.isNotEmpty ? cars[0]['vehicleId'] : null;
         logo = cars.isNotEmpty ? cars[0]['imageDirector'] : null;
         isLoading = false;
+        if(cars.isEmpty){
+          hasCars = false;
+        } else {
+          hasCars = true;
+        }
       });
     } catch (e) {
       // print('Error fetching vehicles: $e');
@@ -151,19 +157,39 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                       const SizedBox(width: 48),
                     ],
                   ),
-                  
+                  // Center(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(vertical: 50),
+                  //     child: IconButton(
+                  //     icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
+                  //     onPressed: () {
+                  //       // Add new vehicle logic here
+                  //       Navigator.of(context).pushReplacement(
+                  //         MaterialPageRoute(
+                  //           builder: (_) => const SelectAddVehicle(),
+                  //         ),
+                  //       );
+                  //     },
+                  //   ),
+                  //   ),
+                    
+                  // ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 130, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
                     child: Column(
                       children: [
-                        // Center(
-                        //   child: IconButton(
-                        //     icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
-                        //     onPressed: () {
-                        //       // Add new vehicle logic here
-                        //     },
-                        //   ),
-                        // ),
+                        Center(
+                          child: IconButton(
+                            icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const SelectAddVehicle(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                         const SizedBox(height: 20,),
                         
                         for (var car in cars)
@@ -175,71 +201,11 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                               isSelected: selectedCarVehicleId == car['vehicleId'],
                               onSelect: () => selectCar(car['vehicleId']!, car['imageDirector']!),
                             ),
-                          )
+                          ),
+                        
+                        
                           
                       ],
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: Column(
-                      children: [
-                        const SizedBox(height: 40,),
-                        ElevatedButton(
-                          onPressed: () {
-                            if(!isLoading){
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => ConfirmPaymentPage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: widget.selectedTime, selectedDate: widget.selectedDate, selectedDuration:  widget.selectedDuration, price: widget.price, selectedDisabled: widget.selectedDisabled, vehicleId: selectedCarVehicleId.toString(), vehicleLogo: logo.toString()),
-                                ),
-                              );
-                              // Change to Something:
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isLoading ? const Color.fromARGB(255, 85, 85, 85) :const Color(0xFF58C6A9),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 100,
-                              vertical: 24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                          ),
-                          child: isLoading
-                                ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2.0,
-                                    ),
-                                  )
-                                : const Text(
-                                    'Continue',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                        ),
-                        const SizedBox(height: 20,),
-                        !isLoading && cars.isEmpty 
-                          ? const Text(
-                              'Sorry, you have no Vehicles.'
-                            ) 
-                          : const Text(''),
-                        isLoading
-                          ? const Text(
-                              'Loading...',
-                              style: TextStyle(
-                                color: Colors.white
-                              ),
-                            )
-                          : const Text(''),
-                      ],
-                    ),
                     ),
                   ),
                 ],
@@ -250,6 +216,68 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         ),   
       ),
       // drawer: const SideMenu(),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+        child: ElevatedButton(
+            onPressed: (!isLoading && hasCars) 
+              ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ConfirmPaymentPage(
+                        bookedAddress: widget.bookedAddress,
+                        selectedZone: widget.selectedZone,
+                        selectedLevel: widget.selectedLevel,
+                        selectedRow: widget.selectedRow,
+                        selectedTime: widget.selectedTime,
+                        selectedDate: widget.selectedDate,
+                        selectedDuration: widget.selectedDuration,
+                        price: widget.price,
+                        selectedDisabled: widget.selectedDisabled,
+                        vehicleId: selectedCarVehicleId.toString(),
+                        vehicleLogo: logo.toString(),
+                      ),
+                    ),
+                  );
+                }
+              : null,  // This disables the button when hasCars is false or isLoading is true
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isLoading && !hasCars
+                    ? const Color.fromARGB(255, 85, 85, 85) 
+                    : const Color(0xFF58C6A9),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 100,
+                vertical: 24,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+            ),
+            child: isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2.0,
+                  ),
+                )
+              : !hasCars ?
+                const Text(
+                  'You dont have any Vehicles',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                )
+              : const Text(
+                  'Continue',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+          ),
+      ),
     );
   }
 }
