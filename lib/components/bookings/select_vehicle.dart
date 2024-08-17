@@ -198,6 +198,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                               carName: car['vehicleBrand'],
                               carType: car['vehicleModel'],
                               imagePath: car['imageDirector'],
+                              licensePlate: car['licenseNumber'],
                               isSelected: selectedCarVehicleId == car['vehicleId'],
                               onSelect: () => selectCar(car['vehicleId']!, car['imageDirector']!),
                             ),
@@ -334,6 +335,7 @@ class CarCard extends StatelessWidget {
   final String? carName;
   final String? carType;
   final String? imagePath;
+  final String? licensePlate;
   final bool isSelected;
   final VoidCallback onSelect;
 
@@ -341,6 +343,7 @@ class CarCard extends StatelessWidget {
     super.key,
     required this.carName,
     required this.carType,
+    required this.licensePlate,
     required this.imagePath,
     required this.isSelected,
     required this.onSelect,
@@ -380,6 +383,11 @@ class CarCard extends StatelessWidget {
                           Text(
                             carType!,
                             style: const TextStyle(color: Colors.grey),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            licensePlate!,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
