@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -28,20 +29,6 @@ class RowSpace {
 
   RowSpace(this.row, this.slots);
 }
-
-  String extractSlotsAvailable(String slots) {
-    // Use a regular expression to match the first number
-    RegExp regex = RegExp(r'^\d+');
-    Match? match = regex.firstMatch(slots);
-    
-    if (match != null) {
-      String number = match.group(0)!;
-      return number;
-    }
-    
-    // Return a default value if no match is found
-    return "0";
-  }
 
 class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
