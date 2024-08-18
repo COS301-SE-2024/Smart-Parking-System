@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successful.dart';
-import 'package:smart_parking_system/components/card/add_card.dart';
+import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/card/edit_card.dart';
 import 'package:intl/intl.dart';
 //Firebase
