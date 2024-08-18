@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
 import  'package:smart_parking_system/components/card/add_card.dart';
+import  'package:smart_parking_system/components/card/edit_card.dart';
 import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
