@@ -170,7 +170,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                   ),
                   const Expanded(
                     child: Text(
-                      'Parking Slot',
+                      'Parking Row',
                       style: TextStyle(color: Color(0xFF58C6A9),
                           fontSize: 20,
                           fontWeight: FontWeight.bold),

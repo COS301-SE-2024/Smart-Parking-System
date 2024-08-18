@@ -13,9 +13,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 初始化 Firebase
   print('Initializing Firebase...');
 
   try {
@@ -36,10 +36,8 @@ Future<void> main() async {
     print('Firebase initialization failed: $e');
   }
 
-  // 设置 Firebase Messaging 的后台消息处理
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // 初始化 FCM 服务
   try {
     print('Initializing FCMService...');
     await FCMService().init();

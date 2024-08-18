@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
@@ -183,72 +184,32 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                 ),
               ),
               child: Column(
-                  children: [
-                    ProfileField(
-                      label: 'Vehicle Brand',
-                      value: 'BMW',
-                      controller: _brandController,
-                    ),
-                    ProfileField(
-                      label: 'Vehicle Model',
-                      value: 'M3',
-                      controller: _modelController,
-                    ),
-                    ProfileField(
-                      label: 'Color',
-                      value: 'Grey White',
-                      controller: _colorController,
-                    ),
-                    ProfileField(
-                      label: 'License Number',
-                      value: 'NFSMW',
-                      controller: _licenseController,
-                    ),
-                    const SizedBox(height: 30,),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle save button
-                        _updateVehicleDetails();
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (BuildContext context) {
-                        //     return AlertDialog(
-                        //       backgroundColor: const Color(0xFF2D2F41),
-                              
-                        //       title: const Text('Successfully Updated!', style: TextStyle(color: Colors.white)),
-                              
-                        //       actions: [
-                        //         Center(
-                        //           child: TextButton(
-                        //             onPressed: () {
-                        //               Navigator.of(context).pop();
-                        //             },
-                        //             child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     );
-                        //   },
-                        // );
-                      },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF58C6A9),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 150,
-                        vertical: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),                  
+                children: [
+                  ProfileField(
+                    label: 'Vehicle Brand',
+                    value: 'BMW',
+                    controller: _brandController,
+                  ),
+                  ProfileField(
+                    label: 'Vehicle Model',
+                    value: 'M3',
+                    controller: _modelController,
+                  ),
+                  ProfileField(
+                    label: 'Color',
+                    value: 'Grey White',
+                    controller: _colorController,
+                  ),
+                  ProfileField(
+                    label: 'License Number',
+                    value: 'NFSMW',
+                    controller: _licenseController,
+                  ),
+                  const SizedBox(height: 30,),
+                  nextButton(
+                    displayText: 'Save', 
+                    action: _updateVehicleDetails,
+                  ), 
                 ],
               ),
             ),

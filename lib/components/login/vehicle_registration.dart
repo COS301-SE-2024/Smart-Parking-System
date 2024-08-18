@@ -2,127 +2,68 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:smart_parking_system/components/login/card_registration.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
-import 'package:smart_parking_system/components/login/login.dart';
-import 'package:smart_parking_system/components/login/email_verification.dart';
+import 'package:smart_parking_system/components/login/registration_successful.dart';
 
-
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class CarRegistration extends StatefulWidget {
+  const CarRegistration({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<CarRegistration> createState() => _CarRegistrationState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _noController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+class _CarRegistrationState extends State<CarRegistration> {
+  final TextEditingController _brandController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
 
-  final FireBaseAuthServices _auth = FireBaseAuthServices();
+  Future<void> validateVehicleDetails() async {
+    // Validate Vehicle details
+    bool bValid = true;
 
-  bool _isLoading = false;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const SuccessionPage(),
+      ),
+    );
 
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _usernameController.dispose();
-    _noController.dispose();
-    _emailController.dispose();
-    super.dispose();
+    if (bValid) {
+      _register();
+    }
   }
+    
 
-   _signUpWithGoogle () async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+  Future<void> _register() async {
+    final String brand = _brandController.text;
+    final String model = _modelController.text;
+    final String color = _colorController.text;
+    final String license = _licenseController.text;
 
     try {
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      User? user = FirebaseAuth.instance.currentUser;
 
-      if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('vehicles').add({
+          'userId': user.uid, // Add the userId field
+          'vehicleBrand': brand,
+          'vehicleModel': model,
+          'vehicleColor': color,
+          'licenseNumber': license,
+        });
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
+        showToast(message: 'Vehicle Added Successfully!');
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const SuccessionPage(),
+          ),
         );
-
-        final UserCredential authResult = await _auth.signInWithCredential(credential);
-        final User? user = authResult.user;
-
-        if (user != null) {
-          final firestore = FirebaseFirestore.instance;
-          final String? username = googleSignInAccount.displayName;
-          final String email = googleSignInAccount.email;
-
-          await firestore.collection('users').doc(user.uid).set(
-            {
-              'username': username,
-              'email': email,
-              'phoneNumber': null,
-            }
-          );
-
-          if(mounted) { // Check if the widget is still in the tree
-            showToast(message: 'Successfully signed up');
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const AddCardRegistrationPage(),
-              ),
-            );
-          }
-        }
       }
-      
     } catch (e) {
-        showToast(message: 'Some error occurred: $e');
+      showToast(message: 'Error: $e');
     }
-  }
-   
-  Future<void> verification() async {
-    final String password = _passwordController.text;
-    final String username = _usernameController.text;
-    final String email = _emailController.text;
-    final String phoneNumber = _noController.text;
-
-    setState((){
-      _isLoading = true;
-    });
-
-    final User? user = await _auth.signUpWithEmailAndPassword(email, password);
-
-    setState((){
-      _isLoading = false;
-    });
-
-    if (user != null) {
-      if(mounted) { // Check if the widget is still in the tree
-        final firestore = FirebaseFirestore.instance;
-
-        await firestore.collection('users').doc(user.uid).set(
-          {
-            'username': username,
-            'email': email,
-            'phoneNumber': phoneNumber,
-          }
-        );
-
-        if (mounted) { // Check if the widget is still in the tree before navigating
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => VerificationPage(user: user, email: email),
-            )
-          );
-        }
-      }
-    } else {
-      // ignore: avoid_print
-      showToast(message: 'An Error Occured');
-    }
-    
   }
 
   @override
@@ -138,44 +79,16 @@ class _SignupPageState extends State<SignupPage> {
           ),
           // Foreground elements
           SingleChildScrollView(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
             child: 
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // Logo above the white container
-              Stack(
-                children: [
-                  // Profile Image
-                  GestureDetector(
-                    onTap: () {
-                      // Add picture and show picture
-                    },
-                    child: const CircleAvatar(
-                      radius: 70,
-                      backgroundColor: Color(0xFFD9D9D9),
-                      child: Icon(
-                        Icons.person,
-                        size: 70,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  // // Edit Icon
-                  // const Positioned(
-                  //   right: 0,
-                  //   bottom: 100,
-                  //   child: CircleAvatar(
-                  //     radius: 15,
-                  //     backgroundColor: Colors.white,
-                  //     child: Icon(
-                  //       Icons.edit,
-                  //       size: 15,
-                  //       color: Colors.black,
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+              Image.asset(
+                'assets/car_temp.png',
+                height: 200, // Adjust the height as needed
+                width: 200,  // Adjust the width as needed
               ),
               const SizedBox(height: 20), // Space between logo and container
               // Container for login form
@@ -193,20 +106,20 @@ class _SignupPageState extends State<SignupPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                     // Space before the Login text
+                    const SizedBox(height: 30),  // Space before the "Add Your Vehicle" text
                     const Text(
-                      'Sign up',
+                      'Add Your Vehicle',
                       style: TextStyle(
-                        fontSize: 43,
+                        fontSize: 30,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF58C6A9),
                       ),
                     ),
-                    const SizedBox(height: 8), // Space between the Login text and text boxes
+                    const SizedBox(height: 25), // Space between the "Add Vehicle" text and text boxes
                     TextField(
-                      controller: _usernameController,
+                      controller: _brandController,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: 'Vehicle Brand',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -243,9 +156,9 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     const SizedBox(height: 20,),
                     TextField(
-                      controller: _noController,
+                      controller: _modelController,
                       decoration: InputDecoration(
-                        labelText: 'Phone',
+                        labelText: 'Vehicle Model',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -282,9 +195,9 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _emailController,
+                      controller: _colorController,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'Color',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -320,11 +233,10 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Password Text Field
                     TextField(
-                      controller: _passwordController,
+                      controller: _licenseController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'License Number',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
@@ -358,100 +270,17 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
-                      obscureText: true,
                     ),
-                    const SizedBox(height: 30),
-                    // Signup Button
-                    ElevatedButton(
-                      onPressed: () {
-                        verification();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 100,
-                          vertical: 12,
-                        ),
-                        backgroundColor: const Color(0xFF58C6A9),
-                      ),
-                      child: _isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2.0,
-                            ),
-                          )
-                        : const Text(
-                        'Signup',
-                        style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
-                      ),
-                    ),
-                    const SizedBox(height: 10), // Space between login button and Login with section
-                    const Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Divider(
-                            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                            thickness: 1, // Thickness of the lines
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text(
-                            'Or Sign up with',
-                            style: TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
-                          ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                            thickness: 1, // Thickness of the lines
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _signUpWithGoogle();
-                            // Add functionality to signup with Google
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: Image.asset(
-                              'assets/G_Logo.png',
-                              height: 100, // Adjust the height as needed
-                              width: 100,  // Adjust the width as needed
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {
-                        // Navigate to SignupPage
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
-                        );
-                      },
-                      child: const Text(
-                        "Have an account? Login",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF58C6A9)),
-                      ),
+                    const SizedBox(height: 40),
+                    nextButtonWithSkip(
+                      displayText: 'Continue',
+                      action: validateVehicleDetails,
+                      nextPage: const SuccessionPage(),
+                      context: context
                     ),
                   ],
                 ),
-                ),
-              
+              ),
             ],
           ),
           ),
