@@ -397,7 +397,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              title: const Text('Update vehicle details', style: TextStyle(color: Colors.white)),
+              title: const Text('My vehicles', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
               onTap: () {
                 Navigator.of(context).push(
@@ -408,8 +408,8 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              title: const Text('Add a payment method', style: TextStyle(color: Colors.white)),
-              trailing: const Icon(Icons.add, color: Colors.white, size: 20),
+              title: const Text('My payemnt options', style: TextStyle(color: Colors.white)),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -442,7 +442,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             ListTile(
-              title: const Text('About us', style: TextStyle(color: Colors.white)),
+              title: const Text('About', style: TextStyle(color: Colors.white)),
               trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
               onTap: () {
                 Navigator.of(context).push(
