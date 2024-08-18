@@ -9,30 +9,44 @@ import 'package:smart_parking_system/components/notifications/notificationfuncti
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  // You can add logic here to handle the background message
+  print('Handling a background message: ${message.messageId}');
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase
-  //dotenv.env['API_KEY']!
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: dotenv.env['API_KEY']!,
-        appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
-        messagingSenderId: "808791551084",
-        projectId: "parkme-c2508",
-      ),
-    );
-  } else {
-    await Firebase.initializeApp();
+
+  // 初始化 Firebase
+  print('Initializing Firebase...');
+
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: "AIzaSyCd4Kz1yjrJXE85hrZ91RZ_iVdC0fnmqrY",
+          appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
+          messagingSenderId: "808791551084",
+          projectId: "parkme-c2508",
+        ),
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
+    print('Firebase initialized successfully.');
+  } catch (e) {
+    print('Firebase initialization failed: $e');
   }
 
+  // 设置 Firebase Messaging 的后台消息处理
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // // Initialize FCM service
-  await FCMService().init();
+  // 初始化 FCM 服务
+  try {
+    print('Initializing FCMService...');
+    await FCMService().init();
+    print('FCMService initialized successfully.');
+  } catch (e) {
+    print('FCMService initialization failed: $e');
+  }
 
   runApp(const MyApp());
 }
@@ -54,29 +68,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:smart_parking_system/components/main_page.dart'; // Import your main_page.dart file here
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Smart Parking System',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: MainPage(), // Set MainPage as the home screen
-
-//     );
-//   }
-// }
-
-
-

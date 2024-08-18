@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
-import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+import 'package:smart_parking_system/components/bookings/select_vehicle.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
   final String bookedAddress;
@@ -90,14 +90,14 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                  onPressed: () {
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => const BookingPage(),
-                    //     ),
-                    // );
-                    Navigator.of(context).pop();
-                  },
+                    onPressed: () {
+                      // Navigator.of(context).pushReplacement(
+                      //     MaterialPageRoute(
+                      //       builder: (_) => const BookingPage(),
+                      //     ),
+                      // );
+                      Navigator.of(context).pop();
+                    },
                     icon: const Icon(
                       Icons.arrow_back_ios,
                       color: Colors.white,
