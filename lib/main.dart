@@ -9,31 +9,42 @@ import 'package:smart_parking_system/components/notifications/notificationfuncti
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  // You can add logic here to handle the background message
+  print('Handling a background message: ${message.messageId}');
 }
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase
-  //dotenv.env['API_KEY']!
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: dotenv.env['API_KEY']!,
-        appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
-        messagingSenderId: "808791551084",
-        projectId: "parkme-c2508",
-      ),
-    );
-  } else {
-    await Firebase.initializeApp();
+
+  print('Initializing Firebase...');
+
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: "AIzaSyCd4Kz1yjrJXE85hrZ91RZ_iVdC0fnmqrY",
+          appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
+          messagingSenderId: "808791551084",
+          projectId: "parkme-c2508",
+        ),
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
+    print('Firebase initialized successfully.');
+  } catch (e) {
+    print('Firebase initialization failed: $e');
   }
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // // Initialize FCM service
-  await FCMService().init();
+  try {
+    print('Initializing FCMService...');
+    await FCMService().init();
+    print('FCMService initialized successfully.');
+  } catch (e) {
+    print('FCMService initialization failed: $e');
+  }
 
   runApp(const MyApp());
 }
