@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successfull.dart';
+import  'package:smart_parking_system/components/card/add_card.dart';
 import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -447,7 +448,11 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         child: Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              // Handle add new card
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const AddCardPage(),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
