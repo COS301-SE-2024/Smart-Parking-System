@@ -185,7 +185,12 @@ class AddCardRegistrationPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 60.0),
-                  nextButtonWithSkip(displayText: 'Continue', action: addCardDetails, nextPage: const CarRegistration(), context: context),
+                  nextButtonWithSkip(
+                    displayText: 'Continue',
+                    action: addCardDetails,
+                    nextPage: const CarRegistration(),
+                    context: context
+                  ),
                 ],
               ),
             ),

@@ -66,7 +66,7 @@ Widget nextButtonWithSkip ({required String displayText, required void Function(
             children: [
               Expanded(
                 child: Divider(
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 199, 199, 199),
                   thickness: 1,
                   endIndent: 10,
                 ),
@@ -80,7 +80,7 @@ Widget nextButtonWithSkip ({required String displayText, required void Function(
               ),
               Expanded(
                 child: Divider(
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 199, 199, 199),
                   thickness: 1,
                   indent: 10,
                 ),

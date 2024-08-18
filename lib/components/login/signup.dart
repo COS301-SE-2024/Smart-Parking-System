@@ -161,20 +161,20 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                   ),
-                  // Edit Icon
-                  const Positioned(
-                    right: 0,
-                    bottom: 100,
-                    child: CircleAvatar(
-                      radius: 15,
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.edit,
-                        size: 15,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                  // // Edit Icon
+                  // const Positioned(
+                  //   right: 0,
+                  //   bottom: 100,
+                  //   child: CircleAvatar(
+                  //     radius: 15,
+                  //     backgroundColor: Colors.white,
+                  //     child: Icon(
+                  //       Icons.edit,
+                  //       size: 15,
+                  //       color: Colors.black,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 20), // Space between logo and container
