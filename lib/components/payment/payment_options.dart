@@ -38,15 +38,24 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       final List<Map<String, String>> fetchedCards = [];
       for (var doc in querySnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
+
+        String cardNumber = data['cardNumber'] ?? '';
+        String cardImage = 'assets/default_card.png'; // 默认图片
+
+        if (cardNumber.startsWith('4')) {
+          cardImage = 'assets/visa.png'; // Visa 卡图片
+        } else if (cardNumber.startsWith('5')) {
+          cardImage = 'assets/mastercard.png'; // MasterCard 卡图片
+        }
+
         fetchedCards.add({
           'id': doc.id,
           'bank': data['bank'] ?? '',
-          // ignore: prefer_interpolation_to_compose_strings
-          'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
+          'number': '**** **** **** ' + (cardNumber.isNotEmpty ? cardNumber.substring(cardNumber.length - 4) : '0000'),
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
-          'image': 'assets/mastercard.png'
+          'image': cardImage, // 动态图片
         });
       }
 
@@ -54,11 +63,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         cards = fetchedCards;
       });
     } catch (e) {
-      // ignore: avoid_print
+      // 处理错误
       print('Error fetching cards: $e');
-      // 这里可以添加更多错误处理逻辑
     }
   }
+
 
   Future<void> _fetchCreditAmount() async {
     User? user = FirebaseAuth.instance.currentUser;
