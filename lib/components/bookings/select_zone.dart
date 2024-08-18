@@ -20,6 +20,7 @@ class Zone {
   final double x;
   final double y;
 
+
   Zone(this.zone, this.slots, this.timeDistance, this.x, this.y);
 }
 
