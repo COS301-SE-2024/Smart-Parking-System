@@ -1,8 +1,0 @@
-position: (Latitude, Longitude) = (-33.90776949320457, 18.420081870975576) // Specific location
-name: 'V&A Waterfront',
-
-position: (Latitude, Longitude) = (-32.97051605731753, 27.901948782757295), // Specific location
-name: 'Hemingways Mall'
-
-position: (Latitude, Longitude) = (-29.114696757582518, 26.21065532493569) // Specific location
-name: 'Loch Logan Waterfront'
