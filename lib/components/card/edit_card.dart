@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_parking_system/components/payment/payment_options.dart';
 
 class EditCardPage extends StatefulWidget {
   final String cardId;
@@ -12,14 +11,14 @@ class EditCardPage extends StatefulWidget {
   final String bank;
 
   const EditCardPage({
-    Key? key,
+    super.key,
     required this.cardId,
     required this.cardNumber, // 传递 cardNumber 参数
     required this.cvv,
     required this.name,
     required this.expiry,
     required this.bank,
-  }) : super(key: key);
+  });
 
   @override
   EditCardPageState createState() => EditCardPageState();

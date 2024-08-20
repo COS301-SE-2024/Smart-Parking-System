@@ -52,7 +52,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         fetchedCards.add({
           'id': doc.id,
           'bank': data['bank'] ?? '',
-          'number': '**** **** **** ' + (cardNumber.isNotEmpty ? cardNumber.substring(cardNumber.length - 4) : '0000'),
+          'number': '**** **** **** ${cardNumber.isNotEmpty ? cardNumber.substring(cardNumber.length - 4) : '0000'}',
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
@@ -65,7 +65,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       });
     } catch (e) {
       // 处理错误
-      print('Error fetching cards: $e');
+      //print('Error fetching cards: $e');
     }
   }
 

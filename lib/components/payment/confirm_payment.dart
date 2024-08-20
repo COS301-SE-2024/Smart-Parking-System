@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/payment_successful.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
-import 'package:smart_parking_system/components/card/edit_card.dart';
 import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -108,6 +107,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
         });
 
         showToast(message: 'Booked Successfully!');
+        // ignore: use_build_context_synchronously
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const PaymentSuccessionPage(),
