@@ -41,7 +41,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         final data = doc.data() as Map<String, dynamic>;
 
         String cardNumber = data['cardNumber'] ?? '';
-        String cardImage = 'assets/default_card.png'; // 默认图片
+        String cardImage = 'assets/visa.png'; // 默认图片
 
         if (cardNumber.startsWith('4')) {
           cardImage = 'assets/visa.png'; // Visa 卡图片
