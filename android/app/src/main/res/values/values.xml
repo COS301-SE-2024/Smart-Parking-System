@@ -1,9 +1,0 @@
-<resources>
-    <string name="default_web_client_id" translatable="false"></string>
-    <string name="firebase_database_url" translatable="false"></string>
-    <string name="gcm_defaultSenderId" translatable="false">808791551084</string>
-    <string name="google_api_key" translatable="false"></string>
-    <string name="google_app_id" translatable="false">1:808791551084:android:2d6d5d107c2a2ea638fc49</string>
-    <string name="google_crash_reporting_api_key" translatable="false"></string>
-    <string name="project_id" translatable="false">parkme-c2508</string>
-</resources>
