@@ -2,7 +2,6 @@
 # Ignore the.dart_tool and build folders
 .dart_tool/
 build/
-android/
 # Miscellaneous
 *.class
 *.log
