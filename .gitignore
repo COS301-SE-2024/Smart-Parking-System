@@ -60,4 +60,6 @@ windows/flutter/generated_plugins.cmake
 .env
 ios/Runner/GeneratedPluginRegistrant.m
 macos/Flutter/GeneratedPluginRegistrant.swift
+android/local.properties
+
 pubspec.lock
