@@ -135,7 +135,7 @@ class _MainPageState extends State<MainPage> {
                   name,
                   price,
                   slots,
-                  extractSlotsAvailable(slots),
+                  '${extractSlotsAvailable(slots)} slots',
                   5,                                                                            //Add distance to venue
                 );
                 _showParkingInfo();

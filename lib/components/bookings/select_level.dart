@@ -71,7 +71,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
               String slots = levelDocument.get('slots') as String;
 
               // Calculate total price
-              int availableSlots = int.parse(extractSlotsAvailable(slots));
+              int availableSlots = extractSlotsAvailable(slots);
 
               // Add to levels list
               levels.add(Level(

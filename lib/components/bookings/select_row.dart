@@ -86,7 +86,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 String slots = rowDocument.get('slots') as String;
 
                 // Calculate total price
-                int availableSlots = int.parse(extractSlotsAvailable(slots));
+                int availableSlots = extractSlotsAvailable(slots);
 
                 // Add to rows list
                 rows.add(RowSpace(

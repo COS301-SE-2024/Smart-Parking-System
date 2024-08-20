@@ -65,9 +65,10 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
             String slots = zoneDocument.get('slots') as String;
             int x = zoneDocument.get('x') as int;
             int y = zoneDocument.get('y') as int;
+      showToast(message: 'HERE');
 
             // Calculate total price
-            int availableSlots = int.parse(extractSlotsAvailable(slots));
+            int availableSlots = extractSlotsAvailable(slots);
 
             // Add to reservedspots list
             zones.add(Zone(
