@@ -5,6 +5,7 @@ import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
+import 'package:smart_parking_system/components/card/edit_card.dart';
 import 'package:smart_parking_system/components/home/sidebar.dart';
 
 class PaymentMethodPage extends StatefulWidget {
@@ -38,15 +39,24 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       final List<Map<String, String>> fetchedCards = [];
       for (var doc in querySnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
+
+        String cardNumber = data['cardNumber'] ?? '';
+        String cardImage = 'assets/visa.png'; // 默认图片
+
+        if (cardNumber.startsWith('4')) {
+          cardImage = 'assets/visa.png'; // Visa 卡图片
+        } else if (cardNumber.startsWith('5')) {
+          cardImage = 'assets/mastercard.png'; // MasterCard 卡图片
+        }
+
         fetchedCards.add({
           'id': doc.id,
           'bank': data['bank'] ?? '',
-          // ignore: prefer_interpolation_to_compose_strings
-          'number': '**** **** **** ' + (data['cardNumber']?.substring(data['cardNumber'].length - 4) ?? '0000'),
+          'number': '**** **** **** ${cardNumber.isNotEmpty ? cardNumber.substring(cardNumber.length - 4) : '0000'}',
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
-          'image': 'assets/mastercard.png'
+          'image': cardImage, // 动态图片
         });
       }
 
@@ -54,11 +64,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         cards = fetchedCards;
       });
     } catch (e) {
-      // ignore: avoid_print
-      print('Error fetching cards: $e');
-      // 这里可以添加更多错误处理逻辑
+      // 处理错误
+      //print('Error fetching cards: $e');
     }
   }
+
 
   Future<void> _fetchCreditAmount() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -124,119 +134,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     // 这里可以添加更多错误处理逻辑
                   }
 
-                  // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showEditCardDialog(String cardId) async {
-    String? newCardNumber;
-    String? newCvv;
-    String? newName;
-    String? newExpiry;
-    String? newBank;
-
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF35344A),
-          title: const Text('Edit Card', style: TextStyle(color: Colors.white)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter new card number',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (value) {
-                  newCardNumber = value;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter new CVV',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (value) {
-                  newCvv = value;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                keyboardType: TextInputType.text,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter new name',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (value) {
-                  newName = value;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                keyboardType: TextInputType.text,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter new expiry (MM/YY)',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (value) {
-                  newExpiry = value;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                keyboardType: TextInputType.text,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Enter new bank',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                onChanged: (value) {
-                  newBank = value;
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Save', style: TextStyle(color: Colors.tealAccent)),
-              onPressed: () async {
-                if (newCardNumber != null && newCardNumber!.isNotEmpty) {
-                  Map<String, String> updatedData = {
-                    'cardNumber': newCardNumber!,
-                    if (newCvv != null && newCvv!.isNotEmpty) 'cvv': newCvv!,
-                    if (newName != null && newName!.isNotEmpty) 'holderName': newName!,
-                    if (newExpiry != null && newExpiry!.isNotEmpty) 'expiry': newExpiry!,
-                    if (newBank != null && newBank!.isNotEmpty) 'bank': newBank!,
-                  };
-
-                  await FirebaseFirestore.instance
-                      .collection('cards')
-                      .doc(cardId)
-                      .update(updatedData);
-
-                  await _fetchCards();
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
@@ -395,7 +292,18 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               ),
                               trailing: TextButton(
                                 onPressed: () {
-                                  _showEditCardDialog(card['id']!);
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => EditCardPage(
+                                        cardId: card['id']!,
+                                        cardNumber: card['number']!,
+                                        cvv: card['cvv']!,
+                                        name: card['name']!,
+                                        expiry: card['expiry']!,
+                                        bank: card['bank']!,
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: const Text(
                                   'Edit Card',
@@ -439,7 +347,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                           ],
                         ),
                       ),
-                      
+
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -537,24 +445,5 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
-  }
-}
-
-class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
-  final double offset;
-
-  CustomCenterDockedFABLocation(this.offset);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Position the FAB slightly higher than centerDocked
-    final double fabX = (scaffoldGeometry.scaffoldSize.width / 2) -
-        (scaffoldGeometry.floatingActionButtonSize.width / 2);
-    final double fabY = scaffoldGeometry.scaffoldSize.height -
-        scaffoldGeometry.bottomSheetSize.height -
-        scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) -
-        offset;
-    return Offset(fabX, fabY);
   }
 }

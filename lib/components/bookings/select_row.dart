@@ -261,7 +261,7 @@ class SelectRowPageState extends State<SelectRowPage> {
           const SizedBox(height: 13),
           Container(
             width: 290,
-            height: 90,
+            height: 110,
             decoration: BoxDecoration(
               color: buttonColor,
               borderRadius: BorderRadius.circular(14),

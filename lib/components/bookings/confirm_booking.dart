@@ -90,14 +90,14 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                  onPressed: () {
-                    // Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(
-                    //       builder: (_) => const BookingPage(),
-                    //     ),
-                    // );
-                    Navigator.of(context).pop();
-                  },
+                    onPressed: () {
+                      // Navigator.of(context).pushReplacement(
+                      //     MaterialPageRoute(
+                      //       builder: (_) => const BookingPage(),
+                      //     ),
+                      // );
+                      Navigator.of(context).pop();
+                    },
                     icon: const Icon(
                       Icons.arrow_back_ios,
                       color: Colors.white,
