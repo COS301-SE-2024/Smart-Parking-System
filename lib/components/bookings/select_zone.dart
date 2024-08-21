@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/bookings/select_level.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   final double price;
@@ -22,17 +23,6 @@ class Zone {
 
 
   Zone(this.zone, this.slots, this.timeDistance, this.x, this.y);
-}
-
-String extractSlotsAvailable(String slots) {
-  RegExp regex = RegExp(r'^\d+');
-  Match? match = regex.firstMatch(slots);
-
-  if (match != null) {
-    String number = match.group(0)!;
-    return number;
-  }
-  return "0";
 }
 
 class _ZoneSelectPageState extends State<ZoneSelectPage> {
@@ -60,7 +50,8 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
             int x = zoneDocument.get('x') as int;
             int y = zoneDocument.get('y') as int;
 
-            int availableSlots = int.parse(extractSlotsAvailable(slots));
+            // Calculate total price
+            int availableSlots = extractSlotsAvailable(slots);
 
             zones.add(Zone(
               zone,

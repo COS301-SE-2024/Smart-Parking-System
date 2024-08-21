@@ -1,20 +1,24 @@
+//General
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+//Maps
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:location/location.dart' as loc;
+//Pages
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 //Firebase
+// import 'package:smart_parking_system/components/firebase/firebase_common_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -24,73 +28,35 @@ class MainPage extends StatefulWidget {
 }
 
 class Parking {
-  final String location;
   final String name;
   final String price;
   final String slots;
+  final String slotsAvailable;
+  final int minsToVenue;
 
-  Parking(this.location, this.name, this.price, this.slots);
+  Parking(
+    this.name,
+    this.price,
+    this.slots,
+    this.slotsAvailable,
+    this.minsToVenue,
+  );
 }
 
 class _MainPageState extends State<MainPage> {
-  bool _isModalVisible = false;
   int _selectedIndex = 0;
   LocationData? locationData;
   final Completer<GoogleMapController> _controller = Completer();
   bool _locationPermissionGranted = false;
   final Set<Marker> _markers = {};
-
   final TextEditingController _destinationController = TextEditingController();
 
-  Parking parking = Parking('', '', '', '');
-  final String distanceToVenue = '3 mins drive';                            ///Adjust with maps implementation
-    // Get details on load
-  Future<void> getDetails() async {
-    try {
-      // Get a reference to the Firestore instance
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-      // Query the 'bookings' collection for a document with matching userId
-      QuerySnapshot querySnapshot = await firestore
-          .collection('parkings')
-          .limit(1)
-          .get();
-      // Check if a matching document was found
-      if (querySnapshot.docs.isNotEmpty) {
-        // // Loop through each document
-        var document = querySnapshot.docs.first;
-
-        // Retrieve the fields
-        String location = document.get('location') as String;
-        String name = document.get('name') as String;
-        String price = document.get('price') as String;
-        String slots = document.get('slots_available') as String;
-
-        // Add to reservedspots list
-        parking = Parking(
-          location,
-          name,
-          price,
-          slots,
-        );
-        spacesAvailable = extractSlotsAvailable(parking.slots);
-      } else {
-        // No matching document found
-        showToast(message: 'No parkings found');
-      }
-    } catch (e) {
-      // Handle any errors
-      showToast(message: 'Error retrieving parkings details: $e');
-    }
-
-    setState((){}); // This will trigger a rebuild with the new values
-  }
-
+  late Parking parking;
+  // Parking parking = Parking('', '', '', '', 0);                                         //Change to this if main page gives error
 
   @override
   void initState() {
     super.initState();
-    getDetails();
     requestLocation();
     _addCarMarker();
   }
@@ -126,119 +92,67 @@ class _MainPageState extends State<MainPage> {
       'assets/Purple_ParkMe.png',
     );
 
-    final List<Marker> markers = [
-      Marker(
-        markerId: const MarkerId('car_marker_1'),
-        position: const LatLng(-26.108528752672193, 28.05280562667932), // Specific location
-        icon: carIcon,
-        infoWindow: const InfoWindow(
-          title: 'Sandton City',
-          snippet: 'ParkMe Available', // Additional information
-        ),
-        onTap: () async {
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              const CameraPosition(
-                target: LatLng(-26.108528752672193, 28.05280562667932),
-                zoom: 17.0,
+    List<Marker> markers = [];
+    try {
+      // Firebase Functions
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // Query the 'parkings' collection for all documents
+      QuerySnapshot querySnapshot = await firestore.collection('parkings').get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Loop through each document
+        for (var document in querySnapshot.docs) {
+          // Retrieve the fields
+          String name = document.get('name') as String;
+          String price = document.get('price') as String;
+          String slots = document.get('slots_available') as String;
+          double latitude = document.get('latitude') as double;
+          double longitude = document.get('longitude') as double;
+
+          // Add to the parkingList
+          markers.add(
+            Marker(
+              markerId: MarkerId(document.id),
+              position: LatLng(latitude, longitude), // Specific location
+              icon: carIcon,
+              infoWindow: InfoWindow(
+                title: name,
+                snippet: '$slots slots Available', // Additional information
               ),
+              onTap: () async {
+                final GoogleMapController controller = await _controller.future;
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(latitude, longitude),
+                      zoom: 17.0,
+                    ),
+                  ),
+                );
+
+                await Future.delayed(const Duration(seconds: 0));
+                parking = Parking(
+                  name,
+                  price,
+                  slots,
+                  '${extractSlotsAvailable(slots)} slots',
+                  5,                                                                            //Add distance to venue
+                );
+                _showParkingInfo();
+              },
             ),
           );
-
-          await Future.delayed(const Duration(seconds: 3));
-          _showParkingInfo();
-        },
-      ),
-
-      Marker(
-        markerId: const MarkerId('car_marker_2'),
-        position: const LatLng(-25.782702280688465, 28.274768587059818), // Specific location
-        icon: carIcon,
-        infoWindow: const InfoWindow(
-          title: 'Menlyn Park Shopping Centre',
-          snippet: 'ParkMe Available', // Additional information
-        ),
-        onTap: () async {
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              const CameraPosition(
-                target: LatLng(-25.782702280688465, 28.274768587059818),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        },
-      ),
-
-      Marker(
-        markerId: const MarkerId('car_marker_3'),
-        position: const LatLng(-33.90776949320457, 18.420081870975576), // Specific location
-        icon: carIcon,
-        infoWindow: const InfoWindow(
-          title: 'V&A Waterfront',
-          snippet: 'ParkMe Available', // Additional information
-        ),
-        onTap: () async {
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              const CameraPosition(
-                target: LatLng(-33.90776949320457, 18.420081870975576),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        },
-      ),
-
-      Marker(
-        markerId: const MarkerId('car_marker_4'),
-        position: const LatLng(-32.97051605731753, 27.901948782757295), // Specific location
-        icon: carIcon,
-        infoWindow: const InfoWindow(
-          title: 'Hemingways Mall',
-          snippet: 'ParkMe Available', // Additional information
-        ),
-        onTap: () async {
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              const CameraPosition(
-                target: LatLng(-32.97051605731753, 27.901948782757295),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        },
-      ),
-
-      Marker(
-        markerId: const MarkerId('car_marker_5'),
-        position: const LatLng(-29.114696757582518, 26.21065532493569), // Specific location
-        icon: carIcon,
-        infoWindow: const InfoWindow(
-          title: 'Loch Logan Waterfront',
-          snippet: 'ParkMe Available', // Additional information
-        ),
-        onTap: () async {
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              const CameraPosition(
-                target: LatLng(-29.114696757582518, 26.21065532493569),
-                zoom: 17.0,
-              ),
-            ),
-          );
-        },
-      ),
-    ];
+        }
+      } else {
+        // No matching documents found
+        showToast(message: 'No parkings found');
+      }
+    } catch (e) {
+      showToast(message: 'Firebase error $e');
+    }
 
     setState(() {
       _markers.addAll(markers);
-
     });
 
   }
@@ -279,25 +193,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  static String extractSlotsAvailable(String slots) {
-    // Use a regular expression to match the first number
-    RegExp regex = RegExp(r'^\d+');
-    Match? match = regex.firstMatch(slots);
-    
-    if (match != null) {
-      String number = match.group(0)!;
-      return "$number slots";
-    }
-    
-    // Return a default value if no match is found
-    return "0 slots";
-  }
-
-  // final double pricePerHour = 10;
-  // final String parkingLocation = 'Sandton City Centre';
-  // final String spacesAvailable = '5 slots';
-  String spacesAvailable = "";
-
   @override
   void dispose() {
     _destinationController.dispose();
@@ -318,9 +213,33 @@ class _MainPageState extends State<MainPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              SingleChildScrollView(
+                child: Text(
+                  parking.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Divider(
+                color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+                thickness: 1, // Thickness of the lines
+              ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  const Text(
+                    'Cost per hour :',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      // fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(
                     'R${parking.price} /Hr',
                     style: const TextStyle(
@@ -329,20 +248,7 @@ class _MainPageState extends State<MainPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    parking.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              const Divider(
-                color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                thickness: 1, // Thickness of the lines
               ),
               const SizedBox(height: 10),
               Row(
@@ -357,7 +263,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   Text(
-                    spacesAvailable,
+                    parking.slotsAvailable,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -379,7 +285,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   Text(
-                    distanceToVenue,
+                    '${parking.minsToVenue} mins',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -496,48 +402,6 @@ class _MainPageState extends State<MainPage> {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: _isModalVisible,
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF35344A),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.location_on, color: Colors.white),
-                          title: const Text('',
-                              style: TextStyle(color: Colors.white, fontSize: 16)),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                _isModalVisible = false;
-                              });
-                            },
-                          ),
-                        ),
-                        const Divider(color: Colors.white),
-                        ListTile(
-                          leading: const Icon(Icons.circle, color: Colors.white, size: 12),
-                          title:  Text(
-                            parking.location,
-                            style: const TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _isModalVisible = false;
-                              _showParkingInfo();
-                            });
-                          },
-                        ),
-                      ],
                     ),
                   ),
                 ),
