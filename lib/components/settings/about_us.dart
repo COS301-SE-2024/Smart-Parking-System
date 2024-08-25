@@ -100,7 +100,7 @@ class AboutUsPageState extends State<AboutUsPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Color(0xFF35344A),
+                    color: const Color(0xFF35344A),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -161,7 +161,7 @@ class AboutUsPageState extends State<AboutUsPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Color(0xFF35344A),
+                    color: const Color(0xFF35344A),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
