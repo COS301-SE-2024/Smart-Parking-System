@@ -195,17 +195,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              ListTile(
-                title: const Text('Privacy policy', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const PrivacyPolicyPage(),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),
