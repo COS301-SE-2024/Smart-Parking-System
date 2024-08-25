@@ -27,7 +27,6 @@ Future<String?> getProfileImageUrl(String userId) async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc.get('profileImageUrl') as String?;
   } catch (e) {
-    print("Error fetching profile image URL: $e");
     return null;
   }
 }
@@ -50,7 +49,6 @@ class _SettingsPageState extends State<SettingsPage> {
       String userId = user.uid;
       String username = await getUserName(userId);
       String? profileImageUrl = await getProfileImageUrl(userId);
-      print("Fetched profile image URL: $profileImageUrl"); // Debug line
       setState(() {
         _username = username;
         _profileImageUrl = profileImageUrl;

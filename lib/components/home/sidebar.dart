@@ -22,7 +22,6 @@ class SideMenu extends StatelessWidget {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
       return userDoc.get('profileImageUrl') as String?;
     } catch (e) {
-      print("Error fetching profile image URL: $e");
       return null;
     }
   }
@@ -44,7 +43,6 @@ class SideMenu extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Show a loading spinner while waiting
         } else if (snapshot.hasError) {
-          print("Error: ${snapshot.error}");
           return const Center(child: Text('Error loading data')); // Handle errors
         } else {
           String userName = snapshot.data?['username'] ?? 'Unknown User';

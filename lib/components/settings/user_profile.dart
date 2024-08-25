@@ -107,9 +107,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       TaskSnapshot snapshot = await uploadTask;
       String downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
-    } catch (e, stackTrace) {
-      print('Error uploading image: $e');
-      print('Stack trace: $stackTrace');
+    } catch (e) {
       showToast(message: 'Error uploading image: $e');
       return null;
     }
@@ -195,14 +193,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               : _profileImageUrl != null
                                   ? NetworkImage(_profileImageUrl!) as ImageProvider
                                   : null,
-                          child: _profileImage == null && _profileImageUrl == null
-                              ? const Icon(Icons.person, size: 80, color: Colors.grey)
-                              : null,
                           onBackgroundImageError: _profileImage == null && _profileImageUrl == null
                               ? null
                               : (error, stackTrace) {
                                   showToast(message: 'Error loading image: $error');
                                 },
+                          child: _profileImage == null && _profileImageUrl == null
+                              ? const Icon(Icons.person, size: 80, color: Colors.grey)
+                              : null,
                         ),
                         Positioned(
                           bottom: 0,
@@ -275,7 +273,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ),
           if (_isUploading) 
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 color: Colors.white,
               ),
