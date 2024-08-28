@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/bookings/select_level.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   final double price;
@@ -20,101 +21,60 @@ class Zone {
   final double x;
   final double y;
 
+
   Zone(this.zone, this.slots, this.timeDistance, this.x, this.y);
 }
-
-  String extractSlotsAvailable(String slots) {
-    // Use a regular expression to match the first number
-    RegExp regex = RegExp(r'^\d+');
-    Match? match = regex.firstMatch(slots);
-    
-    if (match != null) {
-      String number = match.group(0)!;
-      return number;
-    }
-    
-    // Return a default value if no match is found
-    return "0";
-  }
 
 class _ZoneSelectPageState extends State<ZoneSelectPage> {
   String? selectedZone;
   int totalSlots = 0;
+  List<Zone> zones = [];
 
-  List<Zone> zones = [
-    // Add more levels here
-  ];
-    // Get details on load
   Future<void> getDetails() async {
     try {
-      // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-      // Query the 'bookings' collection for a document with matching userId
-        // DocumentSnapshot documentSnapshot = await firestore
-        //     .collection('parkings')
-        //     .doc(widget.bookedAddress)
-        //     .get();
       QuerySnapshot querySnapshot = await firestore
           .collection('parkings')
           .where('name', isEqualTo: widget.bookedAddress)
           .get();
 
-      // Then you can access the document snapshot like this:
       DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
-      // Check if a matching document was found
-      if (documentSnapshot.exists) {
-        // Get the subcollection 'zones'
-        CollectionReference zonesCollection = documentSnapshot.reference.collection('zones');
 
-        // Query the 'zones' subcollection for all documents
+      if (documentSnapshot.exists) {
+        CollectionReference zonesCollection = documentSnapshot.reference.collection('zones');
         QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();
-        // Check if a matching document was found
         if (zonesQuerySnapshot.docs.isNotEmpty) {
-          // // Loop through each document
           for (var zoneDocument in zonesQuerySnapshot.docs) {
-            // Retrieve the fields
             String zone = zoneDocument.id;
             String slots = zoneDocument.get('slots') as String;
             int x = zoneDocument.get('x') as int;
             int y = zoneDocument.get('y') as int;
 
             // Calculate total price
-            int availableSlots = int.parse(extractSlotsAvailable(slots));
+            int availableSlots = extractSlotsAvailable(slots);
 
-            // Add to reservedspots list
             zones.add(Zone(
               zone,
               availableSlots,
-              5,                                                                                        //change time
+              5,
               double.parse(x.toString()),
               double.parse(y.toString()),
             ));
           }
 
-          zones.sort((a, b) {
-          int comparison = a.zone.compareTo(b.zone);
-          if (comparison != 0) {
-            return comparison;
-          } else {
-            return a.zone.compareTo(b.zone);
-          }
-        });
+          zones.sort((a, b) => a.zone.compareTo(b.zone));
         } else {
-          // No matching document found
           showToast(message: 'No zones found for parking: ${widget.bookedAddress}');
         }
       } else {
-        // No matching document found
         showToast(message: 'No parkings found called: ${widget.bookedAddress}');
       }
       totalSlots = zones.fold(0, (tot, zone) => tot + zone.slots);
     } catch (e) {
-      // Handle any errors
       showToast(message: 'Error retrieving zone details: $e');
     }
 
-    setState((){}); // This will trigger a rebuild with the new values
+    setState(() {});
   }
 
   void selectZone(String zone) {
@@ -128,15 +88,15 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
     super.initState();
     getDetails();
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
       body: Container(
         color: const Color(0xFF2D2F41),
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView( // Wrap the content with SingleChildScrollView
+        child: SingleChildScrollView(
           child: Container(
             color: const Color(0xFF2D2F41),
             padding: const EdgeInsets.all(16),
@@ -219,20 +179,28 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: 300, // Fixed width to ensure positions don't change with screen size
-                  height: 200, // Fixed height to ensure positions don't change with screen size
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        'assets/s-map.png', // Update this with your image path
-                        height: 200,
-                        width: 300,
-                        fit: BoxFit.contain,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Calculate the size of the map based on the screen width
+                    double mapWidth = constraints.maxWidth * 0.8;
+                    double mapHeight = mapWidth * 0.67; // Maintain aspect ratio of the image
+
+                    return SizedBox(
+                      width: mapWidth,
+                      height: mapHeight,
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            'assets/s-map.png', // Replace with your image path
+                            width: mapWidth,
+                            height: mapHeight,
+                            fit: BoxFit.contain,
+                          ),
+                          ...zones.map((zone) => _buildZoneButton(zone)),
+                        ],
                       ),
-                      ...zones.map((zone) => _buildZoneButton(zone)),
-                    ],
-                  ),
+                    );
+                  },
                 ),
                 if (selectedZone != null) ...[
                   const SizedBox(height: 20),
@@ -283,7 +251,6 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                   ),
                 ],
                 const SizedBox(height: 20),
-                // const Spacer(),
                 Center(
                   child: SizedBox(
                     width: 160,

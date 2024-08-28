@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -213,26 +214,10 @@ class AddCardPageState extends State<AddCardPage> {
                   ],
                 ),
                 const SizedBox(height: 60.0),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _saveCardDetails,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 150,
-                        vertical: 20,
-                      ),
-                      backgroundColor: const Color(0xFF58C6A9),
-                    ),
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                    ),
-                  ),
+                nextButton(
+                  displayText: 'Save', 
+                  action: _saveCardDetails,
                 ),
-                const SizedBox(height: 100.0),
               ],
             ),
           ),

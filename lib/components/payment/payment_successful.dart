@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 
 
@@ -50,29 +51,39 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                   ),
                 ),
                 const SizedBox(height: 60),
-                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const ParkingHistoryPage(),
-                        ),
-                      );
+                nextButton(
+                  displayText: 'Finished', 
+                  action: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => const ParkingHistoryPage(),
+                      ),
+                    );
                   },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 150,
-                      vertical: 20,
-                    ),
-                    backgroundColor: const Color(0xFF58C6A9),
-                  ),
-                  child: const Text(
-                    'Finished',
-                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
                 ),
+                //  ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.of(context).push(
+                //         MaterialPageRoute(
+                //           builder: (_) => const ParkingHistoryPage(),
+                //         ),
+                //       );
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(40.0),
+                //     ),
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 150,
+                //       vertical: 20,
+                //     ),
+                //     backgroundColor: const Color(0xFF58C6A9),
+                //   ),
+                //   child: const Text(
+                //     'Finished',
+                //     style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+                //   ),
+                // ),
               ],
             ),
           ),
