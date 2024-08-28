@@ -30,6 +30,16 @@ Future<String?> getProfileImageUrl(String userId) async {
   }
 }
 
+Future<void> updateNotificationPreference(bool isEnabled) async {
+  User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'notificationsEnabled': isEnabled,
+    });
+  }
+}
+
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
@@ -48,9 +58,15 @@ class _SettingsPageState extends State<SettingsPage> {
       String userId = user.uid;
       String username = await getUserName(userId);
       String? profileImageUrl = await getProfileImageUrl(userId);
+
+      // Fetch the notification preference from Firestore and set it
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      bool notificationsEnabled = userDoc.get('notificationsEnabled') ?? true;
+
       setState(() {
         _username = username;
         _profileImageUrl = profileImageUrl;
+        _isSwitched = notificationsEnabled;
       });
     }
   }
@@ -164,10 +180,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: const Text('Push notifications', style: TextStyle(color: Colors.white)),
                 trailing: Switch(
                   value: _isSwitched,
-                  onChanged: (bool value) {
+                  onChanged: (bool value) async {
                     setState(() {
                       _isSwitched = value;
                     });
+                    await updateNotificationPreference(value);
                   },
                   activeColor: Colors.tealAccent,
                 ),
@@ -283,5 +300,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-
