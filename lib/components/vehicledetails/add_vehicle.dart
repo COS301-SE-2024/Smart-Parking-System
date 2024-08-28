@@ -110,9 +110,9 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
               ),
               child: Center(
                 child: Image.asset(
-                  'assets/Audio_r8.png', // Make sure this path is correct
-                  width: 150, // Adjust the image size as needed
-                  height: 150,
+                  'assets/racecarsketch.png', // Make sure this path is correct
+                  width: 200, // Adjust the image size as needed
+                  height: 200,
                   fit: BoxFit.contain, // This will ensure the image fits within the circle
                 ),
               ),

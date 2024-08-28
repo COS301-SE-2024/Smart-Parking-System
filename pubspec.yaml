@@ -55,6 +55,7 @@ flutter:
     - assets/Background - Small.svg
     - assets/Background - Large.svg
     - assets/car_temp.png
+    - assets/racecarsketch.png
     - assets/getting_started.png
     - assets/how_to_invest.png
     - assets/payment.png
@@ -90,3 +91,4 @@ flutter:
     - assets/help10.png
     - assets/help11.png
     - assets/Purple_ParkMe.png
+    - .env
