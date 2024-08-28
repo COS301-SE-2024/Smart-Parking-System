@@ -6,7 +6,6 @@ import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/user_profile.dart';
-import 'package:smart_parking_system/components/settings/privacy.dart';
 import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
 
@@ -191,17 +190,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => const AboutUsPage(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Privacy policy', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const PrivacyPolicyPage(),
                     ),
                   );
                 },
