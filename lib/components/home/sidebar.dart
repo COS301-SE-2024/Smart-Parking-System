@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/components/help/support.dart';
 import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
@@ -24,6 +25,17 @@ class SideMenu extends StatelessWidget {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // Set isLoggedIn to false
+    if (!context.mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(),
+      ),
+    );
   }
 
   @override
@@ -183,13 +195,7 @@ class SideMenu extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.white),
                     title: const Text('Logout', style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const LoginPage(),
-                        ),
-                      );
-                    },
+                    onTap: () => _logout(context),
                   ),
                 ],
               ),

@@ -47,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+      await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
       
       if(mounted) { // Check if the widget is still in the tree
         showToast(message: 'Successfully signed in');
@@ -85,7 +86,8 @@ class _LoginPageState extends State<LoginPage> {
 
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          
+          await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
+
           if(mounted) { // Check if the widget is still in the tree
             showToast(message: 'Google sign in successful ');
             Navigator.of(context).pushReplacement(
