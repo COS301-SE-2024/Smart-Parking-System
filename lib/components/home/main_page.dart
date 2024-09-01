@@ -376,8 +376,16 @@ class _MainPageState extends State<MainPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF35344A),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Center(
                     child: GestureDetector(
@@ -397,9 +405,10 @@ class _MainPageState extends State<MainPage> {
                           decoration: const InputDecoration(
                             hintText: 'Where are you going?',
                             border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(Icons.search, color: Colors.grey),
                           ),
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
