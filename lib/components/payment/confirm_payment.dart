@@ -107,12 +107,46 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
         });
 
         showToast(message: 'Booked Successfully!');
+        _makeNotifications();
         // ignore: use_build_context_synchronously
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const PaymentSuccessionPage(),
           ),
         );
+
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
+
+  Future<void> _makeNotifications() async {
+    if (_selectedCard == null) return;
+
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        return;
+      }
+      String dateTime = '$bookingDate ${startTime!}';
+      DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
+     
+      final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
+
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('notifications').add({
+          'address': widget.bookedAddress,
+          'fcmToken': fcmToken,
+          'notificationTime': notificationTimeUtc,
+          'parkingTime': parkingTimeUtc,
+          'sent': false,
+          'type': 'Booking',
+          'parkingSlot': 'Zone : ${widget.selectedZone}, Level : ${widget.selectedLevel}, Row : ${widget.selectedRow}', 
+          'userId': user.uid,
+        });
       }
     } catch (e) {
       showToast(message: 'Error: $e');
