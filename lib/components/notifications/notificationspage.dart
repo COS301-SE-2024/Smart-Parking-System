@@ -244,16 +244,28 @@ class _NotificationPageState extends State<NotificationApp> {
                   ),
                   Align(
                     alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.delete_sweep),
-                      color: Colors.red,
+                    child: ElevatedButton(
                       onPressed: clearAllNotifications,
-                      tooltip: 'Clear All Notifications',
-                    ),
+                      style: const ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Color.fromARGB(255, 58, 58, 58)),
+                      ),
+                      child: const Text(
+                        "Clear all",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      )
+                    )
                   )
                 ],
               ),
             ),
+            // IconButton(
+            //           icon: const Icon(Icons.delete_sweep),
+            //           color: Colors.red,
+            //           onPressed: clearAllNotifications,
+            //           tooltip: 'Clear All Notifications',
+            //         ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
