@@ -91,92 +91,123 @@ class _NotificationPageState extends State<NotificationApp> {
   }
 
   Future<void> fetchUserNotifications() async {
-  setState(() {
-    isLoading = true;
-  });
-  try {
-    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('notifications')
-        .where('userId', isEqualTo: currentUserId)
-        .get();
-    List<Map<String, dynamic>> fetchedNotifications = querySnapshot.docs.map((doc) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      return data;
-    }).toList();
-    if (fetchedNotifications.isEmpty) {
-      showToast(message: 'You have had no notifications!');
-    }
-
-    final now = DateTime.now();
-
-    for (var element in fetchedNotifications) {
-      Timestamp parkingTimestamp = element["parkingTime"];
-      String updatedDateString = DateFormat('yyyy-MM-dd - kk:mm').format(parkingTimestamp.toDate());
-      // showToast(message: 'Here is the updatedDateString : ${element["parkingSlot"]}');
-      
-      // Now you can use the `updatedDateString` variable in your notification creation
-      if (element["type"] == "Reminder" && element["sent"] == true) {
-        var tempNotification = ReminderNotification(
-          "Parking begins in 2 hours!",
-          updatedDateString,
-          element["address"],
-        );
-        setState(() {
-          Duration difference = now.difference(parkingTimestamp.toDate());
-          if (difference.inDays < 1) {
-            today.add(tempNotification);
-          } else if (difference.inDays < 7) {
-            thisweek.add(tempNotification);
-          } else {
-            older.add(tempNotification);
-          }
-        });
-      } else if (element["type"] == "Booking") {
-        
-        var tempNotification = BookedNotification(
-          updatedDateString,
-          element["address"],
-          element["parkingSlot"],
-        );
-        setState(() {
-          Duration difference = now.difference(parkingTimestamp.toDate());
-          if (difference.inDays < 1) {
-            today.add(tempNotification);
-          } else if (difference.inDays < 7) {
-            thisweek.add(tempNotification);
-          } else {
-            older.add(tempNotification);
-          }
-        });
-      } else if (element["type"] == "Alert") {
-        var tempNotification = AlertNotification(
-          updatedDateString,
-          element["description"],
-        );
-        setState(() {
-          Duration difference = now.difference(parkingTimestamp.toDate());
-          if (difference.inDays < 1) {
-            today.add(tempNotification);
-          } else if (difference.inDays < 7) {
-            thisweek.add(tempNotification);
-          } else {
-            older.add(tempNotification);
-          }
-        });
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+      List<Map<String, dynamic>> fetchedNotifications = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return data;
+      }).toList();
+      if (fetchedNotifications.isEmpty) {
+        showToast(message: 'You have had no notifications!');
       }
-    }
 
-    setState(() {
-      notificationData = fetchedNotifications;
-      isLoading = false;
-    });
-  } catch (e) {
-    setState(() {
-      isLoading = false;
-    });
+      final now = DateTime.now();
+
+      for (var element in fetchedNotifications) {
+        Timestamp parkingTimestamp = element["parkingTime"];
+        String updatedDateString = DateFormat('yyyy-MM-dd - kk:mm').format(parkingTimestamp.toDate());
+        // showToast(message: 'Here is the updatedDateString : ${element["parkingSlot"]}');
+        
+        // Now you can use the `updatedDateString` variable in your notification creation
+        if (element["type"] == "Reminder" && element["sent"] == true) {
+          var tempNotification = ReminderNotification(
+            "Parking begins in 2 hours!",
+            updatedDateString,
+            element["address"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        } else if (element["type"] == "Booking") {
+          
+          var tempNotification = BookedNotification(
+            updatedDateString,
+            element["address"],
+            element["parkingSlot"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        } else if (element["type"] == "Alert") {
+          var tempNotification = AlertNotification(
+            updatedDateString,
+            element["description"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        }
+      }
+
+      setState(() {
+        notificationData = fetchedNotifications;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
-}
+
+  Future<void> clearAllNotifications() async {
+    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    if (currentUserId.isEmpty) return;
+
+    try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+
+      setState(() {
+        notificationData.clear();
+        today.clear();
+        thisweek.clear();
+        older.clear();
+      });
+      
+      showToast(message: 'All notifications cleared successfully');
+    } catch (e) {
+      showToast(message: 'Failed to clear notifications : $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +242,15 @@ class _NotificationPageState extends State<NotificationApp> {
                       ),
                     ),
                   ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.delete_sweep),
+                      color: Colors.red,
+                      onPressed: clearAllNotifications,
+                      tooltip: 'Clear All Notifications',
+                    ),
+                  )
                 ],
               ),
             ),
