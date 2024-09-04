@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -87,6 +88,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   List<ActiveSession> activesessions = [];
   List<ReservedSpot> reservedspots = [];
   List<CompletedSession> completedsessions = [];
+  User? user = FirebaseAuth.instance.currentUser;
 
   Timer? _timer;
 
@@ -218,7 +220,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
 
   // Get details on load
   Future<void> getDetails() async {
-    User? user = FirebaseAuth.instance.currentUser;
     // String? userName = user?.displayName;
     String? userId = user?.uid;
 
@@ -398,17 +399,18 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Cancel Booking"),
-          content: const Text("Are you sure you want to cancel this booking?"),
+          title: const Text("Cancel Booking", style: TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.bold),),
+          backgroundColor: const Color(0xFF35344A),
+          content: const Text("Are you sure you want to cancel this booking?", style: TextStyle(color: Colors.white),),
           actions: <Widget>[
             TextButton(
-              child: const Text("No"),
+              child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text("Yes"),
+              child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _deleteBooking(reservedspot);
                 Navigator.of(context).pop();
@@ -442,17 +444,18 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("End Sesssion Early"),
-          content: const Text("Are you sure you want to end this session early?"),
+          title: const Text("End Sesssion Early", style: TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.bold),),
+          backgroundColor: const Color(0xFF35344A),
+          content: const Text("Are you sure you want to end this session early?", style: TextStyle(color: Colors.white),),
           actions: <Widget>[
             TextButton(
-              child: const Text("No"),
+              child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text("Yes"),
+              child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _endSession(activesession);
                 Navigator.of(context).pop();
@@ -522,11 +525,36 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     }
   }
   
-  void _refund(double price, double oldDuration, int finalPrice) {                                                //Add code for refund here
+  void _refund(double price, double oldDuration, int finalPrice) async {
     double refundAmount = (price * oldDuration) - finalPrice;
     showToast(message: "Refund : $refundAmount");
 
     //Refund Amount as credit here
+    try {
+      String? userId = user?.uid;
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      if (userId != null) {
+        DocumentSnapshot userDocument = await firestore
+            .collection('users')
+            .doc(userId)
+            .get();
+
+        if (userDocument.exists) {
+          double amount = userDocument.get('balance') as double;
+          amount = amount+refundAmount;
+
+          userDocument.reference.update({'balance': amount});
+        } else {
+          showToast(message: 'No balance found for update: $userId');
+        }
+      } else {
+        showToast(message: 'User ID is null');
+      }
+    } catch (e) {
+      showToast(message: 'Error updating slot availability: $e');
+    }
+    setState(() {});
   }
 
   int _selectedIndex = 2;
