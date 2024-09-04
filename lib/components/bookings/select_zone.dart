@@ -8,7 +8,13 @@ import 'package:smart_parking_system/components/common/common_functions.dart';
 class ZoneSelectPage extends StatefulWidget {
   final double price;
   final String bookedAddress;
-  const ZoneSelectPage({required this.bookedAddress, required this.price, super.key});
+  final String distanceAndDurationString;
+  const ZoneSelectPage({
+    required this.bookedAddress,
+    required this.price,
+    required this.distanceAndDurationString,
+    super.key
+  });
 
   @override
   State<ZoneSelectPage> createState() => _ZoneSelectPageState();
@@ -240,7 +246,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Distance to Zone: ${zones.firstWhere((z) => z.zone == selectedZone).timeDistance} mins drive',
+                          'Distance to Zone: ${widget.distanceAndDurationString}', // Display the string here
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
