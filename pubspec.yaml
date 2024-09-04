@@ -35,6 +35,7 @@ dependencies:
   firebase_messaging: ^15.0.4
   image_picker: ^1.1.2
   shared_preferences: ^2.3.2
+  geolocator: ^9.0.0
 
 
 dev_dependencies:
