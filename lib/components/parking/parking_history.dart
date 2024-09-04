@@ -20,11 +20,22 @@ class ActiveSession {
   final String documentId;
   final String rate;
   final String address;
-  final String parkingslot;
+  final String zone;
+  final String level;
+  final String row;
   String remainingtime;
   final DateTime endTime;
 
-  ActiveSession(this.documentId, this.rate, this.address, this.parkingslot, this.remainingtime, this.endTime);
+  ActiveSession(
+    this.documentId,
+    this.rate,
+    this.address,
+    this.zone,
+    this.level,
+    this.row,
+    this.remainingtime,
+    this.endTime
+  );
 }
 
 class ReservedSpot {
@@ -33,9 +44,20 @@ class ReservedSpot {
   final String time;
   final String amount;
   final String address;
-  final String parkingslot;
+  final String zone;
+  final String level;
+  final String row;
 
-  ReservedSpot(this.documentId, this.date, this.time, this.amount, this.address, this.parkingslot);
+  ReservedSpot(
+    this.documentId,
+    this.date,
+    this.time,
+    this.amount,
+    this.address,
+    this.zone,
+    this.level,
+    this.row,
+  );
 }
 
 class CompletedSession {
@@ -44,9 +66,20 @@ class CompletedSession {
   final String time;
   final String amount;
   final String address;
-  final String parkingslot;
+  final String zone;
+  final String level;
+  final String row;
 
-  CompletedSession(this.documentId, this.date, this.time, this.amount, this.address, this.parkingslot);
+  CompletedSession(
+    this.documentId,
+    this.date,
+    this.time,
+    this.amount,
+    this.address,
+    this.zone,
+    this.level,
+    this.row,
+  );
 }
 
 class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
@@ -112,13 +145,15 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           await bookingDoc.reference.delete();
 
           // Add to completedsessions list
-          completedsessions.add(CompletedSession(
+          completedsessions.add(CompletedSession(                 //HERE
             session.documentId,
             bookingData['date'],
             bookingData['time'],
             'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
             session.address,
-            session.parkingslot,
+            session.zone,
+            session.level,
+            session.row,
           ));
 
           // Remove from activesessions list
@@ -164,7 +199,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             spot.documentId,
             spot.amount,
             spot.address,
-            spot.parkingslot,
+            spot.zone,
+            spot.level,
+            spot.row,
             '2h 0m', // Initial remaining time
             endTime,
           ));
@@ -229,7 +266,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               documentId,
               'R ${bookedPrice.toInt()}',
               bookedLocation,
-              'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+              bookedZone,
+              bookedLevel,
+              bookedRow,
               '${remainingDuration.inHours}h ${remainingDuration.inMinutes % 60}m',
               bookingEndDateTime,
             ));
@@ -241,7 +280,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               bookedTime,
               'R $totalPrice',
               bookedLocation,
-              'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+              bookedZone,
+              bookedLevel,
+              bookedRow,
             ));
           }
         }
@@ -322,7 +363,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             bookedTime,
             'R $totalPrice',
             bookedLocation,
-            'Zone:$bookedZone Level:$bookedLevel Row:$bookedRow',
+            bookedZone,
+            bookedLevel,
+            bookedRow,
           ));
            // showToast(message: 'HERE1');
         }
@@ -456,7 +499,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             bookingData['time'],
             'R $finalPrice',
             activesession.address,
-            activesession.parkingslot,
+            activesession.zone,
+            activesession.level,
+            activesession.row,
           ));
           
           // Sort completedsessions
@@ -528,7 +573,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               'Active Session',
               style: TextStyle(
                 color: Colors.tealAccent,
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -546,7 +591,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 'Reserved Spots',
                 style: TextStyle(
                   color: Colors.tealAccent,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -564,7 +609,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               'Completed Sessions',
               style: TextStyle(
                 color: Colors.tealAccent,
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -687,16 +732,19 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     const Icon(Icons.check_circle, color: Colors.white, size: 30),
+          //     const SizedBox(width: 10),
+          //     _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
+          //   ],
+          // ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.check_circle, color: Colors.tealAccent, size: 30),
-              const SizedBox(width: 10),
-              Text(
-                '${completedsession.address}\nSpace ${completedsession.parkingslot}',
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.right, 
-              ),
+              const Spacer(),
+              _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
+              const Spacer(),
             ],
           ),
           const SizedBox(height: 5),
@@ -745,16 +793,19 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     const Icon(Icons.star, color: Colors.white, size: 30),
+          //     const SizedBox(width: 10),
+          //     _locationText(reservedspot.address, reservedspot.zone, reservedspot.level, reservedspot.row),
+          //   ],
+          // ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.star, color: Colors.tealAccent, size: 30),
-              const SizedBox(width: 10),
-              Text(
-                '${reservedspot.address}\n${reservedspot.parkingslot}',
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.right, 
-              ),
+              const Spacer(),
+              _locationText(reservedspot.address, reservedspot.zone, reservedspot.level, reservedspot.row),
+              const Spacer(),
             ],
           ),
           const SizedBox(height: 5),
@@ -775,7 +826,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 style: const TextStyle(color: Colors.white),
               ),
               IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
+                icon: Icon(Icons.delete, color: Colors.red.withOpacity(0.8)),
                 onPressed: () => _showDeleteConfirmation(context, reservedspot),
               ),
             ],
@@ -809,7 +860,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF58C6A9),
+                  color: const Color(0xFF58C6A9).withOpacity(0.4),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -821,11 +872,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                '${activesession.address}\n${activesession.parkingslot}',
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.right,  
-              ),
+              _locationText(activesession.address, activesession.zone, activesession.level, activesession.row),
             ],
           ),
           const SizedBox(height: 10),
@@ -851,7 +898,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               ]
               ),
               IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
+                icon: Icon(Icons.delete,color: Colors.red.withOpacity(0.8)),
                 onPressed: () => _showEndConfirmation(context, activesession),
               ),
             ],
@@ -859,6 +906,46 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         ],
       ),
     
+    );
+  }
+
+  Widget _locationText(String location, String zone, String level, String row) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children:[
+        Text(
+          location,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
+        ),
+        Row(
+          children: [
+            Text(
+              'Zone:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)), 
+            ),
+            Text(
+              zone,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Level:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              level,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Row:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              row,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ]
     );
   }
 }
