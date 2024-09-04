@@ -219,7 +219,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   // Get details on load
   Future<void> getDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
-    String? userName = user?.displayName;
+    // String? userName = user?.displayName;
     String? userId = user?.uid;
 
     try {
@@ -298,10 +298,11 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             return a.time.compareTo(b.time);
           }
         });
-      } else {
-        // No matching document found
-        showToast(message: 'No bookings found for user: $userName');
-      }
+      } 
+      // else {
+      //   // No matching document found
+      //   showToast(message: 'No bookings found for user: $userName');
+      // }
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving booking details: $e');
@@ -379,10 +380,11 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             return a.time.compareTo(b.time);
           }
         });
-      } else {
-        // No matching document found
-        showToast(message: 'No bookings found for user: $userName');
-      }
+      } 
+      // else {
+      //   // No matching document found
+      //   showToast(message: 'No bookings found for user: $userName');
+      // }
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving past booking details: $e');
@@ -570,7 +572,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               ),
             ),
             const Text(
-              'Active Session',
+              '    Active Session',
               style: TextStyle(
                 color: Colors.tealAccent,
                 fontSize: 18,
@@ -588,7 +590,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             const SizedBox(height: 20),
             // Reserved Spots
              const Text(
-                'Reserved Spots',
+                '    Reserved Spots',
                 style: TextStyle(
                   color: Colors.tealAccent,
                   fontSize: 18,
@@ -604,26 +606,27 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               ]).toList(),
             ),
             const SizedBox(height: 20),
-            // Completed Sessions
-            const Text(
-              'Completed Sessions',
-              style: TextStyle(
-                color: Colors.tealAccent,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            ExpansionTile(
+              title: const Text(
+                'Completed Sessions',
+                style: TextStyle(
+                  color: Colors.tealAccent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              iconColor: Colors.white,
+              collapsedIconColor: Colors.white,
+              children: completedsessions.map((completedsession) => 
+                Column(
+                  children: [
+                    _buildCompletedSessionItem(completedsession),
+                    const SizedBox(height: 10),
+                  ],
+                )
+              ).toList(),
             ),
-            const SizedBox(height: 20),          
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: completedsessions.expand((completedsession) => [
-                _buildCompletedSessionItem(completedsession),
-                const SizedBox(height: 10),
-              ]).toList(),
-            ),
-              
           ],
-          
         ),
         ),
       ),
