@@ -17,8 +17,8 @@ void main() {
             carType: carType,
             imagePath: imagePath,
             isSelected: isSelected,
-            onSelect: () {}, 
-            licensePlate: 'TBG0T2GP',
+            onSelect: () {},
+            licensePlate: 'TBG0T2GP'
           ),
         ),
       ));
@@ -43,7 +43,7 @@ void main() {
             imagePath: 'assets/default_logo.png',
             isSelected: isSelected,
             onSelect: onSelect,
-            licensePlate: 'TBG0T2GP',
+            licensePlate: 'TBG0T2GP'
           ),
         ),
       ));
