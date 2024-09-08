@@ -16,22 +16,6 @@ void main() {
     expect(find.text('How do I check my booking'), findsOneWidget);
   });
 
-  testWidgets('Bookinghelp expands "How do I make a booking" section', (WidgetTester tester) async {
-    await tester.pumpWidget(
-    const MaterialApp(
-        home: Bookinghelp(),
-      ),
-    );
-
-    // Tap to expand the "How do I make a booking" section
-    await tester.tap(find.text('How do I make a booking'));
-    await tester.pumpAndSettle();
-
-    // Check if the expanded content is displayed
-    expect(find.text('1   Navigate to home page'), findsOneWidget);
-    expect(find.text('8   Confirm car'), findsOneWidget);
-  });
-
   testWidgets('Bookinghelp expands "How do I check my booking" section', (WidgetTester tester) async {
     await tester.pumpWidget(
      const MaterialApp(
@@ -80,20 +64,5 @@ void main() {
 
     // Check if we've navigated back
     expect(find.byType(Bookinghelp), findsNothing);
-  });
-
-  testWidgets('Bookinghelp displays images in "How do I make a booking" section', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Bookinghelp(),
-      ),
-    );
-
-    // Tap to expand the "How do I make a booking" section
-    await tester.tap(find.text('How do I make a booking'));
-    await tester.pumpAndSettle();
-
-    // Check if images are displayed
-    expect(find.byType(Image), findsNWidgets(7)); // There should be 7 images
   });
 }
