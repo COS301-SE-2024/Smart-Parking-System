@@ -134,6 +134,30 @@ class _VerificationPageState extends State<VerificationPage> {
                         ),
                         
                       ),
+                      const SizedBox(height: 30,),
+                      Center(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Wait 30 seconds, then:',
+                                style: TextStyle(
+                                  color: Colors.white
+                                )
+                              ),
+                              TextButton(
+                                onPressed: verification, 
+                                child: const Text(
+                                  'Resend Email',
+                                  style: TextStyle(
+                                    color: Color(0xFF58C6A9),
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ), 
+                            ],
+                          ),
+                      ),
                     ],
                   ),
                 ),
