@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/help/paymentshelp.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/help/bookinghelp.dart'; 
 import 'package:smart_parking_system/components/help/accounthelp.dart';
 
@@ -21,126 +21,103 @@ class _SupportAppState extends State<SupportApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFF2D2F41),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
               color: const Color(0xFF2D2F41),
-              child: Stack(
-                children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      );
-                    },
-                  ),
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Support',
-                      style: TextStyle(
-                        color: Colors.tealAccent,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+                      color: const Color(0xFF2D2F41),
+                      child: Stack(
+                        children: [
+                          Builder(
+                            builder: (BuildContext context) {
+                              return IconButton(
+                                icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
+                                onPressed: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                              );
+                            },
+                          ),
+                          const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Support',
+                              style: TextStyle(
+                                color: Colors.tealAccent,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'How can we help you?',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter your keyword',
-                filled: true,
-                fillColor: const Color(0xFF404051),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                hintStyle: const TextStyle(color: Colors.grey),
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Column(
-              children: [
-                _buildCategoryCard(
-                  icon: Icons.notifications,
-                  label: 'Questions about Booking',
-                  color: const Color(0xFF0D6EFD),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>  const Bookinghelp(),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'How can we help you?',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  },
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Column(
+                      children: [
+                        _buildCategoryCard(
+                          icon: Icons.notifications,
+                          label: 'Questions about Booking',
+                          color: const Color(0xFF0D6EFD),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Bookinghelp(),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildCategoryCard(
+                          icon: Icons.account_circle,
+                          label: 'Questions about Account',
+                          color: const Color(0xFFDC3545),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Accounthelp(),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildCategoryCard(
+                          icon: Icons.payment,
+                          label: 'Questions about Payment',
+                          color: const Color(0xFF58C6A9),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Paymentshelp(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                _buildCategoryCard(
-                  icon: Icons.account_circle,
-                  label: 'Questions about Account',
-                  color: const Color(0xFFDC3545),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>  const Accounthelp(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildCategoryCard(
-                  icon: Icons.payment,
-                  label: 'Questions about Payment',
-                  color: const Color(0xFF58C6A9),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>  const Paymentshelp(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: const Color(0xFF35344A),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.6),
-                spreadRadius: 1,
-                blurRadius: 8,
-                offset: const Offset(0, -3),
               ),
-            ],
+            ),
           ),
-          child: BottomNavigationBar(
+          BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: const Color(0xFF35344A),
             currentIndex: _selectedIndex,
@@ -198,7 +175,7 @@ class _SupportAppState extends State<SupportApp> {
             showUnselectedLabels: false,
             showSelectedLabels: false,
           ),
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},

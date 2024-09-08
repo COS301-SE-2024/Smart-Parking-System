@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class SelectRowPage extends StatefulWidget {
   final String bookedAddress;
@@ -28,20 +29,6 @@ class RowSpace {
 
   RowSpace(this.row, this.slots);
 }
-
-  String extractSlotsAvailable(String slots) {
-    // Use a regular expression to match the first number
-    RegExp regex = RegExp(r'^\d+');
-    Match? match = regex.firstMatch(slots);
-    
-    if (match != null) {
-      String number = match.group(0)!;
-      return number;
-    }
-    
-    // Return a default value if no match is found
-    return "0";
-  }
 
 class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
@@ -99,7 +86,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                 String slots = rowDocument.get('slots') as String;
 
                 // Calculate total price
-                int availableSlots = int.parse(extractSlotsAvailable(slots));
+                int availableSlots = extractSlotsAvailable(slots);
 
                 // Add to rows list
                 rows.add(RowSpace(
@@ -170,7 +157,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                   ),
                   const Expanded(
                     child: Text(
-                      'Parking Slot',
+                      'Parking Row',
                       style: TextStyle(color: Color(0xFF58C6A9),
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
@@ -274,7 +261,7 @@ class SelectRowPageState extends State<SelectRowPage> {
           const SizedBox(height: 13),
           Container(
             width: 290,
-            height: 90,
+            height: 110,
             decoration: BoxDecoration(
               color: buttonColor,
               borderRadius: BorderRadius.circular(14),

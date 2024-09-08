@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
-import 'package:smart_parking_system/components/sidebar.dart';
+import 'package:smart_parking_system/components/home/sidebar.dart';
 // import 'notificationfunction.dart';
 
 class NotificationApp extends StatefulWidget {
@@ -46,31 +49,165 @@ class ReminderNotification extends Notification {
 }
 
 
-
-class _NotificationPageState extends State<NotificationApp> {
-  int _selectedIndex = 0;
-
   List<Notification> today = [
-    ReminderNotification('1 hour ago', '12:00 PM', 'Sandton City'),
-    AlertNotification('2 hours ago', 'You have parked longer allocated duration'),
-    BookedNotification('5 hours ago', 'Sandton City', 'A4c'),
+    // ReminderNotification('1 hour ago', '12:00 PM', 'Sandton City'),
+    // AlertNotification('2 hours ago', 'You have parked longer allocated duration'),
+    // BookedNotification('5 hours ago', 'Sandton City', 'A4c'),
     
     // Add more notifications here
   ];
 
   List<Notification> thisweek = [
-    BookedNotification('3 days ago', 'Sandton City', 'A4c'),
+    // BookedNotification('3 days ago', 'Sandton City', 'A4c'),
     
     // Add more notifications here
   ];
 
   List<Notification> older = [
    
-    AlertNotification('2 weeks ago', 'You have parked in a no-parking zone'),
+    // AlertNotification('2 weeks ago', 'You have parked in a no-parking zone'),
     // Add more notifications here
   ];
 
-  
+
+class _NotificationPageState extends State<NotificationApp> {
+  int _selectedIndex = 0;
+  late List<Map<String, dynamic>> notificationData = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserNotifications();
+  }
+
+  @override
+  void dispose() {
+    today.clear();
+    thisweek.clear();
+    older.clear();
+    notificationData.clear();
+    super.dispose();
+  }
+
+  Future<void> fetchUserNotifications() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+      List<Map<String, dynamic>> fetchedNotifications = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return data;
+      }).toList();
+      if (fetchedNotifications.isEmpty) {
+        showToast(message: 'You have had no notifications!');
+      }
+
+      final now = DateTime.now();
+
+      for (var element in fetchedNotifications) {
+        Timestamp parkingTimestamp = element["parkingTime"];
+        String updatedDateString = DateFormat('yyyy-MM-dd - kk:mm').format(parkingTimestamp.toDate());
+        // showToast(message: 'Here is the updatedDateString : ${element["parkingSlot"]}');
+        
+        // Now you can use the `updatedDateString` variable in your notification creation
+        if (element["type"] == "Reminder" && element["sent"] == true) {
+          var tempNotification = ReminderNotification(
+            "Parking begins in 2 hours!",
+            updatedDateString,
+            element["address"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        } else if (element["type"] == "Booking") {
+          
+          var tempNotification = BookedNotification(
+            updatedDateString,
+            element["address"],
+            element["parkingSlot"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        } else if (element["type"] == "Alert") {
+          var tempNotification = AlertNotification(
+            updatedDateString,
+            element["description"],
+          );
+          setState(() {
+            Duration difference = now.difference(parkingTimestamp.toDate());
+            if (difference.inDays < 1) {
+              today.add(tempNotification);
+            } else if (difference.inDays < 7) {
+              thisweek.add(tempNotification);
+            } else {
+              older.add(tempNotification);
+            }
+          });
+        }
+      }
+
+      setState(() {
+        notificationData = fetchedNotifications;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> clearAllNotifications() async {
+    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    if (currentUserId.isEmpty) return;
+
+    try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+
+      setState(() {
+        notificationData.clear();
+        today.clear();
+        thisweek.clear();
+        older.clear();
+      });
+      
+      showToast(message: 'All notifications cleared successfully');
+    } catch (e) {
+      showToast(message: 'Failed to clear notifications : $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,23 +242,72 @@ class _NotificationPageState extends State<NotificationApp> {
                       ),
                     ),
                   ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: ElevatedButton(
+                      onPressed: clearAllNotifications,
+                      style: const ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Color.fromARGB(255, 58, 58, 58)),
+                      ),
+                      child: const Text(
+                        "Clear all",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      )
+                    )
+                  )
                 ],
               ),
             ),
+            // IconButton(
+            //           icon: const Icon(Icons.delete_sweep),
+            //           color: Colors.red,
+            //           onPressed: clearAllNotifications,
+            //           tooltip: 'Clear All Notifications',
+            //         ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SectionTitle(title: 'Today'),
                 for (var notification in today)
                 _buildNotification(notification),
+                // if (today.isEmpty)
+                //   const SizedBox(height: 20),
+                // if (today.isEmpty)
+                //   const Text(
+                //     'There are no Notifications for Today.',
+                //     style: TextStyle(
+                //       color: Colors.white,
+                //     ),
+                //   ),
                 const SizedBox(height: 10),
                 const SectionTitle(title: 'This Week'),
                 for (var notification in thisweek)
                 _buildNotification(notification),
+                // if (thisweek.isEmpty)
+                //   const SizedBox(height: 20),
+                // if (thisweek.isEmpty)
+                //   const Text(
+                //     'There are no Notifications for this Week.',
+                //     style: TextStyle(
+                //       color: Colors.white,
+                //     ),
+                //   ),
                 const SizedBox(height: 10),
                 const SectionTitle(title: 'Older'),
                 for (var notification in older)
                 _buildNotification(notification),
+                // if (older.isEmpty)
+                //   const SizedBox(height: 20),
+                // if (older.isEmpty)
+                //   const Text(
+                //     'There are no Notifications that are older than 1 week.',
+                //     style: TextStyle(
+                //       color: Colors.white,
+                //     ),
+                //   ),
+                
                 
               ],
             ),

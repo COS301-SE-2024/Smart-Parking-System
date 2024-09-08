@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/login/successmark.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/login/registration_successful.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 
 void main() {
   testWidgets('SuccessionPage UI Test', (WidgetTester tester) async {

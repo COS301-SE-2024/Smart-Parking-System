@@ -7,6 +7,7 @@ import 'package:smart_parking_system/components/login/login_main.dart';
 import 'package:smart_parking_system/components/splashscreen/splash_screen.dart';
 import 'package:smart_parking_system/components/notifications/notificationfunction.dart';
 
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   // You can add logic here to handle the background message
@@ -24,12 +25,16 @@ Future<void> main() async {
         appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
         messagingSenderId: "808791551084",
         projectId: "parkme-c2508",
+        storageBucket: "gs://parkme-c2508.appspot.com",
       ),
     );
   } else {
     await Firebase.initializeApp();
   }
 
+  // Get a reference to the storage service
+  
+  // final FirebaseStorage storage = FirebaseStorage.instanceFor(bucket: 'gs://parkme-c2508.appspot.com');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // // Initialize FCM service
@@ -55,29 +60,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:smart_parking_system/components/main_page.dart'; // Import your main_page.dart file here
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Smart Parking System',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: MainPage(), // Set MainPage as the home screen
-
-//     );
-//   }
-// }
-
-
-

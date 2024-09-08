@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/firebaseauth/fire_base_auth_services.dart';
+import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
-import 'package:smart_parking_system/components/main_page.dart';
+import 'package:smart_parking_system/components/home/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,6 +44,11 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (user != null) {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
+      
       if(mounted) { // Check if the widget is still in the tree
         showToast(message: 'Successfully signed in');
         Navigator.of(context).pushReplacement(
@@ -77,6 +83,11 @@ class _LoginPageState extends State<LoginPage> {
         final User? user = authResult.user;
 
         if (user != null) {
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
+
           if(mounted) { // Check if the widget is still in the tree
             showToast(message: 'Google sign in successful ');
             Navigator.of(context).pushReplacement(

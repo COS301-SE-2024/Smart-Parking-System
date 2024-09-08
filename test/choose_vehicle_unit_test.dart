@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_parking_system/components/vehicledetails/choose_vehicle.dart';
+import 'package:smart_parking_system/components/bookings/select_vehicle.dart';
 
 void main() {
   group('CarCard', () {
@@ -18,6 +18,7 @@ void main() {
             imagePath: imagePath,
             isSelected: isSelected,
             onSelect: () {},
+            licensePlate: 'TBG0T2GP'
           ),
         ),
       ));
@@ -42,6 +43,7 @@ void main() {
             imagePath: 'assets/default_logo.png',
             isSelected: isSelected,
             onSelect: onSelect,
+            licensePlate: 'TBG0T2GP'
           ),
         ),
       ));

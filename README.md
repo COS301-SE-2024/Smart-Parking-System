@@ -1,3 +1,4 @@
+
 ﻿<p align="center">
   <img src="https://github.com/COS301-SE-2024/Smart-Parking-System/blob/main/images/DaVinci/DaVinci_bg_removed.PNG" width="400">
 </p>
