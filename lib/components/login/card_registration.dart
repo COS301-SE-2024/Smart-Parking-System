@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/login/vehicle_registration.dart';
 
 class AddCardRegistrationPage extends StatelessWidget {
@@ -184,66 +185,11 @@ class AddCardRegistrationPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 60.0),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: addCardDetails,
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 20,
-                        ),
-                        backgroundColor: const Color(0xFF58C6A9),
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const CarRegistration(),
-                          ),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              endIndent: 10,
-                            ),
-                          ),
-                          Text(
-                            'Skip for now',
-                            style: TextStyle(
-                              color: Color(0xFF58C6A9),
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              indent: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  nextButtonWithSkip(
+                    displayText: 'Continue',
+                    action: addCardDetails,
+                    nextPage: const CarRegistration(),
+                    context: context
                   ),
                 ],
               ),

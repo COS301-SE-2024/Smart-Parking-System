@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/login/registration_successful.dart';
 
@@ -17,6 +18,22 @@ class _CarRegistrationState extends State<CarRegistration> {
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _colorController = TextEditingController();
   final TextEditingController _licenseController = TextEditingController();
+
+  Future<void> validateVehicleDetails() async {
+    // Validate Vehicle details
+    bool bValid = true;
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const SuccessionPage(),
+      ),
+    );
+
+    if (bValid) {
+      _register();
+    }
+  }
+    
 
   Future<void> _register() async {
     final String brand = _brandController.text;
@@ -255,74 +272,12 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // Add Vehicle Button
-                    ElevatedButton(
-                      onPressed: () {
-                        // Validate Vehicle details
-                        bool bValid = true;
-
-                        Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const SuccessionPage(),
-                                ),
-                              );
-                        if (bValid) {
-                          _register();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 150,
-                          vertical: 20,
-                        ),
-                        backgroundColor: const Color(0xFF58C6A9),
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    nextButtonWithSkip(
+                      displayText: 'Continue',
+                      action: validateVehicleDetails,
+                      nextPage: const SuccessionPage(),
+                      context: context
                     ),
-                    const SizedBox(height: 10), // Space between login button and Login with section
-                    Row(
-                      children: <Widget>[
-                        const Expanded(
-                          child: Divider(
-                            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                            thickness: 1, // Thickness of the lines
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const SuccessionPage(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                            'Skip for now',
-                            style:  TextStyle(fontSize: 13, color: Color(0xFF58C6A9)),
-                            ),
-                          ),
-                        ),
-                        const Expanded(
-                          child: Divider(
-                            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                            thickness: 1, // Thickness of the lines
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/components/help/support.dart';
 import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/notifications/notificationspage.dart';
@@ -17,16 +18,48 @@ class SideMenu extends StatelessWidget {
     return userDoc.get('username');
   }
 
+  Future<String?> getProfileImageUrl(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      return userDoc.get('profileImageUrl') as String?;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // Set isLoggedIn to false
+    if (!context.mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-    return FutureBuilder<String>(
-      future: user != null ? getUserName(user.uid) : Future.value(''),
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: user != null 
+        ? Future.wait([
+            getUserName(user.uid),
+            getProfileImageUrl(user.uid),
+          ]).then((results) => {
+            'username': results[0],
+            'profileImageUrl': results[1],
+          })
+        : Future.value({'username': 'Unknown User', 'profileImageUrl': null}),
+      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Show a loading spinner while waiting
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error loading data')); // Handle errors
         } else {
-          String userName = snapshot.data ?? 'Unknown User';
+          String userName = snapshot.data?['username'] ?? 'Unknown User';
+          String? profileImageUrl = snapshot.data?['profileImageUrl'];
+
           return Drawer(
             width: 240, // Set the width of the sidebar
             child: Container(
@@ -51,13 +84,17 @@ class SideMenu extends StatelessWidget {
                                 //   ),
                                 // );
                               },
-                              child: const CircleAvatar(
+                              child: CircleAvatar(
                                 radius: 30,
-                                backgroundColor: Colors.white,
-                                child: Icon(Icons.person, size: 40, color: Colors.grey),
+                                backgroundColor: Colors.grey,
+                                backgroundImage: profileImageUrl != null
+                                    ? NetworkImage(profileImageUrl)
+                                    : null,
+                                child: profileImageUrl == null
+                                    ? const Icon(Icons.person, size: 40, color: Colors.white)
+                                    : null,
                               ),
                             ),
-                            
                             IconButton(
                               icon: const Icon(Icons.close, color: Colors.white),
                               onPressed: () {
@@ -158,13 +195,7 @@ class SideMenu extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.white),
                     title: const Text('Logout', style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                        Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (_) => const LoginPage(),
-                              ),
-                            );
-                    },
+                    onTap: () => _logout(context),
                   ),
                 ],
               ),
@@ -174,5 +205,4 @@ class SideMenu extends StatelessWidget {
       },
     );
   }
-
 }
