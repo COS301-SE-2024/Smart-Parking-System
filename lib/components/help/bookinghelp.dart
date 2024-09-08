@@ -58,7 +58,9 @@ class Bookinghelp extends StatelessWidget {
                 'assets/help4.png',
                 'assets/help5.png',
                 'assets/help6.png',
-                'assets/help7.png'
+                'assets/help7.png',
+                'assets/help8.png',
+
               ],
               [
                 '1   Navigate to home page',
@@ -67,8 +69,8 @@ class Bookinghelp extends StatelessWidget {
                 '4   Pick a parking floor',
                 '5   Pick a row',
                 '6   Confirm booking',
-                '7   Confirm payment method',
-                '8   Confirm car',
+                '7   Confirm car',
+                '8   Confirm payment method',
               ],
             ),
             _buildQuestionBlock(
