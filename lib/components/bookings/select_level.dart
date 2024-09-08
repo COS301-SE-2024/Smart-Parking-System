@@ -3,6 +3,7 @@ import 'package:smart_parking_system/components/bookings/select_row.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class LevelSelectPage extends StatefulWidget {
   final String bookedAddress;
@@ -21,20 +22,6 @@ class Level {
 
   Level(this.level, this.slots);
 }
-
-  String extractSlotsAvailable(String slots) {
-    // Use a regular expression to match the first number
-    RegExp regex = RegExp(r'^\d+');
-    Match? match = regex.firstMatch(slots);
-    
-    if (match != null) {
-      String number = match.group(0)!;
-      return number;
-    }
-    
-    // Return a default value if no match is found
-    return "0";
-  }
 
 class _LevelSelectPageState extends State<LevelSelectPage> {
   String? selectedLevel;
@@ -84,7 +71,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
               String slots = levelDocument.get('slots') as String;
 
               // Calculate total price
-              int availableSlots = int.parse(extractSlotsAvailable(slots));
+              int availableSlots = extractSlotsAvailable(slots);
 
               // Add to levels list
               levels.add(Level(

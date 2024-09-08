@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 
 
@@ -15,6 +16,13 @@ class _SuccessionPageState extends State<SuccessionPage> {
   @override
   void initState() {
     super.initState();
+  }
+  void nextPage () {
+    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => const MainPage(),
+                      ),
+                    );
   }
 
    @override
@@ -51,28 +59,15 @@ class _SuccessionPageState extends State<SuccessionPage> {
                   ),
                 ),
                 const SizedBox(height: 60),
-                 ElevatedButton(
-                  onPressed: () {
+                nextButton(
+                  displayText: 'Finished', 
+                  action: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (_) => const MainPage(),
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 150,
-                      vertical: 20,
-                    ),
-                    backgroundColor: const Color(0xFF58C6A9),
-                  ),
-                  child: const Text(
-                    'Finished',
-                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
                 ),
               ],
             ),

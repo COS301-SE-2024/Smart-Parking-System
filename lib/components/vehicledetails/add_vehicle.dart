@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
@@ -109,9 +110,9 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
               ),
               child: Center(
                 child: Image.asset(
-                  'assets/Audio_r8.png', // Make sure this path is correct
-                  width: 150, // Adjust the image size as needed
-                  height: 150,
+                  'assets/racecarsketch.png', // Make sure this path is correct
+                  width: 200, // Adjust the image size as needed
+                  height: 200,
                   fit: BoxFit.contain, // This will ensure the image fits within the circle
                 ),
               ),
@@ -130,56 +131,39 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
                 ),
               ),
               child: Column(
-                  children: [
-                    ProfileField(
-                      label: 'Vehicle Brand',
-                      value: '',
-                      controller: _brandController,
-                    ),
-                    ProfileField(
-                      label: 'Vehicle Model',
-                      value: '',
-                      controller: _modelController,
-                    ),
-                    ProfileField(
-                      label: 'Color',
-                      value: '',
-                      controller: _colorController,
-                    ),
-                    ProfileField(
-                      label: 'License Number',
-                      value: '',
-                      controller: _licenseController,
-                    ),
-                    const SizedBox(height: 30,),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle add button
-                        _addVehicleDetails();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const ViewVehiclePage(),
-                          ),
-                        );
-                      },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF58C6A9),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 150,
-                        vertical: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
-                    child: const Text(
-                      'Add Vehicle',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),                  
+                children: [
+                  ProfileField(
+                    label: 'Vehicle Brand',
+                    value: '',
+                    controller: _brandController,
+                  ),
+                  ProfileField(
+                    label: 'Vehicle Model',
+                    value: '',
+                    controller: _modelController,
+                  ),
+                  ProfileField(
+                    label: 'Color',
+                    value: '',
+                    controller: _colorController,
+                  ),
+                  ProfileField(
+                    label: 'License Number',
+                    value: '',
+                    controller: _licenseController,
+                  ),
+                  const SizedBox(height: 30,),
+                  nextButton(
+                    displayText: 'Add Vehicle', 
+                    action: () {
+                      _addVehicleDetails();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const ViewVehiclePage(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

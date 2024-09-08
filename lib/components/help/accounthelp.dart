@@ -60,9 +60,9 @@ class Accounthelp extends StatelessWidget {
               context,
               'How do I change my email',
               [
-                'assets/help8.png',
                 'assets/help9.png',
-                'assets/help10.png'
+                'assets/help10.png',
+                'assets/help11.png',
               ],
               [
                 '1   Navigate to the "Settings" page',
