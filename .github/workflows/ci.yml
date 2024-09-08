@@ -12,6 +12,10 @@ on:
 jobs:
   build_flutter:
     runs-on: ubuntu-latest
+
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+
     strategy:
       matrix:
         flutter_version: [3.22.1]
@@ -26,6 +30,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+      
+      - name: Replace API key in google-services.json
+        run: dart run replace_api_key.dart
 
       - name: Build
         run: flutter build apk --debug
