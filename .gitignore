@@ -62,4 +62,3 @@ macos/Flutter/GeneratedPluginRegistrant.swift
 android/local.properties
 pubspec.lock
 android/app/src/main/res/values/values.xml
-android/app/src/main/res/values/strings.xml
