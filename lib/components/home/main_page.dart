@@ -8,6 +8,9 @@ import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.da
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:location/location.dart' as loc;
+import 'package:geolocator/geolocator.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 //Pages
 import 'package:smart_parking_system/components/bookings/select_zone.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -32,14 +35,16 @@ class Parking {
   final String price;
   final String slots;
   final String slotsAvailable;
-  final int minsToVenue;
+  final double latitude;
+  final double longitude;
 
   Parking(
     this.name,
     this.price,
     this.slots,
     this.slotsAvailable,
-    this.minsToVenue,
+    this.latitude,
+    this.longitude,
   );
 }
 
@@ -136,7 +141,8 @@ class _MainPageState extends State<MainPage> {
                   price,
                   slots,
                   '${extractSlotsAvailable(slots)} slots',
-                  5,                                                                            //Add distance to venue
+                  latitude,
+                  longitude,
                 );
                 _showParkingInfo();
               },
@@ -199,132 +205,161 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
-  void _showParkingInfo() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(20.0),
-          decoration: const BoxDecoration(
-            color: Color(0xFF35344A),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SingleChildScrollView(
-                child: Text(
-                  parking.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Divider(
-                color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-                thickness: 1, // Thickness of the lines
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Cost per hour :',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      // fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'R${parking.price} /Hr',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Spaces Available :',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      // fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    parking.slotsAvailable,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Distance to Venue :',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      // fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '${parking.minsToVenue} mins',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => ZoneSelectPage(bookedAddress: parking.name, price: double.parse(parking.price)),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF58C6A9),
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: const Text(
-                    'View Parking',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+  void _showParkingInfo() async {
+    double distanceInMeters = Geolocator.distanceBetween(
+      locationData!.latitude!,
+      locationData!.longitude!,
+      parking.latitude,
+      parking.longitude,
     );
+    
+    double distanceInKm = distanceInMeters / 1000;
+    String distanceString = distanceInKm < 1 
+      ? '${distanceInMeters.toStringAsFixed(0)} m' 
+      : '${distanceInKm.toStringAsFixed(1)} km';
+
+    String apiKey = dotenv.env['PLACES_API_KEY']!;
+    String url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric'
+        '&origins=${locationData!.latitude},${locationData!.longitude}'
+        '&destinations=${parking.latitude},${parking.longitude}'
+        '&key=$apiKey';
+
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      String duration = data['rows'][0]['elements'][0]['duration']['text'];
+
+      String distanceAndDurationString = '$duration ($distanceString)';
+
+      if (!mounted) return;
+
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: const BoxDecoration(
+              color: Color(0xFF35344A),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SingleChildScrollView(
+                  child: Text(
+                    parking.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Divider(
+                  color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+                  thickness: 1, // Thickness of the lines
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Cost per hour :',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'R${parking.price} /Hr',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Spaces Available :',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      parking.slotsAvailable,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Distance to Venue :',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      distanceAndDurationString,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => ZoneSelectPage(bookedAddress: parking.name, price: double.parse(parking.price), distanceAndDurationString: distanceAndDurationString,),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF58C6A9),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'View Parking',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      showToast(message: 'Failed to fetch duration');
+    }
   }
 
   @override
@@ -376,8 +411,16 @@ class _MainPageState extends State<MainPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF35344A),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Center(
                     child: GestureDetector(
@@ -397,9 +440,10 @@ class _MainPageState extends State<MainPage> {
                           decoration: const InputDecoration(
                             hintText: 'Where are you going?',
                             border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(Icons.search, color: Colors.grey),
                           ),
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
