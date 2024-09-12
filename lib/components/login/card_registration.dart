@@ -17,6 +17,33 @@ class AddCardRegistrationPage extends StatelessWidget {
     final TextEditingController bankController = TextEditingController();
 
     Future<void> addCardDetails() async {
+
+      if (cardNumberController.text.isEmpty ||
+          holderNameController.text.isEmpty ||
+          expiryController.text.isEmpty ||
+          cvvController.text.isEmpty ||
+          bankController.text.isEmpty) {
+        showToast(message: 'Please fill in all fields');
+        return;
+      }
+
+      if (cardNumberController.text.length != 16 || !RegExp(r'^[0-9]+$').hasMatch(cardNumberController.text)) {
+        showToast(message: 'Invalid card number. Please enter 16 digits.');
+        return;
+      }
+
+      // Validate expiry date format (MM/YY)
+      if (!RegExp(r'^(0[1-9]|1[0-2])/[0-9]{2}$').hasMatch(expiryController.text)) {
+        showToast(message: 'Invalid expiry date. Use MM/YY format.');
+        return;
+      }
+
+      // Validate CVV (should be 3 digits)
+      if (cvvController.text.length != 3 || !RegExp(r'^[0-9]+$').hasMatch(cvvController.text)) {
+        showToast(message: 'Invalid CVV. Please enter 3 digits.');
+        return;
+      }
+
       try {
         User? user = FirebaseAuth.instance.currentUser;
 
@@ -52,7 +79,8 @@ class AddCardRegistrationPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 40.0), // Space from the top
                   const Center(
