@@ -19,9 +19,41 @@ class _CarRegistrationState extends State<CarRegistration> {
   bool isLoading = false;
 
   Future<void> validateVehicleDetails() async {
-    // Validate Vehicle details
-    await _register();   
-    // showToast(message: 'Please fill in all fields');
+    // Check if all fields are filled
+    if (_brandController.text.isEmpty ||
+        _modelController.text.isEmpty ||
+        _colorController.text.isEmpty ||
+        _licenseController.text.isEmpty) {
+      showToast(message: 'Please fill in all fields');
+      return;
+    }
+
+    // Validate brand (assuming it should be alphabetic and possibly spaces)
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(_brandController.text)) {
+      showToast(message: 'Invalid brand name. Please use only letters and spaces.');
+      return;
+    }
+
+    // Validate model (assuming it can contain letters, numbers, and spaces)
+    if (!RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(_modelController.text)) {
+      showToast(message: 'Invalid model. Please use only letters, numbers, and spaces.');
+      return;
+    }
+
+    // Validate color (assuming it should be alphabetic and possibly spaces)
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(_colorController.text)) {
+      showToast(message: 'Invalid color. Please use only letters and spaces.');
+      return;
+    }
+
+    // Validate license plate (format may vary by country, this is a general example)
+    if (!RegExp(r'^[A-Z0-9]{1,8}$').hasMatch(_licenseController.text.toUpperCase())) {
+      showToast(message: 'Invalid license plate. Please use 1-8 letters and numbers.');
+      return;
+    }
+
+    // If all validations pass, proceed with registration
+    await _register();
   }
     
 
@@ -108,7 +140,6 @@ class _CarRegistrationState extends State<CarRegistration> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
-                    keyboardType: TextInputType.number,
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 10.0),
@@ -126,6 +157,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
