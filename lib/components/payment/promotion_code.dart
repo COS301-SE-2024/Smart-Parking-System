@@ -14,6 +14,7 @@ class PromotionCode extends StatefulWidget {
 
 class _OfferPageState extends State<PromotionCode> {
   int _selectedIndex = 0;
+  final Set<int> _appliedCouponIndices = {};
 
 
   final List<Map<String, String>> coupons = [
@@ -79,6 +80,7 @@ class _OfferPageState extends State<PromotionCode> {
                 itemCount: coupons.length,
                 itemBuilder: (context, index) {
                   final coupon = coupons[index];
+                  final isApplied = _appliedCouponIndices.contains(index);
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
@@ -128,27 +130,108 @@ class _OfferPageState extends State<PromotionCode> {
                                 ),
                                 const SizedBox(height: 20),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    // Handle apply action
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40.0),
+                                  onPressed: isApplied
+                                    ? null
+                                    : () {
+                                        // Handle apply action
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                              title: const Text(
+                                                'Confirm',
+                                                style: TextStyle(color: Colors.white), // Change title text color
+                                              ),
+                                              content: const Text(
+                                                'This coupon will be applied to your next booking',
+                                                style: TextStyle(color: Colors.white), // Change content text color
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the dialog
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text(
+                                                    'Confirm',
+                                                    style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop(); // Close the confirmation dialog
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return AlertDialog(
+                                                          backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                                          title: const Text(
+                                                            'Success!',
+                                                            style: TextStyle(color: Colors.white), // Change title text color
+                                                          ),
+                                                          content: const Text(
+                                                            'Coupon Applied Successfully.',
+                                                            style: TextStyle(color: Colors.white), // Change content text color
+                                                          ),
+                                                          actions: <Widget>[
+                                                            Center(
+                                                              child: TextButton(
+                                                                child: const Text(
+                                                                  'OK',
+                                                                  style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop(); // Close the success dialog
+                                                                  setState(() {
+                                                                     _appliedCouponIndices.add(index);
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    style: ButtonStyle(
+                                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(40.0),
+                                        ),
+                                      ),
+                                      padding: WidgetStateProperty.all<EdgeInsets>(
+                                        const EdgeInsets.symmetric(
+                                          horizontal: 50,
+                                          vertical: 0,
+                                        ),
+                                      ),
+                                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                        (Set<WidgetState> states) {
+                                          if (states.contains(WidgetState.disabled)) {
+                                            return const Color(0xFF58C6A9); // Light blue when disabled
+                                          }
+                                          return const Color(0xFF58C6A9); // Light blue when enabled
+                                        },
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 50,
-                                      vertical: 0,
+                                    child: Text(
+                                      isApplied ? 'Coupon Applied!' : 'Apply',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: isApplied ? Colors.white : Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                    backgroundColor: const Color(0xFF58C6A9),
-                                  ),
-                                  child: const Text(
-                                    'Apply',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
