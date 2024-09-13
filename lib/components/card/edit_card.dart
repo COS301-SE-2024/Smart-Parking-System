@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class EditCardPage extends StatefulWidget {
   final String cardId;
@@ -98,112 +99,166 @@ class EditCardPageState extends State<EditCardPage> {
                 child: Image.asset('assets/main_add_card.png'),
               ),
               const SizedBox(height: 20.0),
-              TextField(
-                controller: _cardNumberController,
-                decoration: const InputDecoration(
-                  labelText: 'Card Number',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _bankController,
-                decoration: const InputDecoration(
-                  labelText: 'Bank',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Holder Name',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _expiryController,
-                      decoration: const InputDecoration(
-                        labelText: 'Expiry Date (MM/YY)',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      maxLength: 5,
-                    ),
-                  ),
-                  const SizedBox(width: 20.0),
-                  Expanded(
-                    child: TextField(
-                      controller: _cvvController,
-                      decoration: const InputDecoration(
-                        labelText: 'CVV',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      maxLength: 3,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40.0),
               Center(
-                child: ElevatedButton(
-                  onPressed: _saveCardDetails,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 150,
-                      vertical: 20,
-                    ),
-                    backgroundColor: const Color(0xFF58C6A9),
-                  ),
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
-                ),
+                child: SizedBox(
+                  width: 500,
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _cardNumberController,
+                        decoration: const InputDecoration(
+                          labelText: 'Card Number',
+                          labelStyle: TextStyle(color: Colors.grey),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _bankController,
+                        decoration: const InputDecoration(
+                          labelText: 'Bank',
+                          labelStyle: TextStyle(color: Colors.grey),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Holder Name',
+                          labelStyle: TextStyle(color: Colors.grey),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 20.0),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _expiryController,
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                labelText: 'MM/YY',
+                                labelStyle: TextStyle(color: Colors.grey),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                counterStyle: TextStyle(color: Colors.grey),
+                              ),
+                              style: const TextStyle(color: Colors.white),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                _ExpiryDateInputFormatter(),
+                              ],
+                              maxLength: 5,
+                            ),
+                          ),
+                          const SizedBox(width: 120.0),
+                          Expanded(
+                            child: TextField(
+                              controller: _cvvController,
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                labelText: 'CVV',
+                                labelStyle: TextStyle(color: Colors.grey),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                counterStyle: TextStyle(color: Colors.grey),
+                              ),
+                              style: const TextStyle(color: Colors.white),
+                              keyboardType: TextInputType.number,
+                              maxLength: 3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40.0),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _saveCardDetails,
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 150,
+                              vertical: 20,
+                            ),
+                            backgroundColor: const Color(0xFF58C6A9),
+                          ),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                )
               ),
+              
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ExpiryDateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var text = newValue.text;
+
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    var buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      var nonZeroIndex = i + 1;
+      if (nonZeroIndex % 2 == 0 && nonZeroIndex != text.length) {
+        buffer.write('/');
+      }
+    }
+
+    var string = buffer.toString();
+    return newValue.copyWith(
+      text: string,
+      selection: TextSelection.collapsed(offset: string.length),
     );
   }
 }
