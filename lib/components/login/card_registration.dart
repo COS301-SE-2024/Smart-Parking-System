@@ -268,7 +268,7 @@ class _AddCardRegistrationPageState extends State<AddCardRegistrationPage> {
                           )
                         : const Text(
                         'Continue',
-                        style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
                   const SizedBox(height: 20.0),

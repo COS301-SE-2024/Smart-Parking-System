@@ -124,7 +124,23 @@ class _CarRegistrationState extends State<CarRegistration> {
                       ),
                     ),
                   ),
-                
+                  const SizedBox(height: 30.0),
+                  Container(
+                    width: 200, // Adjust the size as needed
+                    height: 200, // Make sure width and height are equal for a perfect circle
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF25253d), // The color you specified
+                      shape: BoxShape.circle, // This makes the container perfectly round
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/racecarsketch.png', // Make sure this path is correct
+                        width: 200, // Adjust the image size as needed
+                        height: 200,
+                        fit: BoxFit.contain, // This will ensure the image fits within the circle
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 60.0),
                   TextField(
                     controller: _brandController,
@@ -225,7 +241,7 @@ class _CarRegistrationState extends State<CarRegistration> {
                           )
                         : const Text(
                         'Continue',
-                        style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w400),
                       ),
                     ),
                   const SizedBox(height: 20.0),
