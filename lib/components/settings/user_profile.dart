@@ -241,32 +241,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         controller: _phoneController,
                       ),
                       const SizedBox(height: 40),
-                      Container(
-                        width: double.infinity,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF58C6A9), Color(0xFF4CAF93)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(28),
-                        ),
+                      Center(
                         child: ElevatedButton(
                           onPressed: _updateUserProfile,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
+                              borderRadius: BorderRadius.circular(40.0),
                             ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 100,
+                              vertical: 15,
+                            ),
+                            backgroundColor: const Color.fromRGBO(88, 198, 169, 1),
                           ),
                           child: const Text(
                             'Save',
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                               color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),

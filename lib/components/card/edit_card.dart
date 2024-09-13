@@ -210,14 +210,18 @@ class EditCardPageState extends State<EditCardPage> {
                               borderRadius: BorderRadius.circular(40.0),
                             ),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 150,
-                              vertical: 20,
+                              horizontal: 100,
+                              vertical: 15,
                             ),
-                            backgroundColor: const Color(0xFF58C6A9),
+                            backgroundColor: const Color.fromRGBO(88, 198, 169, 1),
                           ),
                           child: const Text(
                             'Save',
-                            style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
