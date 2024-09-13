@@ -649,7 +649,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: Container(
+              child: SizedBox(
                 width: 500,
                 child: ExpansionTile(
                   title: const Text(
