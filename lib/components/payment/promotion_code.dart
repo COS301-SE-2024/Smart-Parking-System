@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -15,18 +16,30 @@ class PromotionCode extends StatefulWidget {
 class _OfferPageState extends State<PromotionCode> {
   int _selectedIndex = 0;
   final Set<int> _appliedCouponIndices = {};
+  List<Map<String, dynamic>> coupons = [];
 
+  @override
+  void initState() {
+    super.initState();
+    fetchCoupons();
+  }
 
-  final List<Map<String, String>> coupons = [
-    {
-      'amountOff': 'ZAR 40 Off',
-      'description': 'Get R40 off your next booking',
-    },
-    {
-      'amountOff': 'ZAR 20 Off',
-      'description': 'Get R20 off your next booking',
-    },
-  ];
+  Future<void> fetchCoupons() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('coupons').get();
+    final List<Map<String, dynamic>> fetchedCoupons = snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        'amountOff': doc['amount'],
+        'description': 'Get R${doc['amount']} off your next booking',
+        'applied': doc['applied'],
+        'userId': doc['userId'],
+      };
+    }).toList();
+
+    setState(() {
+      coupons = fetchedCoupons;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +93,7 @@ class _OfferPageState extends State<PromotionCode> {
                 itemCount: coupons.length,
                 itemBuilder: (context, index) {
                   final coupon = coupons[index];
-                  final isApplied = _appliedCouponIndices.contains(index);
+                  final isApplied = coupon['applied'];
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
@@ -114,7 +127,7 @@ class _OfferPageState extends State<PromotionCode> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  coupon['amountOff']!,
+                                  'ZAR R${coupon['amountOff'].toString()} OFF',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -122,7 +135,7 @@ class _OfferPageState extends State<PromotionCode> {
                                 ),
                                 const SizedBox(height: 3),
                                 Text(
-                                  coupon['description']!,
+                                  coupon['description'],
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w300,
@@ -187,7 +200,12 @@ class _OfferPageState extends State<PromotionCode> {
                                                                 onPressed: () {
                                                                   Navigator.of(context).pop(); // Close the success dialog
                                                                   setState(() {
-                                                                     _appliedCouponIndices.add(index);
+                                                                    _appliedCouponIndices.add(index);
+                                                                    coupons[index]['applied'] = true;
+                                                                  });
+                                                                  // Update Firestore
+                                                                  FirebaseFirestore.instance.collection('coupons').doc(coupon['id']).update({
+                                                                    'applied': true,
                                                                   });
                                                                 },
                                                               ),
@@ -203,35 +221,35 @@ class _OfferPageState extends State<PromotionCode> {
                                           },
                                         );
                                       },
-                                    style: ButtonStyle(
-                                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(40.0),
-                                        ),
-                                      ),
-                                      padding: WidgetStateProperty.all<EdgeInsets>(
-                                        const EdgeInsets.symmetric(
-                                          horizontal: 50,
-                                          vertical: 0,
-                                        ),
-                                      ),
-                                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                        (Set<WidgetState> states) {
-                                          if (states.contains(WidgetState.disabled)) {
-                                            return const Color(0xFF58C6A9); // Light blue when disabled
-                                          }
-                                          return const Color(0xFF58C6A9); // Light blue when enabled
-                                        },
+                                  style: ButtonStyle(
+                                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(40.0),
                                       ),
                                     ),
-                                    child: Text(
-                                      isApplied ? 'Coupon Applied!' : 'Apply',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: isApplied ? Colors.white : Colors.white,
-                                        fontWeight: FontWeight.w500,
+                                    padding: WidgetStateProperty.all<EdgeInsets>(
+                                      const EdgeInsets.symmetric(
+                                        horizontal: 50,
+                                        vertical: 0,
                                       ),
                                     ),
+                                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                      (Set<WidgetState> states) {
+                                        if (states.contains(WidgetState.disabled)) {
+                                          return const Color(0xFF58C6A9); // Light blue when disabled
+                                        }
+                                        return const Color(0xFF58C6A9); // Light blue when enabled
+                                      },
+                                    ),
+                                  ),
+                                  child: Text(
+                                    isApplied ? 'Coupon Applied!' : 'Apply',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: isApplied ? Colors.white : Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -299,8 +317,7 @@ class _OfferPageState extends State<PromotionCode> {
           ],
         ),
       ),
-      
-       bottomNavigationBar: Theme(
+      bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           canvasColor: const Color(0xFF35344A),
         ),
