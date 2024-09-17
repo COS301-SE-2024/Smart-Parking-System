@@ -148,9 +148,9 @@ class _OfferPageState extends State<OfferPage> {
                                                     'Confirm',
                                                     style: TextStyle(color: Colors.white), // Change title text color
                                                   ),
-                                                  content: const Text(
-                                                    'This coupon will be applied to your next booking',
-                                                    style: TextStyle(color: Colors.white), // Change content text color
+                                                  content: Text(
+                                                    'This coupon will apply R${coupon['amountOff'].toString()} OFF to your next booking.',
+                                                    style: const TextStyle(color: Colors.white), // Change content text color
                                                   ),
                                                   actions: <Widget>[
                                                     TextButton(
@@ -248,6 +248,79 @@ class _OfferPageState extends State<OfferPage> {
                                       ElevatedButton(
                                         onPressed: () {
                                           // Handle cancel action
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                                title: const Text(
+                                                  'Confirm',
+                                                  style: TextStyle(color: Colors.white), // Change title text color
+                                                ),
+                                                content: Text(
+                                                  'Cancelling this coupon will no longer apply R${coupon['amountOff']} OFF to your next booking.',
+                                                  style: const TextStyle(color: Colors.white), // Change content text color
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: const Text(
+                                                      'Cancel',
+                                                      style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(); // Close the dialog
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: const Text(
+                                                      'Confirm',
+                                                      style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(); // Close the confirmation dialog
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return AlertDialog(
+                                                            backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                                            title: const Text(
+                                                              'Success!',
+                                                              style: TextStyle(color: Colors.white), // Change title text color
+                                                            ),
+                                                            content: const Text(
+                                                              'Coupon Cancelled Successfully.',
+                                                              style: TextStyle(color: Colors.white), // Change content text color
+                                                            ),
+                                                            actions: <Widget>[
+                                                              Center(
+                                                                child: TextButton(
+                                                                  child: const Text(
+                                                                    'OK',
+                                                                    style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    Navigator.of(context).pop(); // Close the success dialog
+                                                                    setState(() {
+                                                                      _appliedCouponIndices.remove(index);
+                                                                      coupons[index]['applied'] = false;
+                                                                    });
+                                                                    // Update Firestore
+                                                                    FirebaseFirestore.instance.collection('coupons').doc(coupon['id']).update({
+                                                                      'applied': false,
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
