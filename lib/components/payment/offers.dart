@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class OfferPage extends StatefulWidget {
@@ -19,20 +20,26 @@ class _OfferPageState extends State<OfferPage> {
   }
 
   Future<void> fetchCoupons() async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('coupons').get();
-    final List<Map<String, dynamic>> fetchedCoupons = snapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        'amountOff': doc['amount'],
-        'description': 'Get R${doc['amount']} off your next booking',
-        'applied': doc['applied'],
-        'userId': doc['userId'],
-      };
-    }).toList();
+    final user = FirebaseAuth.instance.currentUser; // Get the current user
+    if (user != null) {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('coupons')
+          .where('userId', isEqualTo: user.uid) // Filter by userId
+          .get();
+      final List<Map<String, dynamic>> fetchedCoupons = snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          'amountOff': doc['amount'],
+          'description': 'Get R${doc['amount']} off your next booking',
+          'applied': doc['applied'],
+          'userId': doc['userId'],
+        };
+      }).toList();
 
-    setState(() {
-      coupons = fetchedCoupons;
-    });
+      setState(() {
+        coupons = fetchedCoupons;
+      });
+    }
   }
 
   @override
