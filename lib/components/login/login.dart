@@ -33,6 +33,24 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
     final String email = _emailController.text;
 
+    // Define the regex pattern for an email address
+    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp emailRegex = RegExp(emailPattern);
+
+    // Check if the strings match the regex pattern
+    bool isValidEmail = emailRegex.hasMatch(email);
+
+    if(!isValidEmail){showToast(message: "Invalid email address"); return;}
+
+
+
+
+
+
+
+
+
+
     setState((){
       _isLoading = true;
     });
@@ -51,10 +69,12 @@ class _LoginPageState extends State<LoginPage> {
       
       if(mounted) { // Check if the widget is still in the tree
         showToast(message: 'Successfully signed in');
-        Navigator.of(context).pushReplacement(
+        Navigator.pushAndRemoveUntil(
+          context,
           MaterialPageRoute(
             builder: (context) => const MainPage(),
           ),
+          (Route<dynamic> route) => false,
         );
       }
     } else {
@@ -90,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
 
           if(mounted) { // Check if the widget is still in the tree
             showToast(message: 'Google sign in successful ');
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const MainPage(),
               ),

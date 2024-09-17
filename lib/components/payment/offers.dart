@@ -25,7 +25,7 @@ class _OfferPageState extends State<OfferPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // Navigator.of(context).pushReplacement(
+                      // Navigator.of(context).push(
                       //   MaterialPageRoute(
                       //     builder: (_) => const ConfirmPaymentPage(),
                       //   ),

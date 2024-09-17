@@ -164,7 +164,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                   //     icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
                   //     onPressed: () {
                   //       // Add new vehicle logic here
-                  //       Navigator.of(context).pushReplacement(
+                  //       Navigator.of(context).push(
                   //         MaterialPageRoute(
                   //           builder: (_) => const SelectAddVehicle(),
                   //         ),
@@ -182,7 +182,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                           child: IconButton(
                             icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
                             onPressed: () {
-                              Navigator.of(context).pushReplacement(
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => const SelectAddVehicle(),
                                 ),

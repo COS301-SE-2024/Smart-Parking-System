@@ -91,7 +91,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // Navigator.of(context).pushReplacement(
+                      // Navigator.of(context).push(
                       //     MaterialPageRoute(
                       //       builder: (_) => const BookingPage(),
                       //     ),

@@ -32,7 +32,7 @@ class AddCardRegistrationPage extends StatelessWidget {
 
           showToast(message: 'Card Added Successfully!');
           // ignore: use_build_context_synchronously
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const CarRegistration(),
             ),

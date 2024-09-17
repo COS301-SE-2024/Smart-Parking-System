@@ -68,7 +68,7 @@ class _SignupPageState extends State<SignupPage> {
 
           if(mounted) { // Check if the widget is still in the tree
             showToast(message: 'Successfully signed up');
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const AddCardRegistrationPage(),
               ),
@@ -111,7 +111,7 @@ class _SignupPageState extends State<SignupPage> {
         );
 
         if (mounted) { // Check if the widget is still in the tree before navigating
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => VerificationPage(user: user, email: email),
             )

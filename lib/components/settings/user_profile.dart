@@ -83,7 +83,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         showToast(message: 'Profile Updated Successfully!');
         if (mounted) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const SettingsPage(),
             ),

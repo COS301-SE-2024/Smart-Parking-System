@@ -70,7 +70,7 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => const SettingsPage(),
                           ),
@@ -157,7 +157,7 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
                     displayText: 'Add Vehicle', 
                     action: () {
                       _addVehicleDetails();
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => const ViewVehiclePage(),
                         ),

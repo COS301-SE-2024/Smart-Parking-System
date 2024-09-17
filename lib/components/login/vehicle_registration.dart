@@ -23,7 +23,7 @@ class _CarRegistrationState extends State<CarRegistration> {
     // Validate Vehicle details
     bool bValid = true;
 
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const SuccessionPage(),
       ),
@@ -55,7 +55,7 @@ class _CarRegistrationState extends State<CarRegistration> {
 
         showToast(message: 'Vehicle Added Successfully!');
         // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const SuccessionPage(),
           ),

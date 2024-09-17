@@ -123,7 +123,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => const ViewVehiclePage(),
                           ),

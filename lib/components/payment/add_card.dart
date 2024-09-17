@@ -33,7 +33,7 @@ class AddCardPageState extends State<AddCardPage> {
         });
 
         if (mounted) {  // Check if the widget is still mounted
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => const PaymentMethodPage(),
             ),
@@ -73,7 +73,7 @@ class AddCardPageState extends State<AddCardPage> {
                       child: IconButton(
                         icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
                         onPressed: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => const PaymentMethodPage(),
                             ),
