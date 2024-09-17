@@ -35,13 +35,28 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
         String imageDirector;
         switch (data['vehicleBrand']?.toLowerCase()) {
           case 'vw':
-            imageDirector = 'assets/VW_Logo.png';
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FVW_Logo.png?alt=media&token=f3dcb770-eafe-44d4-ba83-12dcffd93094';
             break;
           case 'audi':
-            imageDirector = 'assets/Audi_Logo.png';
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FAudi_Logo.png?alt=media&token=ae374933-220d-46a9-b3bb-7d92334eb0a9';
+            break;
+          case 'bmw':
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FBMW_Logo.png?alt=media&token=26622a31-0ed6-44fd-9c05-b30ae5b34f2d';
+            break;
+          case 'ford':
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FFord_Logo.png?alt=media&token=2a544019-af34-4871-b4fa-db433f662f55';
+            break;
+          case 'suzuki':
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
+            break;
+          case 'toyota':
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
+            break;
+          case 'mazda':
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FMazda_Logo.png?alt=media&token=61b5dc0a-5956-4c7d-917a-4be462ce35fd';
             break;
           default:
-            imageDirector = 'assets/default_logo.png'; // You might want to have a default logo
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2Fdefault_logo.png?alt=media&token=735c5077-5c11-498c-9d24-5481ba932e99'; // You might want to have a default logo
         }
         
         // Add the imageDirector to the data map
@@ -228,7 +243,7 @@ class CarCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Image.asset(
+                  Image.network(
                     imagePath!,
                     // width: 120,
                     height: 80,
@@ -246,7 +261,7 @@ class CarCard extends StatelessWidget {
                       // Edit button logic here
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => EditVehiclePage(brand: carName!, model: carType!, color: carColor!, license: lisenseNumber!, vehicleId: vehicleId ),
+                          builder: (_) => EditVehiclePage(brand: carName!, model: carType!, color: carColor!, license: lisenseNumber!, vehicleId: vehicleId, image: imagePath! ),
                         ),
                       );
                     },
