@@ -132,114 +132,144 @@ class _OfferPageState extends State<OfferPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                ElevatedButton(
-                                  onPressed: isApplied
-                                    ? null
-                                    : () {
-                                        // Handle apply action
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              backgroundColor: const Color(0xFF35344A), // Change dialog background color
-                                              title: const Text(
-                                                'Confirm',
-                                                style: TextStyle(color: Colors.white), // Change title text color
-                                              ),
-                                              content: const Text(
-                                                'This coupon will be applied to your next booking',
-                                                style: TextStyle(color: Colors.white), // Change content text color
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: const Text(
-                                                    'Cancel',
-                                                    style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop(); // Close the dialog
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: const Text(
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: isApplied
+                                        ? null
+                                        : () {
+                                            // Handle apply action
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                                  title: const Text(
                                                     'Confirm',
-                                                    style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                    style: TextStyle(color: Colors.white), // Change title text color
                                                   ),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop(); // Close the confirmation dialog
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        return AlertDialog(
-                                                          backgroundColor: const Color(0xFF35344A), // Change dialog background color
-                                                          title: const Text(
-                                                            'Success!',
-                                                            style: TextStyle(color: Colors.white), // Change title text color
-                                                          ),
-                                                          content: const Text(
-                                                            'Coupon Applied Successfully.',
-                                                            style: TextStyle(color: Colors.white), // Change content text color
-                                                          ),
-                                                          actions: <Widget>[
-                                                            Center(
-                                                              child: TextButton(
-                                                                child: const Text(
-                                                                  'OK',
-                                                                  style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
-                                                                ),
-                                                                onPressed: () {
-                                                                  Navigator.of(context).pop(); // Close the success dialog
-                                                                  setState(() {
-                                                                    _appliedCouponIndices.add(index);
-                                                                    coupons[index]['applied'] = true;
-                                                                  });
-                                                                  // Update Firestore
-                                                                  FirebaseFirestore.instance.collection('coupons').doc(coupon['id']).update({
-                                                                    'applied': true,
-                                                                  });
-                                                                },
+                                                  content: const Text(
+                                                    'This coupon will be applied to your next booking',
+                                                    style: TextStyle(color: Colors.white), // Change content text color
+                                                  ),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: const Text(
+                                                        'Cancel',
+                                                        style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // Close the dialog
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text(
+                                                        'Confirm',
+                                                        style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // Close the confirmation dialog
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return AlertDialog(
+                                                              backgroundColor: const Color(0xFF35344A), // Change dialog background color
+                                                              title: const Text(
+                                                                'Success!',
+                                                                style: TextStyle(color: Colors.white), // Change title text color
                                                               ),
-                                                            ),
-                                                          ],
+                                                              content: const Text(
+                                                                'Coupon Applied Successfully.',
+                                                                style: TextStyle(color: Colors.white), // Change content text color
+                                                              ),
+                                                              actions: <Widget>[
+                                                                Center(
+                                                                  child: TextButton(
+                                                                    child: const Text(
+                                                                      'OK',
+                                                                      style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      Navigator.of(context).pop(); // Close the success dialog
+                                                                      setState(() {
+                                                                        _appliedCouponIndices.add(index);
+                                                                        coupons[index]['applied'] = true;
+                                                                      });
+                                                                      // Update Firestore
+                                                                      FirebaseFirestore.instance.collection('coupons').doc(coupon['id']).update({
+                                                                        'applied': true,
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
                                                         );
                                                       },
-                                                    );
-                                                  },
-                                                ),
-                                              ],
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
                                           },
-                                        );
-                                      },
-                                  style: ButtonStyle(
-                                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(40.0),
+                                      style: ButtonStyle(
+                                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(40.0),
+                                          ),
+                                        ),
+                                        padding: WidgetStateProperty.all<EdgeInsets>(
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 0,
+                                          ),
+                                        ),
+                                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                                          (Set<WidgetState> states) {
+                                            if (states.contains(WidgetState.disabled)) {
+                                              return const Color(0xFF58C6A9); // Light blue when disabled
+                                            }
+                                            return const Color(0xFF58C6A9); // Light blue when enabled
+                                          },
+                                        ),
+                                      ),
+                                      child: Text(
+                                        isApplied ? 'Coupon Applied!' : 'Apply',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: isApplied ? Colors.white : Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                    padding: WidgetStateProperty.all<EdgeInsets>(
-                                      const EdgeInsets.symmetric(
-                                        horizontal: 50,
-                                        vertical: 0,
+                                    const SizedBox(width: 10),
+                                    if (isApplied)
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Handle cancel action
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(40.0),
+                                            side: const BorderSide(color: Colors.white),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 0,
+                                          ),
+                                          backgroundColor: const Color(0xFF35344A),
+                                        ),
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                      (Set<WidgetState> states) {
-                                        if (states.contains(WidgetState.disabled)) {
-                                          return const Color(0xFF58C6A9); // Light blue when disabled
-                                        }
-                                        return const Color(0xFF58C6A9); // Light blue when enabled
-                                      },
-                                    ),
-                                  ),
-                                  child: Text(
-                                    isApplied ? 'Coupon Applied!' : 'Apply',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: isApplied ? Colors.white : Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  ],
                                 ),
                               ],
                             ),
