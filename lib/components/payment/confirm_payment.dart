@@ -110,6 +110,18 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'notificationTime': notificationTimeUtc,
         });
 
+        if (couponsApplied) {
+          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+              .collection('coupons')
+              .where('userId', isEqualTo: user.uid)
+              .where('applied', isEqualTo: true)
+              .get();
+
+          for (var doc in querySnapshot.docs) {
+            await doc.reference.delete();
+          }
+        }
+
         showToast(message: 'Booked Successfully!');
         _makeNotifications();
         // ignore: use_build_context_synchronously

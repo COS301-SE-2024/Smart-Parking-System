@@ -894,7 +894,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  '${activesession.rate}/Hr',
+                  activesession.rate,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
