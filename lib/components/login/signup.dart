@@ -122,7 +122,6 @@ class _SignupPageState extends State<SignupPage> {
           }
         }
       } else {
-        // ignore: avoid_print
         showToast(message: 'An Error Occured');
       }
     } catch (e) {

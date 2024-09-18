@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -20,20 +21,38 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
   final TextEditingController _licenseController = TextEditingController();
 
   Future<void> _addVehicleDetails() async {
+    final String brand = _brandController.text; 
+    final String model = _modelController.text;
+    final String color = _colorController.text;
+    final String license = _licenseController.text;
+
+    if(!isValidString(brand, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Brand"); return;}
+    if(!isValidString(model, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid Model"); return;}
+    if(!isValidString(color, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Color"); return;}
+    if(!isValidString(license, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid License"); return;}
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
         await FirebaseFirestore.instance.collection('vehicles').add({
-          'licenseNumber': _licenseController.text,
-          'vehicleBrand': _brandController.text,
-          'vehicleColor': _colorController.text,
-          'vehicleModel': _modelController.text,
-          'userId': user.uid,
+          'userId': user.uid, // Add the userId field
+          'vehicleBrand': brand,
+          'vehicleModel': model,
+          'vehicleColor': color,
+          'licenseNumber': license,
         });
       }
     } catch (e) {
       showToast(message: 'Error: $e');
+    }
+    
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const ViewVehiclePage(),
+        ),
+      );
     }
   }
 
@@ -157,11 +176,6 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
                     displayText: 'Add Vehicle', 
                     action: () {
                       _addVehicleDetails();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const ViewVehiclePage(),
-                        ),
-                      );
                     },
                   ),
                 ],

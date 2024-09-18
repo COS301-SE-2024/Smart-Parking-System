@@ -44,15 +44,17 @@ class _CarRegistrationState extends State<CarRegistration> {
         });
 
         showToast(message: 'Vehicle Added Successfully!');
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const SuccessionPage(),
-          ),
-        );
       }
     } catch (e) {
       showToast(message: 'Error: $e');
+    }
+    
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SuccessionPage(),
+        ),
+      );
     }
   }
 
