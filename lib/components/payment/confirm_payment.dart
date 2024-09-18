@@ -88,6 +88,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
       final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
+      double finalPrice = ((totalPrice! - discountedPrice) < 0 ? 0.00 : totalPrice! - discountedPrice);
+
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
           'userId': user.uid,
@@ -97,7 +99,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'time': startTime,
           'date': bookingDate,
           'duration': widget.selectedDuration,
-          'price': widget.price,
+          'price': finalPrice,
           'address': widget.bookedAddress,
           'disabled': widget.selectedDisabled,
           'vehicleId': widget.vehicleId,
@@ -678,7 +680,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         ),
                         if (couponsApplied) ...[
                           TextSpan(
-                            text: 'ZAR ${widget.price * widget.selectedDuration}\n',
+                            text: 'ZAR $totalPrice\n',
                             style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 20,

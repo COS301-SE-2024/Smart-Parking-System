@@ -150,7 +150,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             session.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
+            'R ${(bookingData['price']).toInt()}',
             session.address,
             session.zone,
             session.level,
@@ -247,7 +247,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           double bookedDuration = document.get('duration') as double;
 
           // Calculate total price
-          int totalPrice = (bookedPrice * bookedDuration).toInt();
+          int totalPrice = bookedPrice.toInt();
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
