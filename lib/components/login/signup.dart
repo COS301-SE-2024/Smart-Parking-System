@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/login/card_registration.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
@@ -87,6 +88,11 @@ class _SignupPageState extends State<SignupPage> {
     final String username = _usernameController.text;
     final String email = _emailController.text;
     final String phoneNumber = _noController.text;
+    
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
+    if(!isValidString(password, r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')){showToast(message: "Invalid password:\n\nAt least 1 uppercase letter\nAt least 1 lowercase letter\nAt least 1 number\nAt least 1 special character (!@#\$%^&*)\nA minimum length of 8"); return;}
+    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); return;}
+    if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); return;}
 
     setState((){
       _isLoading = true;
@@ -161,20 +167,6 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                   ),
-                  // // Edit Icon
-                  // const Positioned(
-                  //   right: 0,
-                  //   bottom: 100,
-                  //   child: CircleAvatar(
-                  //     radius: 15,
-                  //     backgroundColor: Colors.white,
-                  //     child: Icon(
-                  //       Icons.edit,
-                  //       size: 15,
-                  //       color: Colors.black,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
               const SizedBox(height: 20), // Space between logo and container

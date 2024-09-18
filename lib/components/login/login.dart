@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
@@ -33,23 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
     final String email = _emailController.text;
 
-    // Define the regex pattern for an email address
-    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    RegExp emailRegex = RegExp(emailPattern);
-
-    // Check if the strings match the regex pattern
-    bool isValidEmail = emailRegex.hasMatch(email);
-
-    if(!isValidEmail){showToast(message: "Invalid email address"); return;}
-
-
-
-
-
-
-
-
-
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
 
     setState((){
       _isLoading = true;
