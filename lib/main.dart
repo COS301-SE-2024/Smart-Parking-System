@@ -20,7 +20,7 @@ Future<void> main() async {
   //dotenv.env['API_KEY']!
   if (kIsWeb) {
     await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options:  FirebaseOptions(
         apiKey: dotenv.env['API_KEY']!,
         appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
         messagingSenderId: "808791551084",
@@ -60,3 +60,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
