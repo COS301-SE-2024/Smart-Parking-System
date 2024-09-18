@@ -46,7 +46,7 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
     } catch (e) {
       showToast(message: 'Error: $e');
     }
-    
+
     if (mounted) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -56,17 +56,9 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
     }
   }
 
-  // void getInformation(){
-  //   _brandController.text = 'VW';
-  //   _colorController.text = 'Blue';
-  //   _licenseController.text = 'TX029GP';
-  //   _modelController.text = 'Citi Golf';
-  // }
-
   @override
   void initState() {
     super.initState();
-    // getInformation();
   }
 
   
