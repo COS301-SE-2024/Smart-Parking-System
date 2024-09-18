@@ -188,8 +188,8 @@ class SideMenu extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0),
                     child: Image.asset(
-                      'assets/logo.jpg', // Path to the image asset
-                      height: 200, // Adjust height as needed
+                      'assets/logo_small.png', // Path to the image asset
+                      height: 100, // Adjust height as needed
                     ),
                   ),
                   ListTile(
