@@ -160,7 +160,6 @@ class _OfferPageState extends State<PromotionCode> {
                 },
               ),
             ),
-            const SizedBox(height: 30),
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFF2A4037),
