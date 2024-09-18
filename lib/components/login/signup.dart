@@ -84,6 +84,10 @@ class _SignupPageState extends State<SignupPage> {
   }
    
   Future<void> verification() async {
+    setState((){
+      _isLoading = true;
+    });
+
     final String password = _passwordController.text;
     final String username = _usernameController.text;
     final String email = _emailController.text;
@@ -94,39 +98,39 @@ class _SignupPageState extends State<SignupPage> {
     if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); return;}
     if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); return;}
 
-    setState((){
-      _isLoading = true;
-    });
+    try{
+      final User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
-    final User? user = await _auth.signUpWithEmailAndPassword(email, password);
+      if (user != null) {
+        if(mounted) { // Check if the widget is still in the tree
+          final firestore = FirebaseFirestore.instance;
 
-    setState((){
-      _isLoading = false;
-    });
-
-    if (user != null) {
-      if(mounted) { // Check if the widget is still in the tree
-        final firestore = FirebaseFirestore.instance;
-
-        await firestore.collection('users').doc(user.uid).set(
-          {
-            'username': username,
-            'email': email,
-            'phoneNumber': phoneNumber,
-          }
-        );
-
-        if (mounted) { // Check if the widget is still in the tree before navigating
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => VerificationPage(user: user, email: email),
-            )
+          await firestore.collection('users').doc(user.uid).set(
+            {
+              'username': username,
+              'email': email,
+              'phoneNumber': phoneNumber,
+            }
           );
+
+          if (mounted) { // Check if the widget is still in the tree before navigating
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => VerificationPage(user: user, email: email),
+              )
+            );
+          }
         }
+      } else {
+        // ignore: avoid_print
+        showToast(message: 'An Error Occured');
       }
-    } else {
-      // ignore: avoid_print
-      showToast(message: 'An Error Occured');
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
     
   }
