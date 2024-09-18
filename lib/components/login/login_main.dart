@@ -34,13 +34,13 @@ class LoginMainPageState extends State<LoginMainPage> {
     if (!mounted) return;
 
     if (isLoggedIn) {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const MainPage(), // Replace with your main page
         ),
       );
     } else {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const LoginPage(),
         ),
@@ -95,7 +95,7 @@ class LoginMainPageState extends State<LoginMainPage> {
                 // Sign Up Button
                 OutlinedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const SignupPage(),
                       ),

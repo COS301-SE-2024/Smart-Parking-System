@@ -54,7 +54,7 @@ class _PaymentSuccessionPageState extends State<PaymentSuccessionPage> {
                 nextButton(
                   displayText: 'Finished', 
                   action: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const ParkingHistoryPage(),
                       ),
