@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
@@ -185,9 +186,14 @@ class AddCardRegistrationPage extends StatelessWidget {
                             ),
                             counterStyle: TextStyle(color: Colors.grey),
                           ),
-                          keyboardType: TextInputType.number,
+                          style: const TextStyle(color: Colors.white),
+                          keyboardType: TextInputType.number,      
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            _ExpiryDateInputFormatter(),
+                          ],
                           maxLength: 5,
-                          style: const TextStyle(color: Colors.white)
+                    
                         ),
                       ),
                       const SizedBox(width: 120.0),
@@ -227,6 +233,35 @@ class AddCardRegistrationPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ExpiryDateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var text = newValue.text;
+
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    var buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      var nonZeroIndex = i + 1;
+      if (nonZeroIndex % 2 == 0 && nonZeroIndex != text.length) {
+        buffer.write('/');
+      }
+    }
+
+    var string = buffer.toString();
+    return newValue.copyWith(
+      text: string,
+      selection: TextSelection.collapsed(offset: string.length),
     );
   }
 }
