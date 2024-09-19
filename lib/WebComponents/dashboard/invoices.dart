@@ -46,11 +46,6 @@ class Invoices extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          Image.network(
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/3d7e792e00595e273cdf8cd13900fc04be14ef8d42d179f6ca10a8a56047dd27?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-            width: double.infinity,
-            fit: BoxFit.contain,
-          ),
           const SizedBox(height: 20),
           _buildInvoiceItem('March, 01, 2024', '#MS-415646', 'R 30'),
           _buildInvoiceItem('February, 10, 2024', '#RV-126749', 'R 20'),
@@ -98,17 +93,11 @@ class Invoices extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Row(
+              const Row(
                 children: [
-                  Image.network(
-                    'https://cdn.builder.io/api/v1/image/assets/TEMP/d77c131f13b393617e0c60b1e32790d96500294e0f6cec138d6cd6882e6a16f3?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-                    width: 15,
-                    height: 21,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    'PDF',
+                  SizedBox(width: 4),
+                  Text(
+                    'OPEN PDF',
                     style: TextStyle(
                       color: Color(0xFFA0AEC0),
                       fontSize: 12,
