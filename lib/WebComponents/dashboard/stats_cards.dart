@@ -17,19 +17,19 @@ class StatsCards extends StatelessWidget {
               _buildStatsCard(
                 title: "Today's Bookings",
                 value: '302',
-                iconUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/3cb395552fdffb735d72a221b213b97a55c77df5869155584dffcd46c3b01263?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+                iconUrl: 'assets/Icon.png',
               ),
               const SizedBox(height: 18),
               _buildStatsCard(
                 title: 'Total Parking Income',
-                value: 'R 173,0000',
-                iconUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/bb10067f4d267608d9b3a8e3e39ab14a7114fe5c25c2bb334089dfd8022c6d2f?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+                value: 'R 173,000',
+                iconUrl: 'assets/Icon2.png',
               ),
               const SizedBox(height: 18),
               _buildStatsCard(
                 title: "Today's Money",
                 value: 'R 53,000',
-                iconUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/e51a57169833c585e6288db581c621e3b4f7b155d001d123cb19fabdbd61cf36?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+                iconUrl: 'assets/Icon3.png',
               ),
             ],
           ),
@@ -37,6 +37,7 @@ class StatsCards extends StatelessWidget {
       ],
     );
   }
+
 
   Widget _buildIncomeCard() {
     return Container(
@@ -90,12 +91,12 @@ class StatsCards extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 19),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'A36 Parking Booking',
                     style: TextStyle(
@@ -115,7 +116,7 @@ class StatsCards extends StatelessWidget {
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 '+R40.50',
                 style: TextStyle(
                   color: Colors.white,
