@@ -21,7 +21,7 @@ void main() {
       const carType = 'Camry';
       const carColor = 'Blue';
       const lisenseNumber = 'ABC123';
-      const imagePath = 'assets/VW_Logo.png';
+      const imagePath = null;
       const vehicleId = 'abc123';
 
       await tester.pumpWidget(const MaterialApp(

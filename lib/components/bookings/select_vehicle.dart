@@ -448,12 +448,19 @@ class CarCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Image.network(
-                              imagePath!,
-                              // width: 120,
-                              height: 80,
-                              fit: BoxFit.contain,
-                            ),
+                            imagePath != null ?
+                              Image.network(
+                                imagePath!,
+                                // width: 120,
+                                height: 80,
+                                fit: BoxFit.contain,
+                              ) :
+                              Image.asset(
+                                'assets/default_logo.png',
+                                // width: 150,
+                                height: 80,
+                                fit: BoxFit.contain,
+                              ),
                             const SizedBox(width: 40,)
                           ],
                         ),

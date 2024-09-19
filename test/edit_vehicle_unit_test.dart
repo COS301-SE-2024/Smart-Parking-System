@@ -12,6 +12,7 @@ void main() {
           color: 'Blue',
           license: 'ABC123',
           vehicleId: 'abc123',
+          image: null
         ),
       ));
 
@@ -26,6 +27,7 @@ void main() {
           color: 'Blue',
           license: 'ABC123',
           vehicleId: 'abc123',
+          image: null
         ),
       ));
 
@@ -43,6 +45,7 @@ void main() {
           color: 'Blue',
           license: 'ABC123',
           vehicleId: 'abc123',
+          image: null
         ),
       ));
 

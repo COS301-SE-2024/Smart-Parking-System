@@ -11,7 +11,7 @@ class EditVehiclePage extends StatefulWidget {
   final String color;
   final String license;
   final String vehicleId;
-  final String image;
+  final String? image;
 
   const EditVehiclePage({
     super.key,
@@ -154,12 +154,19 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                 shape: BoxShape.circle, // This makes the container perfectly round
               ),
               child: Center(
-                child: Image.network(
-                  widget.image, // Make sure this path is correct
-                  width: 150, // Adjust the image size as needed
-                  height: 150,
-                  fit: BoxFit.contain, // This will ensure the image fits within the circle
-                ),
+                child: widget.image != null
+                    ? Image.network(
+                        widget.image!,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        'assets/default_logo.png',
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
             //FInish your code here!
