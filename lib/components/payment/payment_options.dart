@@ -186,182 +186,173 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Center(
-                child:   SizedBox(
-                  width: 500,
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          'Credit',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'Credit',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF58C6A9),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF35344A),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 8,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        const Icon(Icons.account_balance_wallet, color: Colors.white),
+                        const SizedBox(width: 20),
+                        Text(
+                          'ZAR ${creditAmount.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
                             color: Color(0xFF58C6A9),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF35344A),
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              spreadRadius: 1,
-                              blurRadius: 8,
-                              offset: const Offset(0, 3), // changes position of shadow
-                            ),
-                          ],
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ElevatedButton(
+                        onPressed: _showTopUpDialog,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black, backgroundColor: Colors.tealAccent,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                const Icon(Icons.account_balance_wallet, color: Colors.white),
-                                const SizedBox(width: 20),
-                                Text(
-                                  'ZAR ${creditAmount.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w600,
+                        child: const Text('Top Up'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'Credits & Debit Cards',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF58C6A9),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF35344A),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 8,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    for (var card in cards)
+                      Column(
+                        children: [
+                          Card(
+                            elevation: 0, // Set elevation to 0
+                            color: Colors.transparent, // Set color to transparent
+                            child: ListTile(
+                              leading: SizedBox(
+                                width: 50, // Set the desired width of the image
+                                child: Image.asset(card['image']!),
+                              ),
+                              title: Text(
+                                '${card['bank']}\n${card['number']}\n${card['name']}\n${card['expiry']}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              trailing: TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => EditCardPage(
+                                        cardId: card['id']!,
+                                        cardNumber: card['number']!,
+                                        cvv: card['cvv']!,
+                                        name: card['name']!,
+                                        expiry: card['expiry']!,
+                                        bank: card['bank']!,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Edit Card',
+                                  style: TextStyle(
                                     color: Color(0xFF58C6A9),
                                   ),
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: ElevatedButton(
-                                onPressed: _showTopUpDialog,
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black, backgroundColor: Colors.tealAccent,
-                                ),
-                                child: const Text('Top Up'),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          'Credits & Debit Cards',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF58C6A9),
                           ),
-                        ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF35344A),
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              spreadRadius: 1,
-                              blurRadius: 8,
-                              offset: const Offset(0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: Column(
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          // Insert here what Top Up does
+                        },
+                        child: Row(
                           children: [
-                            const SizedBox(height: 10),
-                            for (var card in cards)
-                              Column(
-                                children: [
-                                  Card(
-                                    elevation: 0, // Set elevation to 0
-                                    color: Colors.transparent, // Set color to transparent
-                                    child: ListTile(
-                                      leading: SizedBox(
-                                        width: 50, // Set the desired width of the image
-                                        child: Image.asset(card['image']!),
-                                      ),
-                                      title: Text(
-                                        '${card['bank']}\n${card['number']}\n${card['name']}',
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      trailing: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => EditCardPage(
-                                                cardId: card['id']!,
-                                                cardNumber: card['number']!,
-                                                cvv: card['cvv']!,
-                                                name: card['name']!,
-                                                expiry: card['expiry']!,
-                                                bank: card['bank']!,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: const Text(
-                                          'Edit Card',
-                                          style: TextStyle(
-                                            color: Color(0xFF58C6A9),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                ],
-                              ),
-                            const SizedBox(height: 20),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  // Insert here what Top Up does
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.add,
-                                      color: Color(0xFF58C6A9),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => const AddCardPage(),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'Add New Card',
-                                        style: TextStyle(color: Color(0xFF58C6A9)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
+                            const Icon(
+                              Icons.add,
+                              color: Color(0xFF58C6A9),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(width: 10),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const AddCardPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Add New Card',
+                                style: TextStyle(color: Color(0xFF58C6A9)),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ],
-                  )
+
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
-              ),     
+              ),
               const SizedBox(height: 20),
             ],
           ),

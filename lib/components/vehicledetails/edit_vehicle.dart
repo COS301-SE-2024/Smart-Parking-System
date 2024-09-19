@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
@@ -33,18 +34,28 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
   late String imageDirect;
 
   Future<void> _updateVehicleDetails() async {
+    final String brand = _brandController.text; 
+    final String model = _modelController.text;
+    final String color = _colorController.text;
+    final String license = _licenseController.text;
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
+
+      if(!isValidString(brand, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Brand"); return;}
+      if(!isValidString(model, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid Model"); return;}
+      if(!isValidString(color, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Color"); return;}
+      if(!isValidString(license, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid License"); return;}
 
       if (user != null) {
         await FirebaseFirestore.instance
             .collection('vehicles')
             .doc(widget.vehicleId)
             .update({
-          'vehicleBrand': _brandController.text,
-          'vehicleModel': _modelController.text,
-          'vehicleColor': _colorController.text,
-          'licenseNumber': _licenseController.text,
+          'vehicleBrand': brand,
+          'vehicleModel': model,
+          'vehicleColor': color,
+          'licenseNumber': license,
         });
 
         if (mounted){
@@ -123,7 +134,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => const ViewVehiclePage(),
                           ),

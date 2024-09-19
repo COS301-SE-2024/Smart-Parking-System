@@ -94,7 +94,9 @@ class _SignupPageState extends State<SignupPage> {
 
     final User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
-    
+    setState((){
+      _isLoading = false;
+    });
 
     if (user != null) {
       if(mounted) { // Check if the widget is still in the tree
@@ -107,9 +109,7 @@ class _SignupPageState extends State<SignupPage> {
             'phoneNumber': phoneNumber,
           }
         );
-        setState((){
-          _isLoading = false;
-        });
+
         if (mounted) { // Check if the widget is still in the tree before navigating
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -120,9 +120,6 @@ class _SignupPageState extends State<SignupPage> {
       }
     } else {
       // ignore: avoid_print
-      setState((){
-        _isLoading = false;
-      });
       showToast(message: 'An Error Occured');
     }
     

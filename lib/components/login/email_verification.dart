@@ -43,7 +43,7 @@ class _VerificationPageState extends State<VerificationPage> {
 
     if (emailVerified) {
       if (mounted) { // Check if the widget is still in the tree
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const AddCardRegistrationPage()
           ),
