@@ -31,28 +31,35 @@ class Sidebar extends StatelessWidget {
   }
 
   Widget _buildDashboardMenu() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildMenuItem(
-          'Dashboard',
-          'https://cdn.builder.io/api/v1/image/assets/TEMP/89449ae15f2084058eb80aca52c1aa06c1192b07fea95c0a50f695a5ca8a64b7?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-          isSelected: true,
-        ),
-        Container(
-          color: const Color(0xFF1A1F37), // Submenu background color
-          child: Column(
+    return Container(
+      width: 220, // Set the width of the container
+      height: 154, // Adjusted height to prevent overflow
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1F37), // Set the background color of the container
+        borderRadius: BorderRadius.circular(20), // Set the border radius to 20
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildMenuItem(
+            'Dashboard',
+            'https://cdn.builder.io/api/v1/image/assets/TEMP/89449ae15f2084058eb80aca52c1aa06c1192b07fea95c0a50f695a5ca8a64b7?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            isSelected: true,
+          ),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:  [
+            children: [
               _buildSubMenuItem('Parking Fees'),
               _buildSubMenuItem('Invoices'),
               _buildSubMenuItem('Booking Details'),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
+
 
   Widget _buildAccountPages() {
     return const Padding(
