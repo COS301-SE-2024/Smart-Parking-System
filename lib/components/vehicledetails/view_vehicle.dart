@@ -144,7 +144,7 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => const SettingsPage(),
                           ),
@@ -177,7 +177,7 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
                             icon: const Icon(Icons.add_circle_outline, color: Colors.white, size: 90),
                             onPressed: () {
                               // Add new vehicle logic here
-                              Navigator.of(context).pushReplacement(
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => const AddVehiclePage(),
                                 ),
@@ -305,7 +305,7 @@ class CarCard extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () {
                       // Edit button logic here
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => EditVehiclePage(brand: carName!, model: carType!, color: carColor!, license: lisenseNumber!, vehicleId: vehicleId, image: imagePath! ),
                         ),
