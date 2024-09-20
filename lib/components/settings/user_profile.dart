@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
@@ -65,6 +66,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
       _isUploading = true;
     });
 
+    final String username = _nameController.text;
+    final String email = _emailController.text;
+    final String phoneNumber = _phoneController.text;
+    
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(username, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid name"); setState(() {_isUploading = false; }); return;}
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -75,15 +84,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
 
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'username': _nameController.text,
-          'email': _emailController.text,
-          'phoneNumber': _phoneController.text,
+          'username': username,
+          'email': email,
+          'phoneNumber': phoneNumber,
           'profileImageUrl': profileImageUrl, // Save the profile image URL
         }, SetOptions(merge: true));
 
         showToast(message: 'Profile Updated Successfully!');
         if (mounted) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const SettingsPage(),
             ),

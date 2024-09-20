@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:smart_parking_system/components/payment/confirmation_payment.dart';
 import 'package:smart_parking_system/components/bookings/select_vehicle.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class ConfirmBookingPage extends StatefulWidget {
   final String bookedAddress;
@@ -25,7 +26,7 @@ class ConfirmBookingPage extends StatefulWidget {
 class _ConfirmBookingState extends State<ConfirmBookingPage> {
   double _currentSliderValue = 1;
   bool _disabledParking = false;
-  String _checkInTime = "12:00 PM";
+  String _checkInTime = "12:00";
   DateTime _checkInDate = DateTime.now();
 
   // use the variable to replace the text
@@ -75,6 +76,43 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
     }
   }
 
+  void validateInputs() {  
+    // Get the current date
+    DateTime now = DateTime.now();
+
+    // Check if _checkInDate is today
+    bool isToday = _checkInDate.year == now.year &&
+                  _checkInDate.month == now.month &&
+                  _checkInDate.day == now.day;
+
+    if(isToday){
+      // Split the time string into hours and minutes
+      List<String> timeParts = _checkInTime.split(":");
+      int hours = int.parse(timeParts[0]);
+      int minutes = int.parse(timeParts[1]);
+
+      // Create a DateTime object for today with the given time
+      DateTime now = DateTime.now();
+      DateTime checkInDateTime = DateTime(now.year, now.month, now.day, hours, minutes);
+
+      // Add the duration to the check-in time
+      DateTime endDateTime = checkInDateTime.add(Duration(hours: _currentSliderValue.toInt()));
+
+      if(endDateTime.isBefore(now)){
+        showToast(message: "Invalid time");
+        return;
+      }
+    }
+
+    if(mounted){
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChooseVehiclePage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,11 +129,6 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // Navigator.of(context).pushReplacement(
-                      //     MaterialPageRoute(
-                      //       builder: (_) => const BookingPage(),
-                      //     ),
-                      // );
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
@@ -265,11 +298,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ChooseVehiclePage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
-                    ),
-                  );
+                  validateInputs();
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

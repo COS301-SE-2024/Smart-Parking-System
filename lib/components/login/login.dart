@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
@@ -33,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _passwordController.text;
     final String email = _emailController.text;
 
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
+
     setState((){
       _isLoading = true;
     });
@@ -51,10 +54,12 @@ class _LoginPageState extends State<LoginPage> {
       
       if(mounted) { // Check if the widget is still in the tree
         showToast(message: 'Successfully signed in');
-        Navigator.of(context).pushReplacement(
+        Navigator.pushAndRemoveUntil(
+          context,
           MaterialPageRoute(
             builder: (context) => const MainPage(),
           ),
+          (Route<dynamic> route) => false,
         );
       }
     } else {
@@ -90,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
           if(mounted) { // Check if the widget is still in the tree
             showToast(message: 'Google sign in successful ');
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const MainPage(),
               ),
