@@ -11,6 +11,8 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -21,146 +23,172 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
           ),
           Center(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: EdgeInsets.zero,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        width: 600,
-                        child: Card(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                if (screenWidth > 1000) {
+                  // Two-column layout for larger screens
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: _buildFormCard(),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Image.asset(
+                          'assets/parking.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  // Single-column layout for smaller screens
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildFormCard(),
+                        SizedBox(height: 20),
+                        Image.asset(
+                          'assets/parking.png',
+                          fit: BoxFit.cover,
+                          width: screenWidth * 0.9, // Adjust image width for smaller screens
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormCard() {
+    return Padding(
+      padding: EdgeInsets.zero,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          width: 600,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(70),
+                bottomRight: Radius.circular(70),
+              ),
+            ),
+            color: const Color(0xFF23223A),
+            elevation: 6.0,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/logo2.png',
+                      height: 70,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Step indicators with arrow-like design
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStyledStepIndicator(1, true),
+                      const SizedBox(width: 10),
+                      _buildStyledStepIndicator(2, false),
+                      const SizedBox(width: 10),
+                      _buildStyledStepIndicator(3, false),
+                      const SizedBox(width: 10),
+                      _buildStyledStepIndicator(4, false),
+                      const SizedBox(width: 10),
+                      _buildStyledStepIndicator(5, false),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  const Text(
+                    'Get started',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Please enter your details',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  _buildLabeledTextField('Account holder name *', 'Enter your name'),
+                  const SizedBox(height: 15),
+                  _buildLabeledTextField('Company name *', 'Enter company name'),
+                  const SizedBox(height: 15),
+                  _buildLabeledTextField('Email *', 'Enter your email'),
+                  const SizedBox(height: 15),
+                  _buildLabeledTextField('Password *', 'Enter your password', obscureText: true),
+                  const SizedBox(height: 25),
+                  Center(
+                    child: SizedBox(
+                      width: 200,
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Handle next step action
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF58C6A9),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(70),
-                              bottomRight: Radius.circular(70),
-                            ),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          color: const Color(0xFF23223A),
-                          elevation: 6.0,
-                          child: SingleChildScrollView( // Wrap here
-                            padding: const EdgeInsets.all(30.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: Image.asset(
-                                    'assets/logo2.png',
-                                    height: 70,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                // Step indicators with arrow-like design
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildStyledStepIndicator(1, true),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(2, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(3, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(4, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(5, false),
-                                  ],
-                                ),
-                                const SizedBox(height: 40),
-                                const Text(
-                                  'Get started',
-                                  style: TextStyle(
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                const Text(
-                                  'Please enter your details',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                _buildLabeledTextField('Account holder name *', 'Enter your name'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Company name *', 'Enter company name'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Email *', 'Enter your email'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Password *', 'Enter your password', obscureText: true),
-                                const SizedBox(height: 25),
-                                Center(
-                                  child: SizedBox(
-                                    width: 200,
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Handle next step action
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF58C6A9),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Next',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                Center(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text: "Already have an account? ",
-                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
-                                      children: [
-                                        TextSpan(
-                                          text: 'Log in here',
-                                          style: const TextStyle(
-                                            color: Color(0xFF58C6A9),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              // Navigate to login page
-                                            },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        ),
+                        child: const Text(
+                          'Next',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Image.asset(
-                    'assets/parking.png',
-                    fit: BoxFit.cover,
+                  const SizedBox(height: 15),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Already have an account? ",
+                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        children: [
+                          TextSpan(
+                            text: 'Log in here',
+                            style: const TextStyle(
+                              color: Color(0xFF58C6A9),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Navigate to login page
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -215,7 +243,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         hintText: hintText,
         hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF58C6A9)),
@@ -225,7 +253,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 }
-
 
 class ArrowClipper extends CustomClipper<Path> {
   @override
