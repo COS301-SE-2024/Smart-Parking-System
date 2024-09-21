@@ -191,27 +191,25 @@ class _Registration3State extends State<Registration3> {
       ],
     );
   }
-
   Widget _buildTextField(String hintText, {bool obscureText = false}) {
     return TextField(
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.grey, fontSize: 14), // Changed to grey
+      style: const TextStyle(color: Colors.white, fontSize: 14),
       cursorColor: const Color(0xFF58C6A9),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14), // Grey hint text
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey), // Grey enabled border
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey), // Grey focused border
+          borderSide: BorderSide(color: Color(0xFF58C6A9)),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 8),
       ),
     );
   }
 }
-
 class ArrowClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
