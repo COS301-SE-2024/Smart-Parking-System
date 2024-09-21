@@ -8,7 +8,7 @@ class ParkingRate extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF35344A),
+        color: const Color(0xFF1A1F37),
         borderRadius: BorderRadius.circular(20),
       ),
       child: const Column(
