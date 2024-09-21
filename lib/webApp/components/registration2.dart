@@ -201,7 +201,7 @@ class _Registration2State extends State<Registration2> {
         hintText: hintText,
         hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF58C6A9)),
@@ -287,17 +287,7 @@ class _Registration2State extends State<Registration2> {
               onSurface: Colors.black,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Pick Start Time',
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              child!,  // Return child directly
-            ],
-          ),
+          child: child!, // Return child directly
         );
       },
     );
@@ -321,17 +311,7 @@ class _Registration2State extends State<Registration2> {
                 onSurface: Colors.black,
               ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Pick End Time',
-                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-                child!,  // Return child directly
-              ],
-            ),
+            child: child!, // Return child directly
           );
         },
       );
