@@ -329,7 +329,7 @@ class _Registration2State extends State<Registration2> {
                   style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                child!,  // Return child directly to the 
+                child!,  // Return child directly
               ],
             ),
           );
