@@ -15,11 +15,11 @@ class ParkingLayoutScreen extends StatelessWidget {
       body: Row(
         children: [
           Expanded(
-            flex: 32,
+            flex: 10, // Reduced flex ratio for the sidebar
             child: Sidebar(),
           ),
           Expanded(
-            flex: 68,
+            flex: 80, // Adjusted flex ratio for the main content
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
