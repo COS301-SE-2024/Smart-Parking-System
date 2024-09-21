@@ -6,7 +6,8 @@ class HelpSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -14,20 +15,20 @@ class HelpSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Help',
             style: TextStyle(
-              color: Colors.black,
+              color: Color(0xFF1A1F37),
               fontSize: 40,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 39),
+          const SizedBox(height: 39),
           _buildHelpItem('Contact us'),
-          SizedBox(height: 21),
+          const SizedBox(height: 21),
           _buildHelpItem('Billing details'),
-          SizedBox(height: 21),
+          const SizedBox(height: 21),
           _buildHelpItem('Support'),
         ],
       ),
@@ -36,14 +37,14 @@ class HelpSection extends StatelessWidget {
 
   Widget _buildHelpItem(String title) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 18),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 18),
       decoration: BoxDecoration(
-        color: Color(0xFF312F4D),
+        color: const Color(0xFF312F4D),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w700,
