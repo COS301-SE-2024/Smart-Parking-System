@@ -41,94 +41,103 @@ class _Registration5State extends State<Registration5> {
                           ),
                           color: const Color(0xFF23223A),
                           elevation: 6.0,
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.all(30.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: Image.asset(
-                                    'assets/logo2.png',
-                                    height: 70,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SingleChildScrollView(
+                                padding: const EdgeInsets.all(30.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildStyledStepIndicator(1, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(2, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(3, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(4, false),
-                                    const SizedBox(width: 10),
-                                    _buildStyledStepIndicator(5, true), // Current step
-                                  ],
-                                ),
-                                const SizedBox(height: 40),
-                                
-                                _buildLabeledTextField('Enter billing name *', 'Enter name'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Account number *', 'Enter number'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Account type *', 'Enter type'),
-                                const SizedBox(height: 15),
-                                _buildLabeledTextField('Bank *', 'Enter bank name'),
-                                
-                                const SizedBox(height: 25),
-                                Center(
-                                  child: SizedBox(
-                                    width: 200,
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // Handle the submission or navigation to the next step
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF58C6A9),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Join',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
+                                    Center(
+                                      child: Image.asset(
+                                        'assets/logo2.png',
+                                        height: 70,
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                Center(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text: "Need to change details? ",
-                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        TextSpan(
-                                          text: 'Go back',
-                                          style: const TextStyle(
-                                            color: Color(0xFF58C6A9),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              // Navigate to the previous step
-                                            },
-                                        ),
+                                        _buildStyledStepIndicator(1, false),
+                                        const SizedBox(width: 10),
+                                        _buildStyledStepIndicator(2, false),
+                                        const SizedBox(width: 10),
+                                        _buildStyledStepIndicator(3, false),
+                                        const SizedBox(width: 10),
+                                        _buildStyledStepIndicator(4, false),
+                                        const SizedBox(width: 10),
+                                        _buildStyledStepIndicator(5, true), // Current step
                                       ],
                                     ),
-                                  ),
+                                    const SizedBox(height: 40),
+                                    _buildLabeledTextField('Enter billing name *', 'Enter name'),
+                                    const SizedBox(height: 15),
+                                    _buildLabeledTextField('Account number *', 'Enter number'),
+                                    const SizedBox(height: 15),
+                                    _buildLabeledTextField('Account type *', 'Enter type'),
+                                    const SizedBox(height: 15),
+                                    _buildLabeledTextField('Bank *', 'Enter bank name'),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Spacer(), // This pushes the join button to the bottom
+                              Padding(
+                                padding: const EdgeInsets.all(30.0),
+                                child: Column(
+                                  children: [
+                                    Center(
+                                      child: SizedBox(
+                                        width: 200,
+                                        height: 40,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            // Handle the submission or navigation to the next step
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF58C6A9),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Join',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15),
+                                    Center(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: "Need to change details? ",
+                                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                          children: [
+                                            TextSpan(
+                                              text: 'Go back',
+                                              style: const TextStyle(
+                                                color: Color(0xFF58C6A9),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  // Navigate to the previous step
+                                                },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
