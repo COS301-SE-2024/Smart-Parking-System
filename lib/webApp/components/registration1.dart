@@ -226,7 +226,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 }
 
-// ArrowClipper class to create the arrow-like shape
+
 class ArrowClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
