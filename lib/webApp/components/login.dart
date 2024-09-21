@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart'; // For TapGestureRecognizer
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
           // Background image
           Positioned.fill(
             child: Image.asset(
-              'assets/backW.png', // Replace with your background image
+              'assets/backW.png', // Ensure this asset exists
               fit: BoxFit.cover,
             ),
           ),
@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
                 Expanded(
                   flex: 1,
                   child: Padding(
-                    padding: EdgeInsets.zero, // Remove the space on the left
+                    padding: EdgeInsets.zero, // Remove space on the left
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                               bottomRight: Radius.circular(70),
                             ),
                           ),
-                          color: Color(0xFF23223A), // Dark color for the card
+                          color: const Color(0xFF23223A), // Dark color for the card
                           elevation: 6.0,
                           child: Padding(
                             padding: const EdgeInsets.all(40.0),
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                                 // Logo
                                 Center(
                                   child: Image.asset(
-                                    'assets/logo2.png', // Replace with your app's logo
+                                    'assets/logo2.png', // Replace with your logo
                                     height: 90, // Increased logo size
                                   ),
                                 ),
@@ -65,8 +65,8 @@ class _LoginPageState extends State<LoginPage> {
                                   'Welcome back',
                                   style: TextStyle(
                                     fontSize: 45, // Increased font size
-                                    fontWeight: FontWeight.w900, // Much thicker font weight
-                                    color: Colors.white, // White text color for contrast
+                                    fontWeight: FontWeight.w900, // Thicker font weight
+                                    color: Colors.white, // White text color
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -90,12 +90,14 @@ class _LoginPageState extends State<LoginPage> {
                                 const SizedBox(height: 8),
                                 MouseRegion(
                                   onEnter: (_) => setState(() {
-                                    emailUnderlineColor = Color(0xFF58C6A9); // Hover color
+                                    emailUnderlineColor = const Color(0xFF58C6A9); // Hover color
                                   }),
                                   onExit: (_) => setState(() {
                                     emailUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
+                                    style: TextStyle(color: Colors.white), // White text color when typing
+                                    cursorColor: Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
                                       hintText: 'Enter your email',
                                       hintStyle: const TextStyle(color: Colors.grey),
@@ -121,12 +123,14 @@ class _LoginPageState extends State<LoginPage> {
                                 const SizedBox(height: 8),
                                 MouseRegion(
                                   onEnter: (_) => setState(() {
-                                    passwordUnderlineColor = Color(0xFF58C6A9); // Hover color
+                                    passwordUnderlineColor = const Color(0xFF58C6A9); // Hover color
                                   }),
                                   onExit: (_) => setState(() {
                                     passwordUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
+                                    style: TextStyle(color: Colors.white), // White text color when typing
+                                    cursorColor: Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
                                       hintText: 'Enter your password',
                                       hintStyle: const TextStyle(color: Colors.grey),
@@ -137,21 +141,21 @@ class _LoginPageState extends State<LoginPage> {
                                         borderSide: BorderSide(color: Color(0xFF58C6A9)), // Green color when focused
                                       ),
                                     ),
-                                    obscureText: true,
+                                    obscureText: true, // Hide password input
                                   ),
                                 ),
                                 const SizedBox(height: 30),
                                 // Log in button
                                 Center(
                                   child: SizedBox(
-                                    width: 200, // Shortened button width
+                                    width: 200, // Button width
                                     height: 50,
                                     child: ElevatedButton(
                                       onPressed: () {
                                         // Handle login action
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF58C6A9), // Button color
+                                        backgroundColor: const Color(0xFF58C6A9), // Button color
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(25),
                                         ),
@@ -168,47 +172,43 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                // Google Sign In button
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      const Text(
+                                // "Or Sign up with" text with shorter lines
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Divider(color: Colors.white70),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: Text(
                                         'Or Sign up with',
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.white70,
                                         ),
                                       ),
-                                      const SizedBox(height: 10),
-                                      SizedBox(
-                                        width: 180,
-                                        height: 50,
-                                        child: OutlinedButton.icon(
-                                          icon: Image.asset(
-                                            'assets/google-icon.png', // Add your Google logo asset here
-                                            height: 20,
-                                            width: 20,
-                                          ),
-                                          onPressed: () {
-                                            // Handle Google Sign-in
-                                          },
-                                          label: const Text(
-                                            'Google',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            side: BorderSide(color: Colors.white70),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(25),
-                                            ),
-                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Divider(color: Colors.white70),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                // Google Sign In icon button (slightly bigger)
+                                Center(
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/google-icon.png',
+                                      height: 40, // Increased size
+                                      width: 40, // Increased size
+                                    ),
+                                    onPressed: () {
+                                      // Handle Google Sign-in
+                                    },
+                                    iconSize: 60, // Increased touch target size
+                                    padding: EdgeInsets.all(15), // Increased padding around the icon
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -222,12 +222,12 @@ class _LoginPageState extends State<LoginPage> {
                                         TextSpan(
                                           text: 'Register here',
                                           style: const TextStyle(
-                                            color: Color(0xFF58C6A9), // Button color
+                                            color: Color(0xFF58C6A9), // Link color
                                             fontWeight: FontWeight.bold,
                                           ),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
-                                              // Handle navigation to registration page
+                                              // Navigate to registration page
                                             },
                                         ),
                                       ],
@@ -258,5 +258,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-void main() => runApp(const MaterialApp(home: LoginPage()));
