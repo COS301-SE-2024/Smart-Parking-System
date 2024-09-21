@@ -39,13 +39,17 @@ class Splash extends StatelessWidget {
                       Expanded(
                         flex: 3,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Center(
-                              child: Image.asset(
-                                'assets/logo1.png',
-                                height: constraints.maxHeight * 0.25,
+                            // Moved logo to the left
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10), // Adjust this value to move logo
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/logo1.png',
+                                  height: constraints.maxHeight * 0.25,
+                                ),
                               ),
                             ),
                             Padding(
@@ -60,11 +64,11 @@ class Splash extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 40), // Add more padding here to increase space above buttons
+                            const SizedBox(height: 40),
                             Padding(
-                              padding: const EdgeInsets.only(left: 60, top: 50, bottom: 30), // Align buttons with text
+                              padding: const EdgeInsets.only(left: 60, top: 50, bottom: 30),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start, // Align buttons to the start
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   SizedBox(
                                     width: constraints.maxWidth * 0.15,
@@ -107,16 +111,18 @@ class Splash extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 40),
+                            // Centered "Or Sign up with" section
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Divider(color: Colors.white, thickness: 0.5),
+                                Image.asset(
+                                  'assets/line.png', // Replace with your left image
+                                  width: 200, // Adjust width as needed
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Text(
-                                    'Download our app',
+                                    'Or Sign up with',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: constraints.maxWidth * 0.012,
@@ -124,15 +130,18 @@ class Splash extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Divider(color: Colors.white, thickness: 0.5),
+                                Image.asset(
+                                  'assets/line.png', // Replace with your right image
+                                  width: 200, // Adjust width as needed
                                 ),
                               ],
                             ),
                             const SizedBox(height: 10),
                             Center(
-                              child: Image.asset('assets/google-play.png', height: constraints.maxHeight * 0.06),
+                              child: Image.asset(
+                                'assets/google-play.png',
+                                height: constraints.maxHeight * 0.06,
+                              ),
                             ),
                             const SizedBox(height: 20),
                             Center(
@@ -151,7 +160,10 @@ class Splash extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 2,
-                        child: Image.asset('assets/parking.png', fit: BoxFit.contain),
+                        child: Image.asset(
+                          'assets/parking.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ],
                   );
