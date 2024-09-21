@@ -27,7 +27,7 @@ class ParkingLayoutScreen extends StatelessWidget {
                   minHeight: MediaQuery.of(context).size.height,
                   // Ensure minimum height
                 ),
-                child: IntrinsicHeight(
+                child: const IntrinsicHeight(
                   // Correct sizing for vertical direction
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
