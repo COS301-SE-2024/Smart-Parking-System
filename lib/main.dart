@@ -20,7 +20,7 @@ Future<void> main() async {
   //dotenv.env['API_KEY']!
   if (kIsWeb) {
     await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options:  FirebaseOptions(
         apiKey: dotenv.env['API_KEY']!,
         appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
         messagingSenderId: "808791551084",
@@ -33,7 +33,7 @@ Future<void> main() async {
   }
 
   // Get a reference to the storage service
-  
+
   // final FirebaseStorage storage = FirebaseStorage.instanceFor(bucket: 'gs://parkme-c2508.appspot.com');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
