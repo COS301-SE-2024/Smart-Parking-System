@@ -11,10 +11,10 @@ class ParkingLayoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:const Color(0xFF35344A),
       body: Row(
         children: [
-          Expanded(
+          const Expanded(
             flex: 12,
             child: Sidebar(),
           ),
