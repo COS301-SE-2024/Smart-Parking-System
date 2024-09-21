@@ -120,8 +120,8 @@ class _CarDetailsPageState extends State<AddVehiclePage> {
                 shape: BoxShape.circle, // This makes the container perfectly round
               ),
               child: Center(
-                child: Image.asset(
-                  'assets/racecarsketch.png', // Make sure this path is correct
+                child: Image.network(
+                  'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2Fracecarsketch.png?alt=media&token=193239fc-ba59-429b-8868-4175f8b0ff96', // Make sure this path is correct
                   width: 200, // Adjust the image size as needed
                   height: 200,
                   fit: BoxFit.contain, // This will ensure the image fits within the circle

@@ -12,6 +12,7 @@ class EditVehiclePage extends StatefulWidget {
   final String color;
   final String license;
   final String vehicleId;
+  final String? image;
 
   const EditVehiclePage({
     super.key,
@@ -20,6 +21,7 @@ class EditVehiclePage extends StatefulWidget {
     required this.color,
     required this.license,
     required this.vehicleId,
+    required this.image,
   });
 
   @override
@@ -102,16 +104,6 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
     _colorController = TextEditingController(text: widget.color);
     _licenseController = TextEditingController(text: widget.license);
 
-    switch (widget.brand.toLowerCase()) {
-          case 'vw':
-            imageDirect = 'assets/VW_Logo.png';
-            break;
-          case 'audi':
-            imageDirect = 'assets/Audi_Logo.png';
-            break;
-          default:
-            imageDirect = 'assets/default_logo.png'; // You might want to have a default logo
-        }
   }
 
   
@@ -173,12 +165,19 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                 shape: BoxShape.circle, // This makes the container perfectly round
               ),
               child: Center(
-                child: Image.asset(
-                  imageDirect, // Make sure this path is correct
-                  width: 150, // Adjust the image size as needed
-                  height: 150,
-                  fit: BoxFit.contain, // This will ensure the image fits within the circle
-                ),
+                child: widget.image != null
+                    ? Image.network(
+                        widget.image!,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        'assets/default_logo.png',
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
             //FInish your code here!
