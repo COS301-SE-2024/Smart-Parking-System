@@ -28,13 +28,12 @@ class ParkingRate extends StatelessWidget {
           Text(
             'R20',
             style: TextStyle(
-              color: Colors.white,
+              color: Color (0xFF58C6A9),
               fontSize: 128,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 73),
           Text(
             'per hour',
             style: TextStyle(
