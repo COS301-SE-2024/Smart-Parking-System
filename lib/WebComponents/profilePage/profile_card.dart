@@ -61,7 +61,7 @@ class ProfileCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 53),
-          SizedBox(height: 20),
+          SizedBox(height: 160),
           Text(
             'Next billing:\n\n1 October 2024',
             style: TextStyle(
