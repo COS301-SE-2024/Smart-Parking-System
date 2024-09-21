@@ -9,7 +9,7 @@ class HelpSection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1A1F37),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -18,7 +18,7 @@ class HelpSection extends StatelessWidget {
           const Text(
             'Help',
             style: TextStyle(
-              color: Color(0xFF1A1F37),
+              color: Colors.white,
               fontSize: 40,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
