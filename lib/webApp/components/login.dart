@@ -246,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                 Expanded(
                   flex: 1,
                   child: Image.asset(
-                    'assets/parking.png', // Replace with your images
+                    'assets/parking.png', //image path
                     fit: BoxFit.cover,
                   ),
                 ),
