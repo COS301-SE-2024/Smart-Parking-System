@@ -24,7 +24,7 @@ class ParkingRate extends StatelessWidget {
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 59),
+          SizedBox(height: 30),
           Text(
             'R20',
             style: TextStyle(
