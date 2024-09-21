@@ -195,16 +195,16 @@ class _Registration3State extends State<Registration3> {
   Widget _buildTextField(String hintText, {bool obscureText = false}) {
     return TextField(
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
+      style: const TextStyle(color: Colors.grey, fontSize: 14), // Changed to grey
       cursorColor: const Color(0xFF58C6A9),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14), // Grey hint text
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+          borderSide: BorderSide(color: Colors.grey), // Grey enabled border
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
+          borderSide: BorderSide(color: Colors.grey), // Grey focused border
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 8),
       ),
