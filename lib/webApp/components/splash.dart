@@ -18,118 +18,135 @@ class Splash extends StatelessWidget {
         ),
       ),
       home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/backW.png"),
-              fit: BoxFit.cover,
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/backW.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return Row(
                     children: [
                       Expanded(
                         flex: 3,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                          child: IntrinsicHeight(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                'assets/logo1.png',
+                                height: constraints.maxHeight * 0.25,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60),
+                              child: Text(
+                                'Never waste time\nsearching for\nparking again!',
+                                style: TextStyle(
+                                  fontSize: constraints.maxWidth * 0.06,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  height: 1.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 40), // Add more padding here to increase space above buttons
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60, top: 50, bottom: 30), // Align buttons with text
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start, // Align buttons to the start
+                                children: [
+                                  SizedBox(
+                                    width: constraints.maxWidth * 0.15,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF58C6A9),
+                                        padding: const EdgeInsets.symmetric(vertical: 15),
+                                      ),
+                                      child: Text(
+                                        'Log in',
+                                        style: TextStyle(
+                                          fontSize: constraints.maxWidth * 0.015,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  SizedBox(
+                                    width: constraints.maxWidth * 0.15,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blueGrey,
+                                        padding: const EdgeInsets.symmetric(vertical: 15),
+                                      ),
+                                      child: Text(
+                                        'Client Register',
+                                        style: TextStyle(
+                                          fontSize: constraints.maxWidth * 0.015,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                            Row(
                               children: [
-                                // Reduced the top space
-                                Image.asset('assets/logo1.png', height: constraints.maxHeight * 0.25),
-                                const SizedBox(height: 10),
+                                Expanded(
+                                  flex: 1,
+                                  child: Divider(color: Colors.white, thickness: 0.5),
+                                ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 40),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: Text(
-                                    'Never waste time\nsearching for\nparking again!',
+                                    'Download our app',
                                     style: TextStyle(
-                                      fontSize: constraints.maxWidth * 0.05,
-                                      fontWeight: FontWeight.bold, // Increased thickness
                                       color: Colors.white,
+                                      fontSize: constraints.maxWidth * 0.012,
+                                      fontWeight: FontWeight.w900,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 40), // Space between text and buttons
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    // Reduced button width
-                                    SizedBox(
-                                      width: constraints.maxWidth * 0.15, // Adjusted width
-                                      child: ElevatedButton(
-                                        onPressed: () {},
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.teal,
-                                          padding: const EdgeInsets.symmetric(vertical: 15),
-                                        ),
-                                        child: Text(
-                                          'Log in',
-                                          style: TextStyle(
-                                            fontSize: constraints.maxWidth * 0.015,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    SizedBox(
-                                      width: constraints.maxWidth * 0.15, // Adjusted width
-                                      child: ElevatedButton(
-                                        onPressed: () {},
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blueGrey,
-                                          padding: const EdgeInsets.symmetric(vertical: 15),
-                                        ),
-                                        child: Text(
-                                          'Client Register',
-                                          style: TextStyle(
-                                            fontSize: constraints.maxWidth * 0.015,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 40),
-                                Row(
-                                  children: [
-                                    // Reduced width of white lines
-                                    Expanded(
-                                      flex: 1, // Adjusted flex
-                                      child: Divider(color: Colors.white, thickness: 0.5),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      child: Text(
-                                        'Download our app',
-                                        style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.012, fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1, // Adjusted flex
-                                      child: Divider(color: Colors.white, thickness: 0.5),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Image.asset('assets/google-play.png', height: constraints.maxHeight * 0.06),
-                                const SizedBox(height: 20),
-                                Text(
-                                  '© 2024 DaVinci Code. All rights reserved.\nPrivacy policy | Contact us',
-                                  style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.01, fontWeight: FontWeight.w600),
-                                  textAlign: TextAlign.center,
+                                Expanded(
+                                  flex: 1,
+                                  child: Divider(color: Colors.white, thickness: 0.5),
                                 ),
                               ],
                             ),
-                          ),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: Image.asset('assets/google-play.png', height: constraints.maxHeight * 0.06),
+                            ),
+                            const SizedBox(height: 20),
+                            Center(
+                              child: Text(
+                                '© 2024 DaVinci Code. All rights reserved.\nPrivacy policy | Contact us',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: constraints.maxWidth * 0.01,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
@@ -141,7 +158,7 @@ class Splash extends StatelessWidget {
                 },
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
