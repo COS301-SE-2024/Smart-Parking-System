@@ -30,6 +30,7 @@ class _Registration5State extends State<Registration5> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
+                        height: MediaQuery.of(context).size.height, // Full height of the screen
                         width: 600,
                         child: Card(
                           shape: RoundedRectangleBorder(
