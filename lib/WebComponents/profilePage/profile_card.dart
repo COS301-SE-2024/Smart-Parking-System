@@ -6,12 +6,12 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Color(0xFF23223A),
+        color: const Color(0xFF23223A),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
@@ -40,11 +40,6 @@ class ProfileCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 33),
-          Image.network(
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/4f37c4fa9d2d8ca66025bb6d74a05cd6661b7a819b8c280e187d504da7555079?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-            width: double.infinity,
-            fit: BoxFit.contain,
-          ),
           SizedBox(height: 47),
           Text(
             'James Smith',
@@ -66,12 +61,7 @@ class ProfileCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 53),
-          Image.network(
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/ba6f4da98288183439928ddb1ca24a505d93c7ace04c037cb20a0fde510014a1?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-            width: double.infinity,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(height: 357),
+          SizedBox(height: 20),
           Text(
             'Next billing:\n\n1 October 2024',
             style: TextStyle(

@@ -6,18 +6,18 @@ class ParkingRate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF35344A),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             'Parking rate',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 40,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
@@ -27,7 +27,7 @@ class ParkingRate extends StatelessWidget {
           Text(
             'R20',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 128,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
@@ -37,7 +37,7 @@ class ParkingRate extends StatelessWidget {
           Text(
             'per hour',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',

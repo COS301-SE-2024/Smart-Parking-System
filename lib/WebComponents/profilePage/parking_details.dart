@@ -6,28 +6,28 @@ class ParkingDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF35344A),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Parking layout details',
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 40,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 57),
+          const SizedBox(height: 57),
           _buildDetailItem('Total parking slots', '10 000'),
-          SizedBox(height: 34),
+          const SizedBox(height: 34),
           _buildDetailItem('Zones', '20'),
-          SizedBox(height: 26),
+          const SizedBox(height: 26),
           _buildDetailItem('Floors', '5'),
         ],
       ),
@@ -40,18 +40,18 @@ class ParkingDetails extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: Colors.black,
+          style: const TextStyle(
+            color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w700,
             fontFamily: 'Quicksand',
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Text(
           value,
-          style: TextStyle(
-            color: Colors.black,
+          style: const TextStyle(
+            color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w400,
             fontFamily: 'Quicksand',
