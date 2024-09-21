@@ -266,51 +266,37 @@ class _NotificationPageState extends State<NotificationApp> {
             //           onPressed: clearAllNotifications,
             //           tooltip: 'Clear All Notifications',
             //         ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionTitle(title: 'Today'),
-                for (var notification in today)
-                _buildNotification(notification),
-                // if (today.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (today.isEmpty)
-                //   const Text(
-                //     'There are no Notifications for Today.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                const SizedBox(height: 10),
-                const SectionTitle(title: 'This Week'),
-                for (var notification in thisweek)
-                _buildNotification(notification),
-                // if (thisweek.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (thisweek.isEmpty)
-                //   const Text(
-                //     'There are no Notifications for this Week.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                const SizedBox(height: 10),
-                const SectionTitle(title: 'Older'),
-                for (var notification in older)
-                _buildNotification(notification),
-                // if (older.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (older.isEmpty)
-                //   const Text(
-                //     'There are no Notifications that are older than 1 week.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                
-                
-              ],
+            Center(
+              child: SizedBox(
+                width: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SectionTitle(title: 'Today'),
+                    for (var notification in today)
+                    _buildNotification(notification),
+                    if(today.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    const SizedBox(height: 10),
+                    const SectionTitle(title: 'This Week'),
+                    for (var notification in thisweek)
+                    _buildNotification(notification),
+                    if(thisweek.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    const SizedBox(height: 10),
+                    const SectionTitle(title: 'Older'),
+                    for (var notification in older)
+                    _buildNotification(notification),
+                    if(older.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    
+                    
+                  ],
+                ),
+              ),
             ),
+            
+            
           ],
         ),
       ),
