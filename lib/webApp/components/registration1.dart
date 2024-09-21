@@ -241,7 +241,7 @@ class ArrowClipper extends CustomClipper<Path> {
     return path;
   }
 
- 
+  @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return false;
   }
