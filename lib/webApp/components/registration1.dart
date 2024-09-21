@@ -40,7 +40,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           ),
                           color: const Color(0xFF23223A),
                           elevation: 6.0,
-                          child: Padding(
+                          child: SingleChildScrollView( // Wrap here
                             padding: const EdgeInsets.all(30.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -53,13 +53,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
+                                // Step indicators with arrow-like design
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     _buildStyledStepIndicator(1, true),
+                                    const SizedBox(width: 10),
                                     _buildStyledStepIndicator(2, false),
+                                    const SizedBox(width: 10),
                                     _buildStyledStepIndicator(3, false),
+                                    const SizedBox(width: 10),
                                     _buildStyledStepIndicator(4, false),
+                                    const SizedBox(width: 10),
                                     _buildStyledStepIndicator(5, false),
                                   ],
                                 ),
@@ -160,31 +165,29 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
+  // Build the styled step indicator with arrow-like shape
   Widget _buildStyledStepIndicator(int step, bool isActive) {
-    return Container(
-      width: 35,
-      height: 35,
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF58C6A9) : Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isActive ? const Color(0xFF58C6A9) : Colors.white54,
-          width: 2,
-        ),
-      ),
-      child: Center(
-        child: Text(
-          step.toString(),
-          style: TextStyle(
-            color: isActive ? Colors.white : Colors.white54,
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+    return ClipPath(
+      clipper: ArrowClipper(),
+      child: Container(
+        width: 85,
+        height: 80,
+        color: isActive ? const Color(0xFF58C6A9) : const Color(0xFF2B2B45),
+        child: Center(
+          child: Text(
+            step.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
         ),
       ),
     );
   }
 
+  // Build labeled text field
   Widget _buildLabeledTextField(String label, String hintText, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,5 +223,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
         contentPadding: EdgeInsets.symmetric(vertical: 8),
       ),
     );
+  }
+}
+
+// ArrowClipper class to create the arrow-like shape
+class ArrowClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.moveTo(0, size.height * 0.25);
+    path.lineTo(size.width * 0.9, size.height * 0.25);
+    path.lineTo(size.width, size.height * 0.5);
+    path.lineTo(size.width * 0.9, size.height * 0.75);
+    path.lineTo(0, size.height * 0.75);
+    path.lineTo(size.width * 0.1, size.height * 0.5);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
