@@ -243,15 +243,51 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           String bookedRow = document.get('row') as String;
           String bookedDate = document.get('date') as String;
           String bookedTime = document.get('time') as String;
-          double bookedPrice = document.get('price') as double;
-          double bookedDuration = document.get('duration') as double;
 
-          // Calculate total price
-          int totalPrice = (bookedPrice * bookedDuration).toInt();
+          int totalPrice;
+          int finalBookedDuration = 0;
+          int finalBookedPrice = 0;
+          try{
+            int bookedPrice = document.get('price') as int;
+            int bookedDuration = document.get('duration') as int;
+            // Calculate total price
+            totalPrice = (bookedPrice * bookedDuration).toInt();
+            //final values
+            finalBookedDuration = bookedDuration;
+            finalBookedPrice = bookedPrice;
+          } catch (e) {
+            try {
+              int bookedPrice = document.get('price') as int;
+              double bookedDuration = document.get('duration') as double;
+              // Calculate total price
+              totalPrice = (bookedPrice * bookedDuration).toInt();
+              //final values
+              finalBookedDuration = bookedDuration.toInt();
+              finalBookedPrice = bookedPrice;
+            } catch (e) {
+              try {
+                double bookedPrice = document.get('price') as double;
+                int bookedDuration = document.get('duration') as int;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+                //final values
+                finalBookedDuration = bookedDuration;
+                finalBookedPrice = bookedPrice.toInt();
+              } catch (e) {
+                double bookedPrice = document.get('price') as double;
+                double bookedDuration = document.get('duration') as double;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+                //final values
+                finalBookedDuration = bookedDuration.toInt();
+                finalBookedPrice = bookedPrice.toInt();
+              }
+            }
+          }
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
-          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: bookedDuration.toInt()));
+          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: finalBookedDuration));
           DateTime currentDateTime = DateTime.now();
 
           // Check booking status
@@ -264,7 +300,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             Duration remainingDuration = bookingEndDateTime.difference(currentDateTime);
             activesessions.add(ActiveSession(
               documentId,
-              'R ${bookedPrice.toInt()}',
+              'R $finalBookedPrice',
               bookedLocation,
               bookedZone,
               bookedLevel,

@@ -59,12 +59,13 @@ class AddCardRegistrationPage extends StatelessWidget {
           });
 
           showToast(message: 'Card Added Successfully!');
-          // ignore: use_build_context_synchronously
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const CarRegistration(),
-            ),
-          );
+          if(context.mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const CarRegistration(),
+              ),
+            );
+          }
         }
       } catch (e) {
         showToast(message: 'Error: $e');

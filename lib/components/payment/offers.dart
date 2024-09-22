@@ -75,16 +75,19 @@ class _OfferPageState extends State<OfferPage> {
             const SizedBox(height: 50),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'Available Coupons',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF58C6A9),
+              child: Center( 
+                child: Text(
+                  'Available Coupons',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF58C6A9),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
+            if(coupons.isEmpty) const Center( child: Text('No Coupons', style: TextStyle(color: Colors.grey, fontSize: 16),),),
             Expanded(
               child: ListView.builder(
                 itemCount: coupons.length,
