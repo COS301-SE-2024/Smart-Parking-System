@@ -1,15 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
+import 'package:smart_parking_system/webapp/components/registration2.dart';
+import 'package:smart_parking_system/webapp/components/registration3.dart';
+import 'package:smart_parking_system/webapp/components/registration4.dart';
+import 'package:smart_parking_system/webapp/components/registration5.dart';
+
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
+  final int currentStep;
+
+  const RegistrationPage({Key? key, this.currentStep = 1}) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  late int _currentStep;
+
   @override
+  void initState() {
+    super.initState();
+    _currentStep = widget.currentStep;
+  }
+
+  void _goToStep(int step) {
+    if (step >= 1 && step <= 5) {
+      setState(() {
+        _currentStep = step;
+      });
+    }
+  }
+
+  void _goToNextStep() {
+    _goToStep(_currentStep + 1);
+  }
+
+  Widget _getCurrentRegistrationStep() {
+    switch (_currentStep) {
+      case 1:
+        return _buildRegistrationStep1();
+      case 2:
+        return Registration2();
+      case 3:
+        return Registration3();
+      case 4:
+        return Registration4();
+      case 5:
+        return Registration5();
+      default:
+        return _buildRegistrationStep1();
+    }
+  }
+
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -26,7 +69,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 if (screenWidth > 1000) {
-                  // Two-column layout for larger screens
                   return Row(
                     children: [
                       Expanded(
@@ -43,7 +85,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ],
                   );
                 } else {
-                  // Single-column layout for smaller screens
                   return SingleChildScrollView(
                     child: Column(
                       children: [
@@ -52,7 +93,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         Image.asset(
                           'assets/parking.png',
                           fit: BoxFit.cover,
-                          width: screenWidth * 0.9, // Adjust image width for smaller screens
+                          width: screenWidth * 0.9,
                         ),
                       ],
                     ),
@@ -95,95 +136,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Step indicators with arrow-like design
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildStyledStepIndicator(1, true),
+                      _buildStyledStepIndicator(1, _currentStep >= 1),
                       const SizedBox(width: 10),
-                      _buildStyledStepIndicator(2, false),
+                      _buildStyledStepIndicator(2, _currentStep >= 2),
                       const SizedBox(width: 10),
-                      _buildStyledStepIndicator(3, false),
+                      _buildStyledStepIndicator(3, _currentStep >= 3),
                       const SizedBox(width: 10),
-                      _buildStyledStepIndicator(4, false),
+                      _buildStyledStepIndicator(4, _currentStep >= 4),
                       const SizedBox(width: 10),
-                      _buildStyledStepIndicator(5, false),
+                      _buildStyledStepIndicator(5, _currentStep >= 5),
                     ],
                   ),
                   const SizedBox(height: 40),
-                  const Text(
-                    'Get started',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Please enter your details',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white70,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildLabeledTextField('Account holder name *', 'Enter your name'),
-                  const SizedBox(height: 15),
-                  _buildLabeledTextField('Company name *', 'Enter company name'),
-                  const SizedBox(height: 15),
-                  _buildLabeledTextField('Email *', 'Enter your email'),
-                  const SizedBox(height: 15),
-                  _buildLabeledTextField('Password *', 'Enter your password', obscureText: true),
-                  const SizedBox(height: 25),
-                  Center(
-                    child: SizedBox(
-                      width: 200,
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle next step action
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF58C6A9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          'Next',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Already have an account? ",
-                        style: const TextStyle(color: Colors.white70, fontSize: 12),
-                        children: [
-                          TextSpan(
-                            text: 'Log in here',
-                            style: const TextStyle(
-                              color: Color(0xFF58C6A9),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                // Navigate to login page
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _getCurrentRegistrationStep(),
                 ],
               ),
             ),
@@ -193,21 +161,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  // Build the styled step indicator with arrow-like shape
   Widget _buildStyledStepIndicator(int step, bool isActive) {
-    return ClipPath(
-      clipper: ArrowClipper(),
-      child: Container(
-        width: 85,
-        height: 80,
-        color: isActive ? const Color(0xFF58C6A9) : const Color(0xFF2B2B45),
-        child: Center(
-          child: Text(
-            step.toString(),
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+    return GestureDetector(
+      onTap: () => _goToStep(step),
+      child: ClipPath(
+        clipper: ArrowClipper(),
+        child: Container(
+          width: 85,
+          height: 80,
+          color: isActive ? const Color(0xFF58C6A9) : const Color(0xFF2B2B45),
+          child: Center(
+            child: Text(
+              step.toString(),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),
@@ -215,7 +185,85 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  // Build labeled text field
+  Widget _buildRegistrationStep1() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Get started',
+          style: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 5),
+        const Text(
+          'Please enter your details',
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white70,
+          ),
+        ),
+        const SizedBox(height: 40),
+        _buildLabeledTextField('Account holder name *', 'Enter your name'),
+        const SizedBox(height: 15),
+        _buildLabeledTextField('Company name *', 'Enter company name'),
+        const SizedBox(height: 15),
+        _buildLabeledTextField('Email *', 'Enter your email'),
+        const SizedBox(height: 15),
+        _buildLabeledTextField('Password *', 'Enter your password', obscureText: true),
+        const SizedBox(height: 25),
+        Center(
+          child: SizedBox(
+            width: 200,
+            height: 40,
+            child: ElevatedButton(
+              onPressed: _goToNextStep,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF58C6A9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Text(
+                'Next',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Center(
+          child: RichText(
+            text: TextSpan(
+              text: "Already have an account? ",
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
+              children: [
+                TextSpan(
+                  text: 'Log in here',
+                  style: const TextStyle(
+                    color: Color(0xFF58C6A9),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      // Navigate to login page
+                    },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildLabeledTextField(String label, String hintText, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
