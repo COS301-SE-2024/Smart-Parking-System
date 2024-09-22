@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:smart_parking_system/webapp/components/registration3.dart';
-import 'package:smart_parking_system/webapp/components/registration4.dart';
-import 'package:smart_parking_system/webapp/components/registration5.dart';
+
 
 class Registration2 extends StatefulWidget {
-  const Registration2({Key? key}) : super(key: key);
+  const Registration2({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Registration2State createState() => _Registration2State();
 }
 
@@ -98,7 +98,7 @@ class _Registration2State extends State<Registration2> {
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF58C6A9)),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
       ),
     );
   }
@@ -167,15 +167,15 @@ class _Registration2State extends State<Registration2> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            timePickerTheme: TimePickerThemeData(
-              dialHandColor: const Color(0xFF58C6A9),
+            timePickerTheme: const TimePickerThemeData(
+              dialHandColor: Color(0xFF58C6A9),
               hourMinuteColor: Colors.white,
               hourMinuteTextColor: Colors.black,
               dialTextColor: Colors.black,
               backgroundColor: Colors.white,
             ),
-            colorScheme: ColorScheme.light(
-              primary: const Color(0xFF58C6A9),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF58C6A9),
               onSurface: Colors.black,
             ),
           ),
@@ -186,20 +186,21 @@ class _Registration2State extends State<Registration2> {
 
     if (startTime != null) {
       TimeOfDay? endTime = await showTimePicker(
+        // ignore: use_build_context_synchronously
         context: context,
         initialTime: startTime,
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              timePickerTheme: TimePickerThemeData(
-                dialHandColor: const Color(0xFF58C6A9),
+              timePickerTheme: const TimePickerThemeData(
+                dialHandColor: Color(0xFF58C6A9),
                 hourMinuteColor: Colors.white,
                 hourMinuteTextColor: Colors.black,
                 dialTextColor: Colors.black,
                 backgroundColor: Colors.white,
               ),
-              colorScheme: ColorScheme.light(
-                primary: const Color(0xFF58C6A9),
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xFF58C6A9),
                 onSurface: Colors.black,
               ),
             ),
