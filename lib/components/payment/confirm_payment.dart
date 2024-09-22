@@ -418,7 +418,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: AssetImage(carLogo),
+                            image: NetworkImage(carLogo),
                             fit: BoxFit.cover,
                           ),
                         ),
