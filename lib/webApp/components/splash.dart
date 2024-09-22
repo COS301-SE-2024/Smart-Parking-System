@@ -4,7 +4,7 @@ import 'package:smart_parking_system/webapp/components/login.dart';
 import 'package:smart_parking_system/webapp/components/registration1.dart';
 
 class Splash extends StatelessWidget {
-  const Splash({Key? key}) : super(key: key);
+  const Splash({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +22,14 @@ class Splash extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
-        '/login': (context) => LoginPage(),
-        '/registration': (context) => RegistrationPage()
+        '/login': (context) => const LoginPage(),
+        '/registration': (context) => const RegistrationPage()
       },
     );
   }
 }
 
+// ignore: use_key_in_widget_constructors
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class SplashScreen extends StatelessWidget {
                                       Navigator.pushNamed(context, '/login');
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF58C6A9),
+                                      backgroundColor: const Color(0xFF58C6A9),
                                       padding: const EdgeInsets.symmetric(vertical: 15),
                                     ),
                                     child: Text(
