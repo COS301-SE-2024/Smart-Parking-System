@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Registration4 extends StatefulWidget {
-  const Registration4({Key? key}) : super(key: key);
+  const Registration4({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Registration4State createState() => _Registration4State();
 }
 
