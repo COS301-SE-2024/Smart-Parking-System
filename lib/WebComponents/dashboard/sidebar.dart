@@ -15,6 +15,7 @@ class Sidebar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Image.asset(
+              // gitguardian:ignore
               'assets/logo_small.jpg', 
               width: 197,
               fit: BoxFit.contain,
