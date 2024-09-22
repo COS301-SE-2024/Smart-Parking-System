@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -41,22 +43,16 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         final data = doc.data() as Map<String, dynamic>;
 
         String cardNumber = data['cardNumber'] ?? '';
-        String cardImage = 'assets/visa.png'; // 默认图片
-
-        if (cardNumber.startsWith('4')) {
-          cardImage = 'assets/visa.png'; // Visa 卡图片
-        } else if (cardNumber.startsWith('5')) {
-          cardImage = 'assets/mastercard.png'; // MasterCard 卡图片
-        }
 
         fetchedCards.add({
           'id': doc.id,
           'bank': data['bank'] ?? '',
           'number': '**** **** **** ${cardNumber.isNotEmpty ? cardNumber.substring(cardNumber.length - 4) : '0000'}',
+          'cardNumber': data['cardNumber'] ?? '',
           'cvv': data['cvv'] ?? '',
           'name': data['holderName'] ?? '',
           'expiry': data['expiry'] ?? '',
-          'image': cardImage, // 动态图片
+          'image': 'assets/${data['cardType']}.png',
         });
       }
 
@@ -64,7 +60,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         cards = fetchedCards;
       });
     } catch (e) {
-      // 处理错误
       //print('Error fetching cards: $e');
     }
   }
@@ -118,7 +113,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             TextButton(
               child: const Text('Top Up', style: TextStyle(color: Colors.tealAccent)),
               onPressed: () async {
-                if (topUpAmount != null && topUpAmount! > 0) {
+                if (isValidString(topUpAmount.toString(), r'^\d+(\.\d+)?$')) {
                   User? user = FirebaseAuth.instance.currentUser;
                   setState(() {
                     creditAmount += topUpAmount!;
@@ -136,6 +131,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
+                } else {
+                  showToast(message: "Invalid Amount : $topUpAmount");
                 }
               },
             ),
