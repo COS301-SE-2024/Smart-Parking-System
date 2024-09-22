@@ -12,90 +12,63 @@ class _Registration4State extends State<Registration4> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
-      body: Container(
-        height: MediaQuery.of(context).size.height, // Constrain the height
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 20),
-              _buildImage(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/backW.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            color: const Color(0xFF23223A),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/logo2.png',
-                    height: 70,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          _buildPriceText(),
+          const SizedBox(height: 15),
+          _buildPriceSlider(),
+          const SizedBox(height: 25),
+          Center(
+            child: SizedBox(
+              width: 200,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Handle next step action
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF58C6A9),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 24),
-                  _buildStepIndicators(),
-                  const SizedBox(height: 48),
-                  _buildPriceText(),
-                  const SizedBox(height: 16),
-                  _buildPriceSlider(),
-                  const SizedBox(height: 24),
-                  _buildNextButton(),
-                ],
+                ),
+                child: const Text(
+                  'Next',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildStepIndicators() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(5, (index) =>
-          _buildStyledStepIndicator(index + 1, index == 3)),
     );
   }
 
   Widget _buildPriceText() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Select pricing per hour*",
+          "Select pricing per hour *",
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(height: 8),
         Text(
           "R${_pricePerHour.toInt()}",
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 50,
+            fontSize: 36,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -108,7 +81,7 @@ class _Registration4State extends State<Registration4> {
       value: _pricePerHour,
       min: 10,
       max: 100,
-      divisions: 9,
+      divisions: 90,
       activeColor: const Color(0xFF58C6A9),
       inactiveColor: Colors.grey,
       onChanged: (value) {
@@ -116,64 +89,6 @@ class _Registration4State extends State<Registration4> {
           _pricePerHour = value;
         });
       },
-    );
-  }
-
-  Widget _buildNextButton() {
-    return ElevatedButton(
-      onPressed: () {
-        // Handle next step action
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-      ),
-      child: const Text(
-        'Next',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImage() {
-    return Container(
-      height: 300, // Define a fixed height for the image
-      constraints: const BoxConstraints(
-        maxHeight: 300,
-      ),
-      child: Image.asset(
-        'assets/parking.png',
-        fit: BoxFit.cover,
-        width: double.infinity,
-      ),
-    );
-  }
-
-  Widget _buildStyledStepIndicator(int step, bool isActive) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF58C6A9) : const Color(0xFF2B2B45),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: Text(
-          step.toString(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      ),
     );
   }
 }
