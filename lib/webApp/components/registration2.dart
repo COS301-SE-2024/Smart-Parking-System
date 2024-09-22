@@ -216,4 +216,3 @@ class _Registration2State extends State<Registration2> {
     }
   }
 }
-//column
