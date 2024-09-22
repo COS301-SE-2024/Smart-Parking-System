@@ -436,7 +436,7 @@ Widget _buildNotification(Notification notification) {
               const SizedBox(height: 5),
               if (notification is BookedNotification)
                 Text(
-                  '${notification.location}, Parking Slot ${notification.parkingslot}',
+                  ' • ${notification.location}\n • ${notification.parkingslot}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
