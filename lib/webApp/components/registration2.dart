@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 import 'package:smart_parking_system/webApp/components/registration3.dart';
 
@@ -12,6 +15,7 @@ class Registration2 extends StatefulWidget {
 }
 
 class _Registration2State extends State<Registration2> {
+  final TextEditingController _locationController = TextEditingController();
   Map<String, String> operationalHours = {
     'Monday': '--',
     'Tuesday': '--',
@@ -21,6 +25,52 @@ class _Registration2State extends State<Registration2> {
     'Saturday': '--',
     'Sunday': '--',
   };
+
+
+  Future<void> _clientRegisterParkingDetails() async {
+    final String location = _locationController.text;
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      
+      if (user != null) {
+        // Query for existing document
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('client_parking_details')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Document exists, update it
+          await querySnapshot.docs.first.reference.update({
+            'location': location,
+            'operationHours': operationalHours,
+          });
+          showToast(message: 'Parking Detail updated Successfully!');
+        } else {
+          // Document doesn't exist, add new one
+          await FirebaseFirestore.instance.collection('client_parking_details').add({
+            'userId': user.uid,
+            'location': location,
+            'operationHours': operationalHours,
+            'pricingPerHour': null,
+          });
+          showToast(message: 'Parking Detail added Successfully!');
+        }
+
+        // ignore: use_build_context_synchronously
+        if(mounted) { 
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Registration3()),
+          );
+        }
+      } else {
+        showToast(message: 'User not logged in');
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +89,7 @@ class _Registration2State extends State<Registration2> {
               height: 40,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Registration3()),
-                  );
+                  _clientRegisterParkingDetails();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF58C6A9),
@@ -86,6 +133,7 @@ class _Registration2State extends State<Registration2> {
 
   Widget _buildTextField(String hintText, {bool obscureText = false}) {
     return TextField(
+      controller: _locationController,
       obscureText: obscureText,
       style: const TextStyle(color: Colors.white, fontSize: 14),
       cursorColor: const Color(0xFF58C6A9),
