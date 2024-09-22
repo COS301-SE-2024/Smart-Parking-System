@@ -9,9 +9,10 @@ import 'package:smart_parking_system/webapp/components/registration5.dart';
 class RegistrationPage extends StatefulWidget {
   final int currentStep;
 
-  const RegistrationPage({Key? key, this.currentStep = 1}) : super(key: key);
+  const RegistrationPage({super.key, this.currentStep = 1});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
@@ -115,10 +116,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
       padding: EdgeInsets.zero,
       child: Align(
         alignment: Alignment.centerLeft,
+        // ignore: sized_box_for_whitespace
         child: Container(
           width: 600,
           child: Card(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(70),
                 bottomRight: Radius.circular(70),
@@ -176,7 +178,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           child: Center(
             child: Text(
               step.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -273,7 +275,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -299,7 +301,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF58C6A9)),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
       ),
     );
   }
