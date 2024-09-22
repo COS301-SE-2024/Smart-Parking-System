@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
@@ -46,29 +47,50 @@ class EditCardPageState extends State<EditCardPage> {
 
   Future<void> _saveCardDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
+
+
+    final String cardNumber = _cardNumberController.text.replaceAll(RegExp(r'\s+'), '');
+    final String holderName = _nameController.text;
+    final String expiry = _expiryController.text;
+    final String cvv = _cvvController.text;
+    final String bank = _bankController.text;
+    if(!isValidString(cardNumber, r'^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\d{3})\d{11})$')){showToast(message: "Invalid Card Number, Remove any spaces"); return;}
+    if(!isValidString(holderName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
+    if(!isValidString(expiry, r'^\d{2}/\d{2}$')){showToast(message: "Invalid Expiry, format: 00/00"); return;}
+    if(!isValidString(cvv, r'^\d{3}$')){showToast(message: "Invalid CVV, format 000"); return;}
+    if(!isValidString(bank, r'^[a-zA-Z]+$')){showToast(message: "Invalid Bank Name"); return;}
+    Map<String, String> cardPatterns = {
+      'visa': r'^4[0-9]{12}(?:[0-9]{3})?$',
+      'mastercard': r'^5[1-5][0-9]{14}$',
+      'american express': r'^3[47][0-9]{13}$',
+      'diners club': r'^3(?:0[0-5]|[68][0-9])[0-9]{11}$',
+      'discover': r'^6(?:011|5[0-9]{2})[0-9]{12}$',
+      'jcb': r'^(?:2131|1800|35\d{3})\d{11}$'
+    };
+    String cardType = '';
+    for (var entry in cardPatterns.entries) {
+      if (RegExp(entry.value).hasMatch(cardNumber)) {
+        cardType = entry.key;
+      }
+    }
+
     if (user != null) {
       try {
         await FirebaseFirestore.instance.collection('cards').doc(widget.cardId).update({
-          'cardNumber': _cardNumberController.text,
-          'cvv': _cvvController.text,
-          'holderName': _nameController.text,
-          'expiry': _expiryController.text,
-          'bank': _bankController.text,
+          'cardNumber': cardNumber,
+          'cvv': cvv,
+          'holderName': holderName,
+          'expiry': expiry,
+          'bank': bank,
+          'cardType': cardType
         });
 
         if (mounted) {
           showToast(message: "Saved updated Card Information!");
-          Navigator.of(context).pop(); // 返回上一页
+          Navigator.of(context).pop();
         }
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to save card details: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        showToast(message: 'Failed to edit card details: $e');
       }
     }
   }
