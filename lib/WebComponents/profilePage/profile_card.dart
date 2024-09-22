@@ -16,7 +16,7 @@ class ProfileCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 112.5,
-            backgroundImage: NetworkImage('https://cdn.builder.io/api/v1/image/assets/TEMP/82dc3a69dcf46cd825727ce87572e42325f569c3cbe3680d98e1c0c5f86bcc51?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346'),
+            backgroundImage: AssetImage('assets/Image 113.png'),
           ),
           SizedBox(height: 69),
           Text(

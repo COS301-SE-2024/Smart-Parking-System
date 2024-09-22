@@ -14,8 +14,8 @@ class Sidebar extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Image.network(
-              'https://cdn.builder.io/api/v1/image/assets/TEMP/19f28bdda1b8eddb4510581c4a28f215f5cb05e9913f7351144e92620ab76d00?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            child: Image.asset(
+              'assets/logo_small.jpg', // Replace with your local asset for logo
               width: 197,
               fit: BoxFit.contain,
             ),
@@ -34,19 +34,15 @@ class Sidebar extends StatelessWidget {
   Widget _buildDashboardMenu(BuildContext context) {
     return _buildMenuItem(
       'Dashboard',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/89449ae15f2084058eb80aca52c1aa06c1192b07fea95c0a50f695a5ca8a64b7?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+      'assets/Component 1.png', // Replace with your local asset for dashboard icon
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
       },
-
-    ) ;
-
+    );
   }
-
-
 
   Widget _buildAccountPages() {
     return const Padding(
@@ -78,7 +74,7 @@ class Sidebar extends StatelessWidget {
         children: [
           _buildMenuItem(
             'Profile',
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/68718f444accf9babdd692e1aecd79c296ebb48ea6a17ead645cb546155c9077?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            'assets/Frame 1171275427.png', // Replace with your local asset for profile icon
             isSelected: true,
           ),
           Column(
@@ -101,8 +97,8 @@ class Sidebar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Row(
           children: [
-            Image.network(
-              iconUrl,
+            Image.asset(
+              iconUrl, // Use local asset icon here
               width: 30,
               height: 30,
               fit: BoxFit.contain,
@@ -136,5 +132,3 @@ class Sidebar extends StatelessWidget {
     );
   }
 }
-
-

@@ -15,7 +15,7 @@ class Sidebar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Image.asset(
-              'assets/icons/logo.png', // Replace with your local asset
+              'assets/logo_small.jpg', // Replace with your local asset
               width: 197,
               fit: BoxFit.contain,
             ),
@@ -44,7 +44,7 @@ class Sidebar extends StatelessWidget {
         children: [
           _buildMenuItem(
             'Dashboard',
-            'assets/icons/dashboard_icon.png', // Replace with your local asset
+            'assets/Frame 1171275428-1.png', // Replace with your local asset
             isSelected: true,
             onTap: () {},
           ),
@@ -61,10 +61,43 @@ class Sidebar extends StatelessWidget {
     );
   }
 
+  // Define the _buildSubMenuItem method here
+  Widget _buildSubMenuItem(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 61.0, top: 8.0, bottom: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  // Define the _buildAccountPages method here
+  Widget _buildAccountPages() {
+    return const Padding(
+      padding: EdgeInsets.only(left: 29.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'ACCOUNT PAGES',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildProfileMenuItem(BuildContext context) {
     return _buildMenuItem(
       'Profile',
-      'assets/icons/profile_icon.png', // Replace with your local asset
+      'assets/Component 2.png', // Replace with your local asset
       onTap: () {
         Navigator.push(
           context,
