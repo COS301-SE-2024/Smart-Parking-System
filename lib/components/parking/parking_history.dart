@@ -150,7 +150,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             session.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R ${(bookingData['price']).toInt()}',
+            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
             session.address,
             session.zone,
             session.level,
@@ -247,7 +247,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           double bookedDuration = document.get('duration') as double;
 
           // Calculate total price
-          int totalPrice = bookedPrice.toInt();
+          int totalPrice = (bookedPrice * bookedDuration).toInt();
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
@@ -605,7 +605,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 child: Column(
                   children: [
                     const Text(
-                      '  Active Session',
+                      'Active Session',
                       style: TextStyle(
                         color: Colors.tealAccent,
                         fontSize: 18,
@@ -613,7 +613,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                       ),
                     ),
                     if(activesessions.isEmpty)
-                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                      const Text('No Sessions', style: TextStyle(color: Colors.grey, fontSize: 16),),
                     const SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -625,7 +625,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                     const SizedBox(height: 20),
                     // Reserved Spots
                     const Text(
-                        '  Reserved Spots',
+                        'Reserved Spots',
                         style: TextStyle(
                           color: Colors.tealAccent,
                           fontSize: 18,
@@ -633,7 +633,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                         ),
                       ),
                     if(reservedspots.isEmpty)
-                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                      const Text('No Sessions', style: TextStyle(color: Colors.grey, fontSize: 16),),
                     const SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -914,7 +914,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  activesession.rate,
+                  '${activesession.rate}/Hr',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
