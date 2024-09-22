@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/login/registration_successful.dart';
 
@@ -20,22 +21,6 @@ class _CarRegistrationState extends State<CarRegistration> {
   final TextEditingController _licenseController = TextEditingController();
 
   Future<void> validateVehicleDetails() async {
-    // Validate Vehicle details
-    bool bValid = true;
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const SuccessionPage(),
-      ),
-    );
-
-    if (bValid) {
-      _register();
-    }
-  }
-    
-
-  Future<void> _register() async {
     final String brand = _brandController.text;
     final String model = _modelController.text;
     final String color = _colorController.text;
@@ -43,6 +28,11 @@ class _CarRegistrationState extends State<CarRegistration> {
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
+
+      if(!isValidString(brand, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Brand"); return;}
+      if(!isValidString(model, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid Model"); return;}
+      if(!isValidString(color, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Color"); return;}
+      if(!isValidString(license, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid License"); return;}
 
       if (user != null) {
         await FirebaseFirestore.instance.collection('vehicles').add({
@@ -54,15 +44,17 @@ class _CarRegistrationState extends State<CarRegistration> {
         });
 
         showToast(message: 'Vehicle Added Successfully!');
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const SuccessionPage(),
-          ),
-        );
       }
     } catch (e) {
       showToast(message: 'Error: $e');
+    }
+    
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SuccessionPage(),
+        ),
+      );
     }
   }
 
