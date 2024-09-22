@@ -124,7 +124,7 @@ class BookingDetails extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      ),//test
     );
   }
 }
