@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_parking_system/webapp/components/login.dart';
-import 'package:smart_parking_system/webapp/components/registration1.dart';
+import 'package:smart_parking_system/webApp/components/login.dart';
+import 'package:smart_parking_system/webApp/components/registration1.dart';
 
 class Splash extends StatelessWidget {
   const Splash({super.key});

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import 'package:smart_parking_system/webapp/components/registration2.dart';
-import 'package:smart_parking_system/webapp/components/registration3.dart';
-import 'package:smart_parking_system/webapp/components/registration4.dart';
-import 'package:smart_parking_system/webapp/components/registration5.dart';
+import 'package:smart_parking_system/webApp/components/registration2.dart';
+import 'package:smart_parking_system/webApp/components/registration3.dart';
+import 'package:smart_parking_system/webApp/components/registration4.dart';
+import 'package:smart_parking_system/webApp/components/registration5.dart';
 
 class RegistrationPage extends StatefulWidget {
   final int currentStep;
