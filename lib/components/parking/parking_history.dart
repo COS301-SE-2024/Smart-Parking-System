@@ -150,7 +150,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             session.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
+            'R ${(bookingData['price']).toInt()}',
             session.address,
             session.zone,
             session.level,
@@ -247,7 +247,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           double bookedDuration = document.get('duration') as double;
 
           // Calculate total price
-          int totalPrice = (bookedPrice * bookedDuration).toInt();
+          int totalPrice = bookedPrice.toInt();
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
@@ -598,61 +598,81 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 ],
               ),
             ),
-            const Text(
-              '    Active Session',
-              style: TextStyle(
-                color: Colors.tealAccent,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: activesessions.expand((activesession) => [
-                _buildActiveSessionItem(activesession),
-                const SizedBox(height: 10),
-              ]).toList(),
-            ),
-            const SizedBox(height: 20),
-            // Reserved Spots
-             const Text(
-                '    Reserved Spots',
-                style: TextStyle(
-                  color: Colors.tealAccent,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: reservedspots.expand((reservedspot) => [
-                _buildReservedSessionItem(reservedspot),
-                const SizedBox(height: 10),
-              ]).toList(),
-            ),
-            const SizedBox(height: 20),
-            ExpansionTile(
-              title: const Text(
-                'Completed Sessions',
-                style: TextStyle(
-                  color: Colors.tealAccent,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              iconColor: Colors.white,
-              collapsedIconColor: Colors.white,
-              children: completedsessions.map((completedsession) => 
-                Column(
+            Center(
+              child: Container(
+                width: 500,
+                alignment: Alignment.topLeft,
+                child: Column(
                   children: [
-                    _buildCompletedSessionItem(completedsession),
+                    const Text(
+                      '  Active Session',
+                      style: TextStyle(
+                        color: Colors.tealAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if(activesessions.isEmpty)
+                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
                     const SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: activesessions.expand((activesession) => [
+                        _buildActiveSessionItem(activesession),
+                        const SizedBox(height: 10),
+                      ]).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    // Reserved Spots
+                    const Text(
+                        '  Reserved Spots',
+                        style: TextStyle(
+                          color: Colors.tealAccent,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    if(reservedspots.isEmpty)
+                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    const SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: reservedspots.expand((reservedspot) => [
+                        _buildReservedSessionItem(reservedspot),
+                        const SizedBox(height: 10),
+                      ]).toList(),
+                    ),
+
                   ],
                 )
-              ).toList(),
+              ),
             ),
+            const SizedBox(height: 20),
+            Center(
+              child: SizedBox(
+                width: 500,
+                child: ExpansionTile(
+                  title: const Text(
+                    'Completed Sessions',
+                    style: TextStyle(
+                      color: Colors.tealAccent,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  iconColor: Colors.white,
+                  collapsedIconColor: Colors.white,
+                  children: completedsessions.map((completedsession) => 
+                    Column(
+                      children: [
+                        _buildCompletedSessionItem(completedsession),
+                        const SizedBox(height: 10),
+                      ],
+                    )
+                  ).toList(),
+                ),
+              ),
+            ),         
           ],
         ),
         ),
@@ -894,7 +914,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  '${activesession.rate}/Hr',
+                  activesession.rate,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

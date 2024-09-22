@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
@@ -65,6 +66,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
       _isUploading = true;
     });
 
+    final String username = _nameController.text;
+    final String email = _emailController.text;
+    final String phoneNumber = _phoneController.text;
+    
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(username, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid name"); setState(() {_isUploading = false; }); return;}
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -75,15 +84,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
         }
 
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'username': _nameController.text,
-          'email': _emailController.text,
-          'phoneNumber': _phoneController.text,
+          'username': username,
+          'email': email,
+          'phoneNumber': phoneNumber,
           'profileImageUrl': profileImageUrl, // Save the profile image URL
         }, SetOptions(merge: true));
 
         showToast(message: 'Profile Updated Successfully!');
         if (mounted) {
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const SettingsPage(),
             ),
@@ -168,107 +177,105 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 140,
-                          height: 140,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xFF3A3D5F),
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.grey[300],
-                          backgroundImage: _profileImage != null
-                              ? FileImage(_profileImage!)
-                              : _profileImageUrl != null
-                                  ? NetworkImage(_profileImageUrl!) as ImageProvider
-                                  : null,
-                          onBackgroundImageError: _profileImage == null && _profileImageUrl == null
-                              ? null
-                              : (error, stackTrace) {
-                                  showToast(message: 'Error loading image: $error');
-                                },
-                          child: _profileImage == null && _profileImageUrl == null
-                              ? const Icon(Icons.person, size: 80, color: Colors.grey)
-                              : null,
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: InkWell(
-                            onTap: _pickImage,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
+            child: Center(
+              child: SizedBox(
+                width: 500,
+                  child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 140,
+                              height: 140,
                               decoration: const BoxDecoration(
-                                color: Colors.white,
                                 shape: BoxShape.circle,
+                                color: Color(0xFF3A3D5F),
                               ),
-                              child: const Icon(
-                                Icons.edit,
-                                color: Colors.black,
-                                size: 20,
+                            ),
+                            CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey[300],
+                              backgroundImage: _profileImage != null
+                                  ? FileImage(_profileImage!)
+                                  : _profileImageUrl != null
+                                      ? NetworkImage(_profileImageUrl!) as ImageProvider
+                                      : null,
+                              onBackgroundImageError: _profileImage == null && _profileImageUrl == null
+                                  ? null
+                                  : (error, stackTrace) {
+                                      showToast(message: 'Error loading image: $error');
+                                    },
+                              child: _profileImage == null && _profileImageUrl == null
+                                  ? const Icon(Icons.person, size: 80, color: Colors.grey)
+                                  : null,
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: InkWell(
+                                onTap: _pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ProfileField(
+                        label: 'Username',
+                        controller: _nameController,
+                      ),
+                      ProfileField(
+                        label: 'Email address',
+                        controller: _emailController,
+                      ),
+                      ProfileField(
+                        label: 'Phone number',
+                        controller: _phoneController,
+                      ),
+                      const SizedBox(height: 40),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _updateUserProfile,
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 100,
+                              vertical: 15,
+                            ),
+                            backgroundColor: const Color.fromRGBO(88, 198, 169, 1),
+                          ),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  ProfileField(
-                    label: 'Username',
-                    controller: _nameController,
-                  ),
-                  ProfileField(
-                    label: 'Email address',
-                    controller: _emailController,
-                  ),
-                  ProfileField(
-                    label: 'Phone number',
-                    controller: _phoneController,
-                  ),
-                  const SizedBox(height: 40),
-                  Container(
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF58C6A9), Color(0xFF4CAF93)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _updateUserProfile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                      ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

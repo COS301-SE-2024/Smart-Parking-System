@@ -7,7 +7,7 @@ void main() {
     testWidgets('Displays the correct vehicle information', (WidgetTester tester) async {
       const carName = 'Toyota';
       const carType = 'Camry';
-      const imagePath = 'assets/default_logo.png';
+      const imagePath = null;
       const isSelected = true;
 
       await tester.pumpWidget(MaterialApp(
@@ -40,7 +40,7 @@ void main() {
           body: CarCard(
             carName: 'Toyota',
             carType: 'Camry',
-            imagePath: 'assets/default_logo.png',
+            imagePath: null,
             isSelected: isSelected,
             onSelect: onSelect,
             licensePlate: 'TBG0T2GP'

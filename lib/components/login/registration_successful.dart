@@ -18,11 +18,13 @@ class _SuccessionPageState extends State<SuccessionPage> {
     super.initState();
   }
   void nextPage () {
-    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const MainPage(),
-                      ),
-                    );
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainPage(),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
    @override
@@ -62,7 +64,7 @@ class _SuccessionPageState extends State<SuccessionPage> {
                 nextButton(
                   displayText: 'Finished', 
                   action: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const MainPage(),
                       ),

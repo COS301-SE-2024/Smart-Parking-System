@@ -62,11 +62,13 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   String? endTime = '';
   String? bookingDate = '';
   double? totalPrice = 0;
-
+  double discountedPrice = 0;
+  bool couponsApplied = false;
   String cardNumber = '';
   String cardNumberFormatted = '';
   List<Map<String, dynamic>> cards = [];
   int? _selectedCard;
+  List<String> appliedCoupons = [];
 
   //Functions
   Future<void> _bookspace() async {
@@ -86,6 +88,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
 
       final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
+      double finalPrice = ((totalPrice! - discountedPrice) < 0 ? 0.00 : totalPrice! - discountedPrice);
+
       if (user != null) {
         await FirebaseFirestore.instance.collection('bookings').add({
           'userId': user.uid,
@@ -95,7 +99,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'time': startTime,
           'date': bookingDate,
           'duration': widget.selectedDuration,
-          'price': widget.price,
+          'price': finalPrice,
           'address': widget.bookedAddress,
           'disabled': widget.selectedDisabled,
           'vehicleId': widget.vehicleId,
@@ -105,6 +109,18 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           'fcmToken': fcmToken,
           'notificationTime': notificationTimeUtc,
         });
+
+        if (couponsApplied) {
+          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+              .collection('coupons')
+              .where('userId', isEqualTo: user.uid)
+              .where('applied', isEqualTo: true)
+              .get();
+
+          for (var doc in querySnapshot.docs) {
+            await doc.reference.delete();
+          }
+        }
 
         showToast(message: 'Booked Successfully!');
         _makeNotifications();
@@ -118,6 +134,36 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       }
     } catch (e) {
       showToast(message: 'Error: $e');
+    }
+  }
+
+  Future<void> checkCoupons() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('coupons')
+          .where('userId', isEqualTo: user.uid)
+          .where('applied', isEqualTo: true)
+          .get();
+
+      setState(() {
+        discountedPrice = 0;
+        if (querySnapshot.docs.isNotEmpty) {
+          couponsApplied = true;
+          appliedCoupons = querySnapshot.docs.map((doc) {
+            double amount = (doc.get('amount') as num).toDouble();
+            discountedPrice += amount;
+            return 'ZAR R$amount OFF';
+          }).toList();
+        } else {
+          couponsApplied = false;
+          appliedCoupons.clear();
+        }
+      });
+    } catch (e) {
+      showToast(message: 'Error checking coupons: $e');
     }
   }
 
@@ -314,7 +360,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   @override
   void initState() {
     super.initState();
+    checkCoupons();
     getDetails();
+    
   }
 
   @override
@@ -370,7 +418,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: AssetImage(carLogo),
+                            image: NetworkImage(carLogo),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -518,14 +566,34 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)),
                 title: const Text('Offers', style: TextStyle(color: Colors.white)),
                 trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                onTap: () {
-                  Navigator.of(context).push(
+                onTap: () async {
+                  final result = await Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const OfferPage(),
                     ),
                   );
+                  if (result == true) {
+                    checkCoupons(); // Update the coupons list when coming back
+                  }
                 },
               ),
+              if (couponsApplied) ...[
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'Coupons have been applied!',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                  ),
+                ),
+                for (var coupon in appliedCoupons)
+                  ListTile(
+                    leading: const Icon(Icons.local_activity, color: Color(0xFF58C6A9)),
+                    title: Text(
+                      coupon,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF58C6A9)),
+                    ),
+                  ),
+              ],
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -622,8 +690,19 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                           text: 'Total\n',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                         ),
+                        if (couponsApplied) ...[
+                          TextSpan(
+                            text: 'ZAR $totalPrice\n',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 20,
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
                         TextSpan(
-                          text: 'ZAR $totalPrice',
+                          text: 'ZAR ${((totalPrice! - discountedPrice) < 0 ? 0.00 : totalPrice! - discountedPrice).toStringAsFixed(2)}',
                           style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),
                         ),
                       ],

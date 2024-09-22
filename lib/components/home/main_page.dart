@@ -330,7 +330,7 @@ class _MainPageState extends State<MainPage> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => ZoneSelectPage(bookedAddress: parking.name, price: double.parse(parking.price), distanceAndDurationString: distanceAndDurationString,),
                         ),
@@ -496,25 +496,25 @@ class _MainPageState extends State<MainPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const SettingsPage(),
                     ),

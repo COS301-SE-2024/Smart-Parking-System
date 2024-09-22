@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/vehicledetails/view_vehicle.dart';
@@ -11,6 +12,7 @@ class EditVehiclePage extends StatefulWidget {
   final String color;
   final String license;
   final String vehicleId;
+  final String? image;
 
   const EditVehiclePage({
     super.key,
@@ -19,6 +21,7 @@ class EditVehiclePage extends StatefulWidget {
     required this.color,
     required this.license,
     required this.vehicleId,
+    required this.image,
   });
 
   @override
@@ -33,18 +36,28 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
   late String imageDirect;
 
   Future<void> _updateVehicleDetails() async {
+    final String brand = _brandController.text; 
+    final String model = _modelController.text;
+    final String color = _colorController.text;
+    final String license = _licenseController.text;
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
+
+      if(!isValidString(brand, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Brand"); return;}
+      if(!isValidString(model, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid Model"); return;}
+      if(!isValidString(color, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Color"); return;}
+      if(!isValidString(license, r'^[a-zA-Z0-9/\s]+$')){showToast(message: "Invalid License"); return;}
 
       if (user != null) {
         await FirebaseFirestore.instance
             .collection('vehicles')
             .doc(widget.vehicleId)
             .update({
-          'vehicleBrand': _brandController.text,
-          'vehicleModel': _modelController.text,
-          'vehicleColor': _colorController.text,
-          'licenseNumber': _licenseController.text,
+          'vehicleBrand': brand,
+          'vehicleModel': model,
+          'vehicleColor': color,
+          'licenseNumber': license,
         });
 
         if (mounted){
@@ -91,16 +104,6 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
     _colorController = TextEditingController(text: widget.color);
     _licenseController = TextEditingController(text: widget.license);
 
-    switch (widget.brand.toLowerCase()) {
-          case 'vw':
-            imageDirect = 'assets/VW_Logo.png';
-            break;
-          case 'audi':
-            imageDirect = 'assets/Audi_Logo.png';
-            break;
-          default:
-            imageDirect = 'assets/default_logo.png'; // You might want to have a default logo
-        }
   }
 
   
@@ -123,7 +126,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                     child: IconButton(
                       onPressed: () {
                         // Add your onPressed logic here
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => const ViewVehiclePage(),
                           ),
@@ -162,12 +165,19 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                 shape: BoxShape.circle, // This makes the container perfectly round
               ),
               child: Center(
-                child: Image.asset(
-                  imageDirect, // Make sure this path is correct
-                  width: 150, // Adjust the image size as needed
-                  height: 150,
-                  fit: BoxFit.contain, // This will ensure the image fits within the circle
-                ),
+                child: widget.image != null
+                    ? Image.network(
+                        widget.image!,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        'assets/default_logo.png',
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
             //FInish your code here!

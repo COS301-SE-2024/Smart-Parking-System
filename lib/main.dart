@@ -14,6 +14,7 @@
 //   // You can add logic here to handle the background message
 // }
 
+
 // Future<void> main() async {
 //   await dotenv.load(fileName: ".env");
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -80,8 +81,10 @@ class DefaultFirebaseOptions {
     }
     throw UnsupportedError(
       'DefaultFirebaseOptions are not supported for this platform.',
+
     );
   }
+
 
   static FirebaseOptions web = FirebaseOptions(
     apiKey: dotenv.env['API_KEY_WEB']!,
