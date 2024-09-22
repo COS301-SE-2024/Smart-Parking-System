@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Registration5 extends StatefulWidget {
-  const Registration5({Key? key}) : super(key: key);
+  const Registration5({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Registration5State createState() => _Registration5State();
 }
 
@@ -85,7 +86,7 @@ class _Registration5State extends State<Registration5> {
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Color(0xFF58C6A9)),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
       ),
     );
   }
