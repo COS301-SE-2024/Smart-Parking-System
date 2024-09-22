@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // For TapGestureRecognizer
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -35,10 +36,10 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.zero, // Remove space on the left
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Container(
+                      child: SizedBox(
                         width: 600, // Set a fixed width for the card
                         child: Card(
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(70),
                               bottomRight: Radius.circular(70),
@@ -96,8 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                                     emailUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
-                                    style: TextStyle(color: Colors.white), // White text color when typing
-                                    cursorColor: Color(0xFF58C6A9), // Green cursor color
+                                    style: const TextStyle(color: Colors.white), // White text color when typing
+                                    cursorColor: const Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
                                       hintText: 'Enter your email',
                                       hintStyle: const TextStyle(color: Colors.grey),
@@ -129,8 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                                     passwordUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
-                                    style: TextStyle(color: Colors.white), // White text color when typing
-                                    cursorColor: Color(0xFF58C6A9), // Green cursor color
+                                    style: const TextStyle(color: Colors.white), // White text color when typing
+                                    cursorColor: const Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
                                       hintText: 'Enter your password',
                                       hintStyle: const TextStyle(color: Colors.grey),
@@ -177,12 +178,13 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      // ignore: sized_box_for_whitespace
                                       Container(
                                         width: 50, // Set the desired width for the left divider
-                                        child: Divider(color: Colors.white70),
+                                        child: const Divider(color: Colors.white70),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 16),
                                         child: Text(
                                           'Or Sign up with',
                                           style: TextStyle(
@@ -191,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         ),
                                       ),
-                                      Container(
+                                      const SizedBox(
                                         width: 60, // Set the desired width for the right divider
                                         child: Divider(color: Colors.white70),
                                       ),
@@ -211,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                                       // Handle Google Sign-in
                                     },
                                     iconSize: 60, // Increased touch target size
-                                    padding: EdgeInsets.all(15), // Increased padding around the icon
+                                    padding: const EdgeInsets.all(15), // Increased padding around the icon
                                   ),
                                 ),
                                 const SizedBox(height: 20),

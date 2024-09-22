@@ -68,16 +68,9 @@
 //web config
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:smart_parking_system/webapp/components/registration1.dart';
-import 'package:smart_parking_system/webapp/components/registration2.dart';
-import 'package:smart_parking_system/webapp/components/registration3.dart';
-import 'package:smart_parking_system/webapp/components/registration4.dart';
-import 'package:smart_parking_system/webapp/components/registration5.dart';
-
 import 'package:smart_parking_system/webapp/components/splash.dart';
 
 class DefaultFirebaseOptions {
@@ -122,7 +115,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const RegistrationPage(),
+      home: const Splash(),
     );
   }
 }
