@@ -115,11 +115,11 @@ class _Registration5State extends State<Registration5> {
                                     Center(
                                       child: RichText(
                                         text: TextSpan(
-                                          text: "Need to change details? ",
+                                          text: "Already have an account? ",
                                           style: const TextStyle(color: Colors.white70, fontSize: 12),
                                           children: [
                                             TextSpan(
-                                              text: 'Go back',
+                                              text: 'Log in',
                                               style: const TextStyle(
                                                 color: Color(0xFF58C6A9),
                                                 fontWeight: FontWeight.bold,
