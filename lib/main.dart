@@ -72,7 +72,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart'
     show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:smart_parking_system/webapp/components/splash.dart';
+import 'package:smart_parking_system/webApp/components/splash.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
