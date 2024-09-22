@@ -14,8 +14,8 @@ class Sidebar extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Image.network(
-              'https://cdn.builder.io/api/v1/image/assets/TEMP/19f28bdda1b8eddb4510581c4a28f215f5cb05e9913f7351144e92620ab76d00?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            child: Image.asset(
+              'assets/icons/logo.png', // Replace with your local asset
               width: 197,
               fit: BoxFit.contain,
             ),
@@ -44,7 +44,7 @@ class Sidebar extends StatelessWidget {
         children: [
           _buildMenuItem(
             'Dashboard',
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/89449ae15f2084058eb80aca52c1aa06c1192b07fea95c0a50f695a5ca8a64b7?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            'assets/icons/dashboard_icon.png', // Replace with your local asset
             isSelected: true,
             onTap: () {},
           ),
@@ -61,41 +61,10 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildSubMenuItem(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 61.0, top: 8.0, bottom: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAccountPages() {
-    return const Padding(
-      padding: EdgeInsets.only(left: 29.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          'ACCOUNT PAGES',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildProfileMenuItem(BuildContext context) {
     return _buildMenuItem(
       'Profile',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/4bae99e06fc3c1bcfac582c9d802660da95637fca64251c1f76e17e61c09db52?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+      'assets/icons/profile_icon.png', // Replace with your local asset
       onTap: () {
         Navigator.push(
           context,
@@ -105,15 +74,15 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(String title, String iconUrl, {bool isSelected = false, VoidCallback? onTap}) {
+  Widget _buildMenuItem(String title, String iconPath, {bool isSelected = false, VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Row(
           children: [
-            Image.network(
-              iconUrl,
+            Image.asset(
+              iconPath,
               width: 30,
               height: 30,
               fit: BoxFit.contain,
