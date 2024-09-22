@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/WebComponents/profilePage/parking_layout_section.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -13,8 +14,8 @@ class Sidebar extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Image.network(
-              'https://cdn.builder.io/api/v1/image/assets/TEMP/19f28bdda1b8eddb4510581c4a28f215f5cb05e9913f7351144e92620ab76d00?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            child: Image.asset(
+              'assets/logo_small.jpg', 
               width: 197,
               fit: BoxFit.contain,
             ),
@@ -24,7 +25,7 @@ class Sidebar extends StatelessWidget {
           const SizedBox(height: 34),
           _buildAccountPages(),
           const SizedBox(height: 27),
-          _buildProfileMenuItem(),
+          _buildProfileMenuItem(context),
         ],
       ),
     );
@@ -43,8 +44,9 @@ class Sidebar extends StatelessWidget {
         children: [
           _buildMenuItem(
             'Dashboard',
-            'https://cdn.builder.io/api/v1/image/assets/TEMP/89449ae15f2084058eb80aca52c1aa06c1192b07fea95c0a50f695a5ca8a64b7?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+            'assets/Frame 1171275428-1.png', 
             isSelected: true,
+            onTap: () {},
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,8 +61,22 @@ class Sidebar extends StatelessWidget {
     );
   }
 
+  // Define the _buildSubMenuItem method here
+  Widget _buildSubMenuItem(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 61.0, top: 8.0, bottom: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
 
-
+  // Define the _buildAccountPages method here
   Widget _buildAccountPages() {
     return const Padding(
       padding: EdgeInsets.only(left: 29.0),
@@ -78,47 +94,42 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileMenuItem() {
+  Widget _buildProfileMenuItem(BuildContext context) {
     return _buildMenuItem(
       'Profile',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/4bae99e06fc3c1bcfac582c9d802660da95637fca64251c1f76e17e61c09db52?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
+      'assets/Component 2.png', // Replace with your local asset
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ParkingLayoutScreen()),
+        );
+      },
     );
   }
 
-  Widget _buildMenuItem(String title, String iconUrl, {bool isSelected = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Row(
-        children: [
-          Image.network(
-            iconUrl,
-            width: 30,
-            height: 30,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(width: 15),
-          Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.white.withOpacity(0.8),
-              fontSize: 14,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+  Widget _buildMenuItem(String title, String iconPath, {bool isSelected = false, VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            Image.asset(
+              iconPath,
+              width: 30,
+              height: 30,
+              fit: BoxFit.contain,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget _buildSubMenuItem(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 61.0, top: 8.0, bottom: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
+            const SizedBox(width: 15),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white.withOpacity(0.8),
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );
