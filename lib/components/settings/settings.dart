@@ -43,7 +43,7 @@ Future<void> updateNotificationPreference(bool isEnabled) async {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  String _username = 'John Doe';
+  String _username = 'Username';
   String? _profileImageUrl;
 
   @override
