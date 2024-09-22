@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/webApp/components/registration5.dart';
 
 class Registration4 extends StatefulWidget {
   const Registration4({super.key});
@@ -10,6 +14,50 @@ class Registration4 extends StatefulWidget {
 
 class _Registration4State extends State<Registration4> {
   double _pricePerHour = 20.0; // Default price
+
+  Future<void> _clientRegisterParkingDetails() async {
+
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      
+      if (user != null) {
+        // Query for existing document
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('client_parking_details')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Document exists, update it
+          await querySnapshot.docs.first.reference.update({
+            'pricingPerHour': _pricePerHour,
+          });
+          showToast(message: 'Parking Detail updated Successfully!');
+        } else {
+          // Document doesn't exist, add new one
+          await FirebaseFirestore.instance.collection('client_parking_details').add({
+            'userId': user.uid,
+            'location': null,
+            'operationHours': null,
+            'pricingPerHour': _pricePerHour,
+          });
+          showToast(message: 'Parking Detail added Successfully!');
+        }
+
+        // ignore: use_build_context_synchronously
+        if(mounted) { 
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Registration5()),
+          );
+        }
+      } else {
+        showToast(message: 'User not logged in');
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +77,7 @@ class _Registration4State extends State<Registration4> {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle next step action
+                  _clientRegisterParkingDetails();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF58C6A9),
