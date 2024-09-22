@@ -44,13 +44,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
       case 1:
         return _buildRegistrationStep1();
       case 2:
-        return Registration2();
+        return const Registration2();
       case 3:
-        return Registration3();
+        return const Registration3();
       case 4:
-        return Registration4();
+        return const Registration4();
       case 5:
-        return Registration5();
+        return const Registration5();
       default:
         return _buildRegistrationStep1();
     }
@@ -93,7 +93,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: Column(
                       children: [
                         _buildFormCard(),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Image.asset(
                           'assets/parking.png',
                           fit: BoxFit.cover,
