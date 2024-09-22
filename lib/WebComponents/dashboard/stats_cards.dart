@@ -46,13 +46,13 @@ class StatsCards extends StatelessWidget {
         color: const Color(0xFF1A1F37),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -74,15 +74,16 @@ class StatsCards extends StatelessWidget {
                   ),
                 ],
               ),
-              Image.network(
-                'https://cdn.builder.io/api/v1/image/assets/TEMP/77a178fd5e51f686fe8dd5dd2aee64d6d4d3f1a1865ee6b1112db404d52dde0b?placeholderIfAbsent=true&apiKey=109e5ef2921f4f19976eeca47438f346',
-                width: 176,
-                fit: BoxFit.contain,
-              ),
+              // Image.asset(
+              //   'assets/Icon4.png',
+              //   width: 45,
+              //   height: 45,
+              //   fit: BoxFit.contain,
+              // ),
             ],
           ),
-          const SizedBox(height: 34),
-          const Text(
+          SizedBox(height: 34),
+          Text(
             'NEWEST',
             style: TextStyle(
               color: Color(0xFFA0AEC0),
@@ -90,8 +91,8 @@ class StatsCards extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 19),
-          const Row(
+          SizedBox(height: 19),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
