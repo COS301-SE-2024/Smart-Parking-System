@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:smart_parking_system/webapp/components/registration3.dart';
+import 'package:smart_parking_system/webApp/components/registration3.dart';
 
 
 class Registration2 extends StatefulWidget {
