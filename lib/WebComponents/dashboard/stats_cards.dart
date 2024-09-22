@@ -33,7 +33,7 @@ class StatsCards extends StatelessWidget {
 
         var totalIncome = snapshot.data!.docs.fold<int>(
           0,
-              (sum, doc) => sum + (doc['price'] as int),
+              (docSum, doc) => docSum + (doc['price'] as int),
         );
         var latestBooking = snapshot.data!.docs.last;
 
@@ -71,7 +71,7 @@ class StatsCards extends StatelessWidget {
     var totalBookings = snapshot.data!.docs.length;
     var totalIncome = snapshot.data!.docs.fold<int>(
       0,
-          (sum, doc) => sum + (doc['price'] as int),
+          (docSum, doc) => docSum + (doc['price'] as int),
     );
     var todaysMoney = totalIncome; // Assuming totalIncome is today's income
 
