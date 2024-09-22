@@ -24,16 +24,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _currentStep = widget.currentStep;
   }
 
-  void _goToStep(int step) {
-    if (step >= 1 && step <= 5) {
+  void _goToNextStep() {
+    if (_currentStep < 5) {
       setState(() {
-        _currentStep = step;
+        _currentStep++;
       });
     }
-  }
-
-  void _goToNextStep() {
-    _goToStep(_currentStep + 1);
   }
 
   Widget _getCurrentRegistrationStep() {
@@ -163,7 +159,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget _buildStyledStepIndicator(int step, bool isActive) {
     return GestureDetector(
-      onTap: () => _goToStep(step),
+      onTap: () {
+        setState(() {
+          _currentStep = step;
+        });
+      },
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
@@ -245,7 +245,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               style: const TextStyle(color: Colors.white70, fontSize: 12),
               children: [
                 TextSpan(
-                  text: 'Log in here',
+                  text: 'Log in',
                   style: const TextStyle(
                     color: Color(0xFF58C6A9),
                     fontWeight: FontWeight.bold,
