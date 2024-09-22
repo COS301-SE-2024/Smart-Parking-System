@@ -32,6 +32,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
     }
   }
 
+  void _navigateToStep(int step) {
+    setState(() {
+      _currentStep = step;
+    });
+  }
+
   Widget _getCurrentRegistrationStep() {
     switch (_currentStep) {
       case 1:
@@ -49,6 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -159,11 +166,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget _buildStyledStepIndicator(int step, bool isActive) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _currentStep = step;
-        });
-      },
+      onTap: () => _navigateToStep(step),
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
