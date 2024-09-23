@@ -95,11 +95,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
       case 1:
         return _buildRegistrationStep1();
       case 2:
-        return const Registration2();
+        return Registration2(onRegisterComplete: _goToNextStep,);
       case 3:
-        return const Registration3();
+        return  Registration3(onRegisterComplete: _goToNextStep,);
       case 4:
-        return const Registration4();
+        return  Registration4(onRegisterComplete: _goToNextStep,);
       case 5:
         return const Registration5();
       default:

@@ -5,7 +5,9 @@ import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/webApp/components/registration5.dart';
 
 class Registration4 extends StatefulWidget {
-  const Registration4({super.key});
+  final Function onRegisterComplete;
+
+  const Registration4({super.key, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -45,12 +47,7 @@ class _Registration4State extends State<Registration4> {
         }
 
         // ignore: use_build_context_synchronously
-        if(mounted) { 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Registration5()),
-          );
-        }
+        widget.onRegisterComplete();
       } else {
         showToast(message: 'User not logged in');
       }

@@ -7,7 +7,9 @@ import 'package:smart_parking_system/webApp/components/registration3.dart';
 
 
 class Registration2 extends StatefulWidget {
-  const Registration2({super.key});
+  final Function onRegisterComplete;
+
+  const Registration2({super.key, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -58,12 +60,7 @@ class _Registration2State extends State<Registration2> {
         }
 
         // ignore: use_build_context_synchronously
-        if(mounted) { 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Registration3()),
-          );
-        }
+        widget.onRegisterComplete();
       } else {
         showToast(message: 'User not logged in');
       }
