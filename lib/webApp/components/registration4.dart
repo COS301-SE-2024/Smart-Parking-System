@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
 
 class Registration4 extends StatefulWidget {
-  const Registration4({super.key});
+  final Function onRegisterComplete;
+
+  const Registration4({super.key, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -10,6 +15,53 @@ class Registration4 extends StatefulWidget {
 
 class _Registration4State extends State<Registration4> {
   double _pricePerHour = 20.0; // Default price
+  bool _isLoading = false;
+
+  Future<void> _clientRegisterParkingDetails() async {
+    setState((){
+      _isLoading = true;
+    });
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      
+      if (user != null) {
+        // Query for existing document
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('client_parking_details')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Document exists, update it
+          await querySnapshot.docs.first.reference.update({
+            'pricingPerHour': _pricePerHour,
+          });
+          showToast(message: 'Parking Detail updated Successfully!');
+        } else {
+          // Document doesn't exist, add new one
+          await FirebaseFirestore.instance.collection('client_parking_details').add({
+            'userId': user.uid,
+            'location': null,
+            'operationHours': null,
+            'pricingPerHour': _pricePerHour,
+          });
+          showToast(message: 'Parking Detail added Successfully!');
+        }
+          setState((){
+            _isLoading = false;
+          });
+        // ignore: use_build_context_synchronously
+        widget.onRegisterComplete();
+      } else {
+        setState((){
+          _isLoading = false;
+        });
+        showToast(message: 'User not logged in');
+      }
+    } catch (e) {
+      showToast(message: 'Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +81,7 @@ class _Registration4State extends State<Registration4> {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle next step action
+                  _clientRegisterParkingDetails();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF58C6A9),
@@ -36,7 +89,16 @@ class _Registration4State extends State<Registration4> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
                   'Next',
                   style: TextStyle(
                     fontSize: 16,

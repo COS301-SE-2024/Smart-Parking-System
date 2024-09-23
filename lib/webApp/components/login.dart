@@ -1,5 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart'; // For TapGestureRecognizer
+import 'package:flutter/gestures.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/toast.dart';
+import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart'; // For TapGestureRecognizer
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +18,50 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   Color emailUnderlineColor = Colors.white;
   Color passwordUnderlineColor = Colors.white;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  final FireBaseAuthServices _auth = FireBaseAuthServices();
+
+  Future<void> _signIn() async {
+    final String password = _passwordController.text;
+    final String email = _emailController.text;
+
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
+
+    setState((){
+      _isLoading = true;
+    });
+
+    final User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    setState((){
+      _isLoading = false;
+    });
+
+    if (user != null) {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
+      
+      if(mounted) { // Check if the widget is still in the tree
+        showToast(message: 'Successfully signed in');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DashboardScreen(),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
+    } else {
+      // ignore: avoid_print
+      
+    }
+      
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                                     emailUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
+                                    controller: _emailController,
                                     style: const TextStyle(color: Colors.white), // White text color when typing
                                     cursorColor: const Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
@@ -130,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                                     passwordUnderlineColor = Colors.white; // Default color
                                   }),
                                   child: TextField(
+                                    controller: _passwordController,
                                     style: const TextStyle(color: Colors.white), // White text color when typing
                                     cursorColor: const Color(0xFF58C6A9), // Green cursor color
                                     decoration: InputDecoration(
@@ -154,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                                     child: ElevatedButton(
                                       onPressed: () {
                                         // Handle login action
+                                        _signIn();
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color(0xFF58C6A9), // Button color
@@ -161,7 +214,16 @@ class _LoginPageState extends State<LoginPage> {
                                           borderRadius: BorderRadius.circular(25),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child: _isLoading
+                                        ? const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.0,
+                                            ),
+                                          )
+                                        : const Text(
                                         'Log in',
                                         style: TextStyle(
                                           fontSize: 18,
