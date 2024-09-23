@@ -48,10 +48,16 @@ class _Registration3State extends State<Registration3> {
           'price': null, // Replace with actual price if needed
           'slots_available': totalSlots, // Total number of slots available across all zones
         });
-
+        int totalZoneSlots = (totalSlots / noZones).floor();
         for (int zoneIndex = 1; zoneIndex <= noZones; zoneIndex++) {
           // Create a zone document
-          DocumentReference zoneDoc = parkingDoc.collection('zones').doc(alphabet[zoneIndex]);
+          
+          DocumentReference zoneDoc = parkingDoc.collection('zones').doc(alphabet[zoneIndex-1]);
+          await zoneDoc.set({
+            'slots': totalZoneSlots, // Slots per zone
+            'x': null,
+            'y': null,
+          });
           
           // Loop over predefined levels and create documents for each level
           for (int levelIndex = 0; levelIndex < noFloors; levelIndex++) {
@@ -60,10 +66,13 @@ class _Registration3State extends State<Registration3> {
               
               // Add the level document
               DocumentReference levelDoc = zoneDoc.collection('levels').doc(levelName);
+              await levelDoc.set({
+                'slots': totalZoneSlots / noFloors, // Slots per zone
+              });
               
               // Add rows to each level
               for (int rowIndex = 1; rowIndex <= noRows; rowIndex++) {
-                await levelDoc.collection('rows').doc(alphabet[rowIndex]).set({
+                await levelDoc.collection('rows').doc(alphabet[rowIndex-1]).set({
                   'slots': noSlots, // Total number of slots in the row
                 });
               }
