@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/webApp/components/registration5.dart';
 
 class Registration4 extends StatefulWidget {
   final Function onRegisterComplete;
