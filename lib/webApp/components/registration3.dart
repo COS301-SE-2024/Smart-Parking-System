@@ -38,6 +38,17 @@ class _Registration3State extends State<Registration3> {
 
     if (user != null) {
       try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('client_parking_details')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+
+        await querySnapshot.docs.first.reference.update({
+            'noZones': noZones,
+            'noLevels': noFloors,
+            'noRows': noRows,
+            'totalSlots': totalSlots,
+          });
         DocumentReference parkingDoc = await FirebaseFirestore.instance.collection('parkings').add({
           'userId': user.uid,
           'latitude': null, // Replace with actual data if available
