@@ -40,7 +40,7 @@ class _Registration3State extends State<Registration3> {
 
     if (user != null) {
       try {
-        DocumentReference parkingDoc = await FirebaseFirestore.instance.collection('parking').add({
+        DocumentReference parkingDoc = await FirebaseFirestore.instance.collection('parkings').add({
           'userId': user.uid,
           'latitude': null, // Replace with actual data if available
           'longitude': null, // Replace with actual data if available
