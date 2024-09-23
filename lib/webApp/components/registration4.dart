@@ -16,9 +16,12 @@ class Registration4 extends StatefulWidget {
 
 class _Registration4State extends State<Registration4> {
   double _pricePerHour = 20.0; // Default price
+  bool _isLoading = false;
 
   Future<void> _clientRegisterParkingDetails() async {
-
+    setState((){
+      _isLoading = true;
+    });
     try {
       User? user = FirebaseAuth.instance.currentUser;
       
@@ -45,10 +48,15 @@ class _Registration4State extends State<Registration4> {
           });
           showToast(message: 'Parking Detail added Successfully!');
         }
-
+          setState((){
+            _isLoading = false;
+          });
         // ignore: use_build_context_synchronously
         widget.onRegisterComplete();
       } else {
+        setState((){
+          _isLoading = false;
+        });
         showToast(message: 'User not logged in');
       }
     } catch (e) {
@@ -82,7 +90,16 @@ class _Registration4State extends State<Registration4> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
                   'Next',
                   style: TextStyle(
                     fontSize: 16,

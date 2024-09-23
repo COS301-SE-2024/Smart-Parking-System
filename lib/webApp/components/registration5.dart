@@ -18,9 +18,13 @@ class _Registration5State extends State<Registration5> {
   final TextEditingController _accountNumberController = TextEditingController();
   final TextEditingController _accountTypeController = TextEditingController();
   final TextEditingController _bankController = TextEditingController();
+  bool _isLoading = false;
 
   Future<void> _saveCardDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
+    setState((){
+      _isLoading = true;
+    });
 
     final String billingName = _billingNameController.text;
     final String accountNumber = _accountNumberController.text.replaceAll(RegExp(r'\s+'), '');
@@ -46,7 +50,9 @@ class _Registration5State extends State<Registration5> {
           'accountType': accountType,
           'bank': bank,
         });
-
+        setState((){
+          _isLoading = false;
+        });
         if (mounted) {  // Check if the widget is still mounted
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -56,6 +62,9 @@ class _Registration5State extends State<Registration5> {
         }
       } catch (e) {
         // 这里可以添加更多错误处理逻辑，例如显示错误消息给用户
+        setState((){
+          _isLoading = false;
+        });
         if (mounted) {  // Check if the widget is still mounted
           showToast(message: 'Failed to save card details: $e');
         }
@@ -93,7 +102,16 @@ class _Registration5State extends State<Registration5> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
                   'Join',
                   style: TextStyle(
                     fontSize: 16,

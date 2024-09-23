@@ -27,10 +27,15 @@ class _Registration2State extends State<Registration2> {
     'Saturday': '--',
     'Sunday': '--',
   };
+  bool _isLoading = false;
 
 
   Future<void> _clientRegisterParkingDetails() async {
     final String location = _locationController.text;
+    setState((){
+      _isLoading = true;
+    });
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
       
@@ -58,10 +63,15 @@ class _Registration2State extends State<Registration2> {
           });
           showToast(message: 'Parking Detail added Successfully!');
         }
-
+        setState((){
+          _isLoading = false;
+        });
         // ignore: use_build_context_synchronously
         widget.onRegisterComplete();
       } else {
+        setState((){
+          _isLoading = false;
+        });
         showToast(message: 'User not logged in');
       }
     } catch (e) {
@@ -94,7 +104,16 @@ class _Registration2State extends State<Registration2> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
                   'Next',
                   style: TextStyle(
                     fontSize: 16,
