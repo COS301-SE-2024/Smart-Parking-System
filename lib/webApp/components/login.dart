@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -5,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart'; // For TapGestureRecognizer
+import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
+import 'package:smart_parking_system/webApp/components/registration1.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,6 +35,20 @@ class _LoginPageState extends State<LoginPage> {
     setState((){
       _isLoading = true;
     });
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      showToast(message: "You are not a registered client, go register first!");
+      setState((){
+        _isLoading = false;
+      });
+      return;
+    }
+
 
     final User? user = await _auth.signInWithEmailAndPassword(email, password);
 
@@ -236,49 +252,49 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 const SizedBox(height: 20),
                                 // "Or Sign up with" text centered
-                                Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // ignore: sized_box_for_whitespace
-                                      Container(
-                                        width: 50, // Set the desired width for the left divider
-                                        child: const Divider(color: Colors.white70),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                        child: Text(
-                                          'Or Sign up with',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 60, // Set the desired width for the right divider
-                                        child: Divider(color: Colors.white70),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                // Google Sign In icon button (slightly bigger)
-                                Center(
-                                  child: IconButton(
-                                    icon: Image.asset(
-                                      'assets/google-icon.png',
-                                      height: 40, // Increased size
-                                      width: 40, // Increased size
-                                    ),
-                                    onPressed: () {
-                                      // Handle Google Sign-in
-                                    },
-                                    iconSize: 60, // Increased touch target size
-                                    padding: const EdgeInsets.all(15), // Increased padding around the icon
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
+                                // Center(
+                                //   child: Row(
+                                //     mainAxisSize: MainAxisSize.min,
+                                //     children: [
+                                //       // ignore: sized_box_for_whitespace
+                                //       Container(
+                                //         width: 50, // Set the desired width for the left divider
+                                //         child: const Divider(color: Colors.white70),
+                                //       ),
+                                //       const Padding(
+                                //         padding: EdgeInsets.symmetric(horizontal: 16),
+                                //         child: Text(
+                                //           'Or Sign up with',
+                                //           style: TextStyle(
+                                //             fontSize: 14,
+                                //             color: Colors.white70,
+                                //           ),
+                                //         ),
+                                //       ),
+                                //       const SizedBox(
+                                //         width: 60, // Set the desired width for the right divider
+                                //         child: Divider(color: Colors.white70),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 20),
+                                // // Google Sign In icon button (slightly bigger)
+                                // Center(
+                                //   child: IconButton(
+                                //     icon: Image.asset(
+                                //       'assets/google-icon.png',
+                                //       height: 40, // Increased size
+                                //       width: 40, // Increased size
+                                //     ),
+                                //     onPressed: () {
+                                //       // Handle Google Sign-in
+                                //     },
+                                //     iconSize: 60, // Increased touch target size
+                                //     padding: const EdgeInsets.all(15), // Increased padding around the icon
+                                //   ),
+                                // ),
+                                // const SizedBox(height: 20),
                                 // Register link
                                 Center(
                                   child: RichText(
@@ -294,7 +310,11 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
-                                              // Navigate to registration page
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (_) => const RegistrationPage(),
+                                                ),
+                                              );
                                             },
                                         ),
                                       ],
