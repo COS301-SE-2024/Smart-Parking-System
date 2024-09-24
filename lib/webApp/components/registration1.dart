@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
+import 'package:smart_parking_system/webApp/components/login.dart';
 
 import 'package:smart_parking_system/webApp/components/registration2.dart';
 import 'package:smart_parking_system/webApp/components/registration3.dart';
@@ -319,6 +320,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       // Navigate to login page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const LoginPage(),
+                        ),
+                      );
                     },
                 ),
               ],
