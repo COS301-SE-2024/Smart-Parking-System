@@ -25,7 +25,3 @@ bool isValidString(String testString, String regexPatter) {
   // Output if correct
   return true;
 }
-
-// bool isValidInt() {
-
-// }

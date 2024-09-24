@@ -150,7 +150,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             session.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R ${(bookingData['price']).toInt()}',
+            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
             session.address,
             session.zone,
             session.level,
@@ -217,6 +217,111 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     }
   }
 
+    // Get details on load
+  Future<void> _updateSlotAvailability(String bookedAddress, String selectedZone, String selectedLevel, String selectedRow) async {
+    try {
+      // Get a reference to the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Query the 'parkings' collection for a document with matching name
+      QuerySnapshot parkingQuerySnapshot = await firestore
+          .collection('parkings')
+          .where('name', isEqualTo: bookedAddress)
+          .limit(1)
+          .get();
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+        var parkingDocument = parkingQuerySnapshot.docs.first;
+        String updatedSlot = updateSlot(parkingDocument.get('slots_available') as String);
+        parkingDocument.reference.update({'slots_available': updatedSlot});
+      } else {
+        // No parking found
+        showToast(message: 'No parking found for update: $bookedAddress');
+      }
+
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {  // Check if a matching document was found
+        DocumentSnapshot parkingDocumentSnapshot = parkingQuerySnapshot.docs[0];  // Get the document snapshot
+
+        CollectionReference zonesCollection = parkingDocumentSnapshot.reference.collection('zones');  // Get the subcollection 'zones'
+        DocumentSnapshot zoneDocumentSnapshot = await zonesCollection.doc(selectedZone).get();  // Query the 'zones' subcollection for a document with matching id
+
+        QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();  // Query the 'rows' subcollection for all documents
+        if (zonesQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+          for (var zoneDocument in zonesQuerySnapshot.docs) {  // Loop through each document
+            // Update the fields
+            String updatedSlot = updateSlot(zoneDocument.get('slots') as String);
+            if( zoneDocument.id == selectedZone){
+              zoneDocument.reference.update({'slots': updatedSlot});
+            }
+          }
+        } else {
+          // No zones found
+          showToast(message: 'No zone found for update: $selectedZone');
+        }
+      
+        if (zoneDocumentSnapshot.exists) {  // Check if a matching document was found
+          CollectionReference levelsCollection = zoneDocumentSnapshot.reference.collection('levels');  // Get the subcollection 'levels'
+          DocumentSnapshot levelDocumentSnapshot = await levelsCollection.doc(selectedLevel).get();  // Query the 'levels' subcollection for a document with matching id
+
+          QuerySnapshot levelsQuerySnapshot = await levelsCollection.get();  // Query the 'rows' subcollection for all documents
+          if (levelsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+            for (var levelDocument in levelsQuerySnapshot.docs) {  // Loop through each document
+              // Update the fields
+              String updatedSlot = updateSlot(levelDocument.get('slots') as String);
+              if( levelDocument.id == selectedLevel){
+                levelDocument.reference.update({'slots': updatedSlot});
+              }
+            }
+          } else {
+            // No levels found
+            showToast(message: 'No level found for update: $selectedLevel');
+          }
+        
+          if (levelDocumentSnapshot.exists) {  // Check if a matching document was found
+
+            CollectionReference rowsCollection = levelDocumentSnapshot.reference.collection('rows');  // Get the subcollection 'rows'
+            QuerySnapshot rowsQuerySnapshot = await rowsCollection.get();  // Query the 'rows' subcollection for all documents
+            if (rowsQuerySnapshot.docs.isNotEmpty) {  // Check if there are any documents
+              for (var rowDocument in rowsQuerySnapshot.docs) {  // Loop through each document
+                // Update the fields
+                String updatedSlot = updateSlot(rowDocument.get('slots') as String);
+                if( rowDocument.id == selectedRow){
+                  rowDocument.reference.update({'slots': updatedSlot});
+                }
+              }
+            } else {
+              // No rows found
+              showToast(message: 'No row found for update: $selectedRow');
+            }
+          } else {
+            // No level found
+            showToast(message: 'No level found: $selectedLevel');
+          }
+        } else {
+          // No zone found
+          showToast(message: 'No zone found: $selectedZone');
+        }
+      } else {
+        // No parking found
+        showToast(message: 'No parking found: $bookedAddress');
+      }
+    } catch (e) {
+      // Handle any errors
+      showToast(message: 'Error updating slot availability: $e');
+    }
+
+    setState(() {}); // This will trigger a rebuild with the new values
+  }
+  String updateSlot(String slot) {
+    List<String> slotsSplit = slot.split('/');
+    int availableSlots = int.parse(slotsSplit[0]);
+    int totalSlots = int.parse(slotsSplit[1]);
+
+    int updatedSlots = (availableSlots < totalSlots) ? availableSlots + 1 : totalSlots;
+    // Decrement available slots
+    return '$updatedSlots/$totalSlots';
+  }
   // Get details on load
   Future<void> getDetails() async {
     // String? userName = user?.displayName;
@@ -243,15 +348,51 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           String bookedRow = document.get('row') as String;
           String bookedDate = document.get('date') as String;
           String bookedTime = document.get('time') as String;
-          double bookedPrice = document.get('price') as double;
-          double bookedDuration = document.get('duration') as double;
 
-          // Calculate total price
-          int totalPrice = bookedPrice.toInt();
+          int totalPrice;
+          int finalBookedDuration = 0;
+          int finalBookedPrice = 0;
+          try{
+            int bookedPrice = document.get('price') as int;
+            int bookedDuration = document.get('duration') as int;
+            // Calculate total price
+            totalPrice = (bookedPrice * bookedDuration).toInt();
+            //final values
+            finalBookedDuration = bookedDuration;
+            finalBookedPrice = bookedPrice;
+          } catch (e) {
+            try {
+              int bookedPrice = document.get('price') as int;
+              double bookedDuration = document.get('duration') as double;
+              // Calculate total price
+              totalPrice = (bookedPrice * bookedDuration).toInt();
+              //final values
+              finalBookedDuration = bookedDuration.toInt();
+              finalBookedPrice = bookedPrice;
+            } catch (e) {
+              try {
+                double bookedPrice = document.get('price') as double;
+                int bookedDuration = document.get('duration') as int;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+                //final values
+                finalBookedDuration = bookedDuration;
+                finalBookedPrice = bookedPrice.toInt();
+              } catch (e) {
+                double bookedPrice = document.get('price') as double;
+                double bookedDuration = document.get('duration') as double;
+                // Calculate total price
+                totalPrice = (bookedPrice * bookedDuration).toInt();
+                //final values
+                finalBookedDuration = bookedDuration.toInt();
+                finalBookedPrice = bookedPrice.toInt();
+              }
+            }
+          }
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
-          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: bookedDuration.toInt()));
+          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: finalBookedDuration));
           DateTime currentDateTime = DateTime.now();
 
           // Check booking status
@@ -264,7 +405,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             Duration remainingDuration = bookingEndDateTime.difference(currentDateTime);
             activesessions.add(ActiveSession(
               documentId,
-              'R ${bookedPrice.toInt()}',
+              'R $finalBookedPrice',
               bookedLocation,
               bookedZone,
               bookedLevel,
@@ -424,15 +565,39 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       
-      // Query the 'bookings' collection to find the document to delete
-      await firestore.collection('bookings').doc(reservedspot.documentId).delete();
+      // Get the current booking document
+      DocumentSnapshot bookingDoc = await firestore.collection('bookings').doc(reservedspot.documentId).get();
+      
+      if (bookingDoc.exists) {
+        Map<String, dynamic> bookingData = bookingDoc.data() as Map<String, dynamic>;
+        
+        // Calculate the actual duration
+        DateTime startTime = DateTime.parse('${bookingData['date']} ${bookingData['time']}');
+        DateTime endTime = DateTime.now();
+        double actualDurationHours = endTime.difference(startTime).inHours + ((endTime.difference(startTime).inMinutes % 60) / 60);
+        
+        double oldDuration = bookingData['duration'];
+        // Update the duration and calculate the final price
+        bookingData['duration'] = actualDurationHours;
+        double price = bookingData['price'] as double;
+        int finalPrice = (price * actualDurationHours).toInt();
 
-      // Remove the booking from the local list
-      setState(() {
-        reservedspots.removeWhere((spot) => spot.documentId == reservedspot.documentId);
-      });
+        _refund(price, oldDuration, finalPrice);
+        _updateSlotAvailability(bookingData['address'], bookingData['zone'], bookingData['level'], bookingData['row']);
 
-      showToast(message: 'Booking cancelled successfully');
+        // Query the 'bookings' collection to find the document to delete
+        await firestore.collection('bookings').doc(reservedspot.documentId).delete();
+
+        // Remove the booking from the local list
+        setState(() {
+          reservedspots.removeWhere((spot) => spot.documentId == reservedspot.documentId);
+        });
+
+        showToast(message: 'Booking cancelled successfully');
+      } else {
+        showToast(message: 'Booking not found');
+      }
+
     } catch (e) {
       showToast(message: 'Error cancelling booking: $e');
     }
@@ -487,6 +652,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         int finalPrice = (price * actualDurationHours).toInt();
 
         _refund(price, oldDuration, finalPrice);
+        _updateSlotAvailability(bookingData['address'], bookingData['zone'], bookingData['level'], bookingData['row']);
         
         // Add the booking to past_bookings
         await firestore.collection('past_bookings').add(bookingData);
@@ -605,7 +771,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 child: Column(
                   children: [
                     const Text(
-                      '  Active Session',
+                      'Active Session',
                       style: TextStyle(
                         color: Colors.tealAccent,
                         fontSize: 18,
@@ -613,7 +779,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                       ),
                     ),
                     if(activesessions.isEmpty)
-                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                      const Text('No Sessions', style: TextStyle(color: Colors.grey, fontSize: 16),),
                     const SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -625,7 +791,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                     const SizedBox(height: 20),
                     // Reserved Spots
                     const Text(
-                        '  Reserved Spots',
+                        'Reserved Spots',
                         style: TextStyle(
                           color: Colors.tealAccent,
                           fontSize: 18,
@@ -633,7 +799,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                         ),
                       ),
                     if(reservedspots.isEmpty)
-                      const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                      const Text('No Sessions', style: TextStyle(color: Colors.grey, fontSize: 16),),
                     const SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -914,7 +1080,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  activesession.rate,
+                  '${activesession.rate}/Hr',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

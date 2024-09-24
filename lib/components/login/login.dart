@@ -62,11 +62,7 @@ class _LoginPageState extends State<LoginPage> {
           (Route<dynamic> route) => false,
         );
       }
-    } else {
-      // ignore: avoid_print
-      
-    }
-      
+    }      
   }
     
 

@@ -4,21 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
-import 'package:smart_parking_system/components/home/main_page.dart';
-import 'package:smart_parking_system/components/parking/parking_history.dart';
-import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/card/edit_card.dart';
-import 'package:smart_parking_system/components/home/sidebar.dart';
 
-class PaymentMethodPage extends StatefulWidget {
-  const PaymentMethodPage({super.key});
+class TopUpPage extends StatefulWidget {
+  const TopUpPage({super.key});
 
   @override
-  State<PaymentMethodPage> createState() => _PaymentMethodPageState();
+  State<TopUpPage> createState() => _TopUpPageState();
 }
 
-class _PaymentMethodPageState extends State<PaymentMethodPage> {
-  int _selectedIndex = 1;
+class _TopUpPageState extends State<TopUpPage> {
   double creditAmount = 0.00; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
 
@@ -128,8 +123,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   } catch (e) {
                     // 这里可以添加更多错误处理逻辑
                   }
-
-                  if(context.mounted) {
+                  if(context.mounted){
                     Navigator.of(context).pop();
                   }
                 } else {
@@ -159,15 +153,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 color: const Color(0xFF35344A),
                 child: Stack(
                   children: [
-                    Builder(
-                      builder: (BuildContext context) {
-                        return IconButton(
-                          icon: const Icon(Icons.menu, color: Colors.white, size: 30.0),
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer(); // Open the drawer
-                          },
-                        );
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
                       },
+                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
                     ),
                     const Align(
                       alignment: Alignment.center,
@@ -356,92 +346,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: const Color(0xFF35344A),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.6),
-                spreadRadius: 1,
-                blurRadius: 8,
-                offset: const Offset(0, -3),
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: const Color(0xFF35344A), // To ensure the Container color is visible
-            currentIndex: _selectedIndex,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined, size: 30),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.wallet, size: 30),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history, size: 30),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined, size: 30),
-                label: '',
-              ),
-            ],
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-
-                if (_selectedIndex == 0) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const MainPage(),
-                    ),
-                  );
-                } else if (_selectedIndex == 1) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const PaymentMethodPage(),
-                    ),
-                  );
-                } else if (_selectedIndex == 2) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ParkingHistoryPage(),
-                    ),
-                  );
-                } else if (_selectedIndex == 3) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsPage(),
-                    ),
-                  );
-                }
-              });
-            },
-            selectedItemColor: const Color(0xFF58C6A9),
-            unselectedItemColor: Colors.grey,
-            showUnselectedLabels: false,
-            showSelectedLabels: false,
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      drawer: const SideMenu(),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
+import 'package:smart_parking_system/components/payment/top_up.dart';
 import 'package:smart_parking_system/components/payment/payment_successful.dart';
-import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:intl/intl.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,79 +61,142 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   String? startTime = '';
   String? endTime = '';
   String? bookingDate = '';
-  double? totalPrice = 0;
+  double totalPrice = 0;
   double discountedPrice = 0;
   bool couponsApplied = false;
-  String cardNumber = '';
-  String cardNumberFormatted = '';
-  List<Map<String, dynamic>> cards = [];
-  int? _selectedCard;
+  bool _sufficientFunds = false;
+  double _availableFunds = 0.00;
   List<String> appliedCoupons = [];
+  bool _isLoading = false;
 
   //Functions
-  Future<void> _bookspace() async {
-    if (_selectedCard == null) return;
+  Future<void> _topup() async {
+    if(mounted){
+      final result = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const TopUpPage(),
+        ),
+      );
+      if (result == true) {
+        getDetails();
+      }
+    }
+  }
 
+  Future<void> _bookspace() async {
     try {
+      setState((){
+        _isLoading = true;
+      });
       User? user = FirebaseAuth.instance.currentUser;
 
-      _updateSlotAvailability();
-
-      String? fcmToken = await FirebaseMessaging.instance.getToken();
-      if (fcmToken == null) {
-        return;
-      }
-      String dateTime = '$bookingDate ${startTime!}';
-      DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
-
-      final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
-
-      double finalPrice = ((totalPrice! - discountedPrice) < 0 ? 0.00 : totalPrice! - discountedPrice);
-
       if (user != null) {
-        await FirebaseFirestore.instance.collection('bookings').add({
-          'userId': user.uid,
-          'zone': widget.selectedZone,
-          'level': widget.selectedLevel,
-          'row': widget.selectedRow,
-          'time': startTime,
-          'date': bookingDate,
-          'duration': widget.selectedDuration,
-          'price': finalPrice,
-          'address': widget.bookedAddress,
-          'disabled': widget.selectedDisabled,
-          'vehicleId': widget.vehicleId,
-          'vehicleLogo': widget.vehicleLogo,
-          'card': cardNumber,
-          'sent': false,
-          'fcmToken': fcmToken,
-          'notificationTime': notificationTimeUtc,
-        });
+        if(_sufficientFunds){
 
-        if (couponsApplied) {
-          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-              .collection('coupons')
-              .where('userId', isEqualTo: user.uid)
-              .where('applied', isEqualTo: true)
-              .get();
+          String? fcmToken = await FirebaseMessaging.instance.getToken();
+          if (fcmToken == null) { return; }
+          String dateTime = '$bookingDate ${startTime!}';
+          DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
+          final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
-          for (var doc in querySnapshot.docs) {
-            await doc.reference.delete();
+          double finalPrice = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
+          await FirebaseFirestore.instance.collection('bookings').add({
+            'userId': user.uid,
+            'zone': widget.selectedZone,
+            'level': widget.selectedLevel,
+            'row': widget.selectedRow,
+            'time': startTime,
+            'date': bookingDate,
+            'duration': widget.selectedDuration,
+            'price': finalPrice.toDouble(),
+            'address': widget.bookedAddress,
+            'disabled': widget.selectedDisabled,
+            'vehicleId': widget.vehicleId,
+            'sent': false,
+            'fcmToken': fcmToken,
+            'notificationTime': notificationTimeUtc,
+          });
+
+          if (couponsApplied) {
+            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                .collection('coupons')
+                .where('userId', isEqualTo: user.uid)
+                .where('applied', isEqualTo: true)
+                .get();
+
+            for (var doc in querySnapshot.docs) {
+              await doc.reference.delete();
+            }
           }
+
+          await _updateWallet(finalPrice);
+          await _updateSlotAvailability();
+          await _makeNotifications();
+          showToast(message: 'Booked Successfully!');
+
+          if(mounted){
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const PaymentSuccessionPage(),
+              ),
+            );
+          }
+        } else {
+          showToast(message: 'Error: Insufficient funds');
         }
-
-        showToast(message: 'Booked Successfully!');
-        _makeNotifications();
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const PaymentSuccessionPage(),
-          ),
-        );
-
       }
     } catch (e) {
       showToast(message: 'Error: $e');
+    } finally {
+      setState((){
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _updateWallet(double price) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final data = userDoc.data() as Map<String, dynamic>;
+      double currentBalance = data['balance']?.toDouble() ?? 0.0;
+
+      if (price <= currentBalance) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .update({'balance': (currentBalance - price).toDouble()});
+      } else {
+        showToast(message: 'Insufficient funds');
+      }
+    } catch (e) {
+      //
+    }
+  }
+
+  Future<void> checkFunds() async {
+    double price = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
+    User? user = FirebaseAuth.instance.currentUser;
+
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final data = userDoc.data() as Map<String, dynamic>;
+      
+      setState(() {
+        _sufficientFunds = price <= data['balance']?.toDouble();
+        _availableFunds = data['balance']?.toDouble() ?? 0.00;
+      });
+    } catch (e) {
+      //
     }
   }
 
@@ -168,8 +231,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
   Future<void> _makeNotifications() async {
-    if (_selectedCard == null) return;
-
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -297,10 +358,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
   Future<void> getDetails() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    String? userName = user?.displayName;
-    String? userId = user?.uid;
-
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -313,27 +370,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
         carLogo = widget.vehicleLogo;
       } else {
         showToast(message: 'No car found for vehicleId: ${widget.vehicleId}');
-      }
-
-      QuerySnapshot querySnapshot = await firestore.collection('cards').where('userId', isEqualTo: userId).get();
-      if (querySnapshot.docs.isNotEmpty) {
-        cards = querySnapshot.docs.map((doc) {
-          cardNumber = doc.get('cardNumber') as String;
-          String cardType = doc.get('cardType') as String;
-          String bank = doc.get('bank') as String;
-
-          cardNumberFormatted = ('*' * (cardNumber.length - 4)) + (cardNumber.substring(cardNumber.length - 4));
-          cardNumberFormatted = cardNumberFormatted.replaceAllMapped(
-              RegExp(r'.{4}'), (match) => '${match.group(0)} ').trim();
-
-          return {
-            'cardNumber': cardNumberFormatted,
-            'cardType': cardType,
-            'bank': bank,
-          };
-        }).toList();
-      } else {
-        showToast(message: 'No cards found for user: $userName');
       }
     } catch (e) {
       showToast(message: 'Error retrieving user details: $e');
@@ -351,6 +387,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       bookingDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
       totalPrice = widget.price * widget.selectedDuration;
 
+      await checkCoupons();
+      await checkFunds();
       setState(() {});
     } catch (e) {
       showToast(message: 'ERROR: $e');
@@ -360,9 +398,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   @override
   void initState() {
     super.initState();
-    checkCoupons();
     getDetails();
-    
   }
 
   @override
@@ -573,7 +609,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     ),
                   );
                   if (result == true) {
-                    checkCoupons(); // Update the coupons list when coming back
+                    getDetails();
                   }
                 },
               ),
@@ -598,7 +634,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  'Credits & Debit Cards',
+                  'Totals',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF58C6A9)),
                 ),
               ),
@@ -616,64 +652,62 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     ),
                   ],
                 ),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 5),
-                    if (cards.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const AddCardPage(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text(
-                              'Add New Card',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the left
+                      children: [
+                        SizedBox(height: 5),
+                        Text(
+                          'Available Balance',
+                          style: TextStyle(fontSize: 17, color: Colors.white,),// fontWeight: FontWeight.bold),
                         ),
-                      )
-                    else
-                      ...cards.asMap().entries.map((entry) {
-                        int idx = entry.key;
-                        Map<String, dynamic> card = entry.value;
-                        return Card(
-                          elevation: 0,
-                          color: Colors.transparent,
-                          child: ListTile(
-                            leading: SizedBox(
-                              width: 50,
-                              child: Image.asset('assets/${card['cardType'].toLowerCase()}.png'),
-                            ),
-                            title: Text(
-                              '${card['bank']} ${card['cardNumber']}',
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.white),
-                            ),
-                            trailing: Radio(
-                              value: idx,
-                              groupValue: _selectedCard,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCard = value as int;
-                                });
-                              },
-                              activeColor: const Color(0xFF58C6A9),
-                            ),
-                          ),
-                        );
-                      }),
-                    const SizedBox(height: 5),
+                        SizedBox(height: 15),
+                        Text(
+                          'Parking Cost',
+                          style: TextStyle(fontSize: 17, color: Colors.white,),// fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Discount',
+                          style: TextStyle(fontSize: 17, color: Colors.white,),// fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Total',
+                          style: TextStyle(fontSize: 17, color: Colors.white,),// fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                      ],
+                    ),
+                    const SizedBox(width: 80),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the left
+                      children: [
+                        const SizedBox(height: 5),
+                        Text(
+                          'R $_availableFunds',
+                          style: const TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 15),
+                        Text(
+                          'R $totalPrice',
+                          style: const TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'R $discountedPrice',
+                          style: const TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'R ${(totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice}',
+                          style: const TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -682,35 +716,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(color: Colors.white),
-                      children: [
-                        const TextSpan(
-                          text: 'Total\n',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                        ),
-                        if (couponsApplied) ...[
-                          TextSpan(
-                            text: 'ZAR $totalPrice\n',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 20,
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                        TextSpan(
-                          text: 'ZAR ${((totalPrice! - discountedPrice) < 0 ? 0.00 : totalPrice! - discountedPrice).toStringAsFixed(2)}',
-                          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 180),
                   ElevatedButton(
-                    onPressed: _selectedCard != null ? _bookspace : null,
+                    onPressed: _sufficientFunds == true ? _bookspace : _topup,
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40.0),
@@ -719,12 +726,21 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         horizontal: 30,
                         vertical: 5,
                       ),
-                      backgroundColor: _selectedCard != null ? const Color(0xFF58C6A9) : Colors.grey,
+                      backgroundColor: const Color(0xFF58C6A9),
                     ),
-                    child: const Text(
-                      'Pay',
-                      style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.w300),
-                    ),
+                    child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.0,
+                              ),
+                            )
+                          : Text(
+                              _sufficientFunds == true ? 'Pay' : 'Top Up',
+                              style: const TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.w300),
+                            ),
                   ),
                 ],
               ),
