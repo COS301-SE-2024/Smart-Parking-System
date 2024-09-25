@@ -17,6 +17,8 @@ class Registration2 extends StatefulWidget {
 
 class _Registration2State extends State<Registration2> {
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
   Map<String, String> operationalHours = {
     'Monday': '--',
     'Tuesday': '--',
@@ -35,8 +37,12 @@ class _Registration2State extends State<Registration2> {
 
     try {
       final String location = _locationController.text;
+      final double latitude = double.parse(_latitudeController.text);
+      final double longitude = double.parse(_longitudeController.text);
       widget.ps.name = location;
       widget.ps.operationHours = operationalHours;
+      widget.ps.latitude = latitude;
+      widget.ps.longitude = longitude;
 
       widget.onRegisterComplete();
     } catch (e) {
@@ -55,7 +61,11 @@ class _Registration2State extends State<Registration2> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
-          _buildLabeledTextField('Parking location *', 'Enter the parking address'),
+          _buildLabeledTextField('Parking location name *', 'Enter the parking name', _locationController),
+          const SizedBox(height: 15),
+          _buildLabeledTextField('Parking latitude *', 'Enter the parking latitude', _latitudeController),
+          const SizedBox(height: 15),
+          _buildLabeledTextField('Parking longitude *', 'Enter the parking longitude', _longitudeController),
           const SizedBox(height: 15),
           _buildOperationalHoursField('Operational hours *'),
           const SizedBox(height: 25),
@@ -98,7 +108,7 @@ class _Registration2State extends State<Registration2> {
     );
   }
 
-  Widget _buildLabeledTextField(String label, String hintText, {bool obscureText = false}) {
+  Widget _buildLabeledTextField(String label, String hintText, TextEditingController controller, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,7 +122,7 @@ class _Registration2State extends State<Registration2> {
         ),
         const SizedBox(height: 4),
         TextField(
-          controller: _locationController,
+          controller: controller,
           obscureText: obscureText,
           style: const TextStyle(color: Colors.white, fontSize: 14),
           cursorColor: const Color(0xFF58C6A9),
