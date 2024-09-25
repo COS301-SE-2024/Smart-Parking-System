@@ -22,10 +22,10 @@ class _Registration4State extends State<Registration4> {
     setState((){
       _isLoading = true;
     });
-
+    
     try {
       widget.ps.price = _pricePerHour.toString();
-
+      
       widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Error: $e');
@@ -116,8 +116,8 @@ class _Registration4State extends State<Registration4> {
     return Slider(
       value: _pricePerHour,
       min: 10,
-      max: 100,
-      divisions: 90,
+      max: 50,
+      divisions: 40,
       activeColor: const Color(0xFF58C6A9),
       inactiveColor: Colors.grey,
       onChanged: (value) {
