@@ -40,24 +40,29 @@ class _Registration2State extends State<Registration2> {
       if (user != null) {
         // Query for existing document
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('client_parking_details')
+            .collection('parkings')
             .where('userId', isEqualTo: user.uid)
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
           // Document exists, update it
           await querySnapshot.docs.first.reference.update({
-            'location': location,
+            'name': location,
             'operationHours': operationalHours,
+            'price': null,
+            'latitude': null,
+            'longitude': null,
           });
           showToast(message: 'Parking Detail updated Successfully!');
         } else {
           // Document doesn't exist, add new one
-          await FirebaseFirestore.instance.collection('client_parking_details').add({
+          await FirebaseFirestore.instance.collection('parkings').add({
             'userId': user.uid,
-            'location': location,
+            'name': location,
             'operationHours': operationalHours,
-            'pricingPerHour': null,
+            'price': null,
+            'latitude': null,
+            'longitude': null,
           });
           showToast(message: 'Parking Detail added Successfully!');
         }
@@ -140,28 +145,24 @@ class _Registration2State extends State<Registration2> {
           ),
         ),
         const SizedBox(height: 4),
-        _buildTextField(hintText, obscureText: obscureText),
+        TextField(
+          controller: _locationController,
+          obscureText: obscureText,
+          style: const TextStyle(color: Colors.white, fontSize: 14),
+          cursorColor: const Color(0xFF58C6A9),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF58C6A9)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+        ),
       ],
-    );
-  }
-
-  Widget _buildTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _locationController,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
     );
   }
 
