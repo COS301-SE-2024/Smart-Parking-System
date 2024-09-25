@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
+import 'package:smart_parking_system/components/firebase/firebase_common_functions.dart';
 import 'package:smart_parking_system/webApp/components/login.dart';
 import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
 
@@ -24,6 +25,7 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   late int _currentStep;
+  ParkingSpot parkingSpot = ParkingSpot();
 
   @override
   void initState() {
@@ -37,6 +39,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
         _currentStep++;
       });
     }
+  }
+
+  void addParking() {
+    // User ID
+    final User? user = FirebaseAuth.instance.currentUser;
+    parkingSpot.userId = user!.uid;
+
+    addParkingToFirestore(
+      userId: parkingSpot.userId,
+      parkingName: parkingSpot.name,
+      operationHours: parkingSpot.operationHours,
+      posLatitude: parkingSpot.latitude,
+      posLongitude: parkingSpot.longitude,
+      noZones: parkingSpot.noZones,
+      noLevels: parkingSpot.noLevels,
+      noRows: parkingSpot.noRows,
+      noSlotsPerRow: parkingSpot.noSlotsPerRow,
+      totalSlotsCheckSum: parkingSpot.totalSlotsCheckSum,
+      pricePerHour: parkingSpot.price,
+    );
   }
 
   @override
@@ -140,9 +162,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 40),
                   if (_currentStep == 1) Registration1(onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 2) Registration2(onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 3) Registration3(onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 4) Registration4(onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 2) Registration2(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 3) Registration3(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 4) Registration4(ps: parkingSpot, onRegisterComplete: () {_goToNextStep; addParking;})
                   else if (_currentStep == 5) Registration5(onRegisterComplete: () 
                   { Navigator.of(context).push(
                       MaterialPageRoute(
@@ -182,6 +204,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
+}
+
+class ParkingSpot {
+  late String userId;
+  late String name;
+  late Map<String, String> operationHours;
+  late double latitude;
+  late double longitude;
+  late int noZones;
+  late int noLevels;
+  late int noRows;
+  late int noSlotsPerRow;
+  late int totalSlotsCheckSum;
+  late String price;
 }
 
 class ArrowClipper extends CustomClipper<Path> {
