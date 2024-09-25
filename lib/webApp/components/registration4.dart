@@ -24,7 +24,7 @@ class _Registration4State extends State<Registration4> {
     });
 
     try {
-      widget.ps.price = _pricePerHour;
+      widget.ps.price = _pricePerHour.toString();
 
       widget.onRegisterComplete();
     } catch (e) {
