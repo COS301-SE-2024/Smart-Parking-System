@@ -1,13 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+
+import 'package:smart_parking_system/webApp/components/registration1.dart';
 
 
 class Registration2 extends StatefulWidget {
   final Function onRegisterComplete;
+  final ParkingSpot ps;
 
-  const Registration2({super.key, required this.onRegisterComplete});
+  const Registration2({super.key, required this.ps, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -27,59 +28,24 @@ class _Registration2State extends State<Registration2> {
   };
   bool _isLoading = false;
 
-
   Future<void> _clientRegisterParkingDetails() async {
-    final String location = _locationController.text;
     setState((){
       _isLoading = true;
     });
 
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      
-      if (user != null) {
-        // Query for existing document
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('parkings')
-            .where('userId', isEqualTo: user.uid)
-            .get();
+      final String location = _locationController.text;
+      widget.ps.name = location;
+      widget.ps.operationHours = operationalHours;
 
-        if (querySnapshot.docs.isNotEmpty) {
-          // Document exists, update it
-          await querySnapshot.docs.first.reference.update({
-            'name': location,
-            'operationHours': operationalHours,
-            'price': null,
-            'latitude': null,
-            'longitude': null,
-          });
-          showToast(message: 'Parking Detail updated Successfully!');
-        } else {
-          // Document doesn't exist, add new one
-          await FirebaseFirestore.instance.collection('parkings').add({
-            'userId': user.uid,
-            'name': location,
-            'operationHours': operationalHours,
-            'price': null,
-            'latitude': null,
-            'longitude': null,
-          });
-          showToast(message: 'Parking Detail added Successfully!');
-        }
-        setState((){
-          _isLoading = false;
-        });
-        // ignore: use_build_context_synchronously
-        widget.onRegisterComplete();
-      } else {
-        setState((){
-          _isLoading = false;
-        });
-        showToast(message: 'User not logged in');
-      }
+      widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Error: $e');
     }
+
+    setState((){
+      _isLoading = false;
+    });
   }
 
   @override
