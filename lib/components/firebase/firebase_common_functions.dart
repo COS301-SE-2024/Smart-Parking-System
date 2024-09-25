@@ -56,6 +56,7 @@ Future<void> addParkingToFirestore({
           final totalSlotsInRow = noSlotsPerRow;
           totalSlotsInLevel += totalSlotsInRow;
           totalSlotsInZone += totalSlotsInRow;
+          totalSlots += totalSlotsInRow;
 
           final rowDocRef = levelDocRef.collection('rows').doc(rowId);
 
