@@ -56,7 +56,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       noLevels: parkingSpot.noLevels,
       noRows: parkingSpot.noRows,
       noSlotsPerRow: parkingSpot.noSlotsPerRow,
-      totalSlotsCheckSum: parkingSpot.totalSlotsCheckSum,
       pricePerHour: parkingSpot.price,
     );
   }
@@ -216,7 +215,6 @@ class ParkingSpot {
   late int noLevels;
   late int noRows;
   late int noSlotsPerRow;
-  late int totalSlotsCheckSum;
   late String price;
 }
 

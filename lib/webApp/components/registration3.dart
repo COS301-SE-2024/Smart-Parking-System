@@ -32,13 +32,11 @@ class _Registration3State extends State<Registration3> {
       final int noFloors = int.parse(_noFloorsController.text);
       final int noRows = int.parse(_noRowsController.text);
       final int noSlots = int.parse(_noSlotsController.text);
-      final int totalSlots = noZones * noFloors * noRows * noSlots;
 
       widget.ps.noZones = noZones;
       widget.ps.noLevels = noFloors;
       widget.ps.noRows = noRows;
       widget.ps.noSlotsPerRow = noSlots;
-      widget.ps.totalSlotsCheckSum = totalSlots;
 
       widget.onRegisterComplete();
     } catch (e) {
