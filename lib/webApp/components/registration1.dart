@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
 import 'package:smart_parking_system/webApp/components/login.dart';
+import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
 
 import 'package:smart_parking_system/webApp/components/registration2.dart';
 import 'package:smart_parking_system/webApp/components/registration3.dart';
@@ -142,9 +143,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   else if (_currentStep == 2) Registration2(onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 3) Registration3(onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 4) Registration4(onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 5) const Registration5(),
-
-                  // _getCurrentRegistrationStep(),
+                  else if (_currentStep == 5) Registration5(onRegisterComplete: () 
+                  { Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const DashboardScreen(),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -225,7 +230,7 @@ class _Registration1State extends State<Registration1> {
     setState((){
       _isLoading = true;
     });
-    
+
     final String password = _passwordController.text;
     final String accountHolder = _accountHolderController.text;
     final String email = _emailController.text;

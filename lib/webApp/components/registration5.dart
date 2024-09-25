@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
 class Registration5 extends StatefulWidget {
-  const Registration5({super.key});
+  final Function onRegisterComplete;
+
+  const Registration5({super.key, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -49,13 +50,7 @@ class _Registration5State extends State<Registration5> {
           'bank': bank,
         });
         
-        if (mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const DashboardScreen(),
-            ),
-          );
-        }
+        widget.onRegisterComplete();
       } catch (e) {
         showToast(message: 'Failed to save card details: $e');
       }
