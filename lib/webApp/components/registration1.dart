@@ -35,6 +35,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void _goToNextStep() {
     if (_currentStep < 5) {
+      if (_currentStep == 4) { addParking(); }
       setState(() {
         _currentStep++;
       });
@@ -45,7 +46,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     // User ID
     final User? user = FirebaseAuth.instance.currentUser;
     parkingSpot.userId = user!.uid;
-
+    
     addParkingToFirestore(
       userId: parkingSpot.userId,
       parkingName: parkingSpot.name,
@@ -163,7 +164,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   if (_currentStep == 1) Registration1(onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 2) Registration2(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 3) Registration3(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 4) Registration4(ps: parkingSpot, onRegisterComplete: () {_goToNextStep; addParking;})
+                  else if (_currentStep == 4) Registration4(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 5) Registration5(onRegisterComplete: () 
                   { Navigator.of(context).push(
                       MaterialPageRoute(
