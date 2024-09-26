@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
@@ -13,7 +12,6 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
-    await dotenv.load(fileName: ".env");
     await Firebase.initializeApp();
     
     // Connect to Firebase emulators
@@ -24,7 +22,7 @@ void main() {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: 'john.doe@example.com',
-        password: '123456',
+        password: '1234567',
       );
       // print('Test user created successfully');
     } catch (e) {
@@ -47,7 +45,7 @@ void main() {
       await tester.pumpAndSettle();
 
       const emailText = 'john.doe@example.com';
-      const passwordText = '123456';
+      const passwordText = '1234567';
       await tester.enterText(find.byKey(const Key('Email')), emailText);
       await tester.enterText(find.byKey(const Key('Password')), passwordText);
       
