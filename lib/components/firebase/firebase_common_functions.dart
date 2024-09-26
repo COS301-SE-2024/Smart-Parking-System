@@ -1,14 +1,24 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
 Future<void> addParkingToFirestore({
+  required String userId,
   required String parkingName,
-  required String pricePerHour,
+  required Map<String, String> operationHours,
   required double posLatitude,
   required double posLongitude,
-  required Map<String, Map<String, dynamic>> parkingStructure,
+  required int noZones,
+  required int noLevels,
+  required int noRows,
+  required int noSlotsPerRow,
+  required String pricePerHour,
+  // required Map<String, Map<String, dynamic>> parkingStructure,
 }) async {
   final firestore = FirebaseFirestore.instance;
+  final List<String> alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+  final random = Random();
 
   try {
     // Check if parking name already exists
@@ -29,62 +39,55 @@ Future<void> addParkingToFirestore({
     final parkingDocRef = firestore.collection('parkings').doc();
 
     // Add zones sub-collection
-    for (var zoneEntry in parkingStructure.entries) {
-      final zoneId = zoneEntry.key;
-      final zoneData = zoneEntry.value;
-
+    for (int zoneIndex = 0; zoneIndex < noZones; zoneIndex++) {
+      final zoneId = alphabet[zoneIndex];
       final zoneDocRef = parkingDocRef.collection('zones').doc(zoneId);
 
       // Add levels sub-collection
       int totalSlotsInZone = 0;
-      for (var levelEntry in zoneData.entries) {
-        final levelId = levelEntry.key;
-        final levelData = levelEntry.value;
+      for (int levelIndex = 0; levelIndex < noLevels; levelIndex++) {
+        final levelId = levelIndex == 0 ? 'Ground' : 'L$levelIndex';
+        final levelDocRef = zoneDocRef.collection('levels').doc(levelId);
 
-        if (levelData is Map<String, dynamic>) {
+        // Add rows sub-collection
+        int totalSlotsInLevel = 0;
+        for (int rowIndex = 0; rowIndex < noRows; rowIndex++) {
+          final rowId = alphabet[rowIndex];
+          final totalSlotsInRow = noSlotsPerRow;
+          totalSlotsInLevel += totalSlotsInRow;
+          totalSlotsInZone += totalSlotsInRow;
+          totalSlots += totalSlotsInRow;
 
-          final levelDocRef = zoneDocRef.collection('levels').doc(levelId);
+          final rowDocRef = levelDocRef.collection('rows').doc(rowId);
 
-          // Add rows sub-collection
-          int totalSlotsInLevel = 0;
-          for (var rowEntry in levelData.entries) {
-            final rowId = rowEntry.key;
-            final rowData = rowEntry.value;
-
-            if (rowData is Map<String, dynamic>) {
-              final totalSlotsInRow = (rowData['slots'] as int?) ?? 0;
-              totalSlots += totalSlotsInRow;
-              totalSlotsInLevel += totalSlotsInRow;
-              totalSlotsInZone += totalSlotsInRow;
-
-              final rowDocRef = levelDocRef.collection('rows').doc(rowId);
-
-              await rowDocRef.set({
-                'slots': "$totalSlotsInRow/$totalSlotsInRow",
-              });
-            }
-          }
-
-          await levelDocRef.set({
-            'slots': "$totalSlotsInLevel/$totalSlotsInLevel",
+          await rowDocRef.set({
+            'slots': "$totalSlotsInRow/$totalSlotsInRow",
           });
         }
+
+        await levelDocRef.set({
+          'slots': "$totalSlotsInLevel/$totalSlotsInLevel",
+        });
       }
 
       await zoneDocRef.set({
         'slots': "$totalSlotsInZone/$totalSlotsInZone",
-        'x': zoneData['x'],
-        'y': zoneData['y'],
+        'x': 30 + random.nextInt(121),
+        'y': 30 + random.nextInt(121),
       });
     }
 
+    // Add parking details
     await parkingDocRef.set({
+      'userId': userId,
+      'name': parkingName,
+      'operationHours': operationHours,
       'latitude': posLatitude,
       'longitude': posLongitude,
-      'name': parkingName,
       'price': pricePerHour,
       'slots_available': "$totalSlots/$totalSlots", // Total slots available
     });
+
     showToast(message: 'Success: Parking area added successfully!');
   } catch (e) {
     showToast(message: 'ERROR: $e');
@@ -93,80 +96,16 @@ Future<void> addParkingToFirestore({
 
 //How To Call :
 
-  // addParkingToFirestore(
-  //   parkingName: 'Hemingways Mall',
-  //   pricePerHour: '15',
-  //   posLatitude: -32.97051605731753,
-  //   posLongitude: 27.901948782757295,
-  //   parkingStructure: {
-  //                       'A': {
-  //                         'x' : 100,
-  //                         'y' : 50,
-  //                         'L2': {
-  //                           'A': {'slots': 15},
-  //                           'B': {'slots': 15},
-  //                           'C': {'slots': 15},
-  //                           'D': {'slots': 15},
-  //                         },
-  //                         'L1': {
-  //                           'A': {'slots': 15},
-  //                           'B': {'slots': 15},
-  //                           'C': {'slots': 15},
-  //                           'D': {'slots': 15},
-  //                         },
-  //                         'Ground': {
-  //                           'A': {'slots': 15},
-  //                           'B': {'slots': 15},
-  //                           'C': {'slots': 15},
-  //                           'D': {'slots': 15},
-  //                         },
-  //                         'B1': {
-  //                           'A': {'slots': 15},
-  //                           'B': {'slots': 15},
-  //                           'C': {'slots': 15},
-  //                           'D': {'slots': 15},
-  //                         },
-  //                         'B2': {
-  //                           'A': {'slots': 15},
-  //                           'B': {'slots': 15},
-  //                           'C': {'slots': 15},
-  //                           'D': {'slots': 15},
-  //                         },
-  //                       },
-  //                       'B': {
-  //                         'x': 200,
-  //                         'y': 100,
-  //                         'L2': {
-  //                           'A': {'slots': 20},
-  //                           'B': {'slots': 20},
-  //                           'C': {'slots': 20},
-  //                           'D': {'slots': 20},
-  //                         },
-  //                         'L1': {
-  //                           'A': {'slots': 20},
-  //                           'B': {'slots': 20},
-  //                           'C': {'slots': 20},
-  //                           'D': {'slots': 20},
-  //                         },
-  //                         'Ground': {
-  //                           'A': {'slots': 20},
-  //                           'B': {'slots': 20},
-  //                           'C': {'slots': 20},
-  //                           'D': {'slots': 20},
-  //                         },
-  //                         'B1': {
-  //                           'A': {'slots': 20},
-  //                           'B': {'slots': 20},
-  //                           'C': {'slots': 20},
-  //                           'D': {'slots': 20},
-  //                         },
-  //                         'B2': {
-  //                           'A': {'slots': 20},
-  //                           'B': {'slots': 20},
-  //                           'C': {'slots': 20},
-  //                           'D': {'slots': 20},
-  //                         },
-  //                       },
-  //                     },
-  // );
+    // addParkingToFirestore(
+    //   userId: parkingSpot.userId,
+    //   parkingName: parkingSpot.name,
+    //   operationHours: parkingSpot.operationHours,
+    //   posLatitude: parkingSpot.latitude,
+    //   posLongitude: parkingSpot.longitude,
+    //   noZones: parkingSpot.noZones,
+    //   noLevels: parkingSpot.noLevels,
+    //   noRows: parkingSpot.noRows,
+    //   noSlotsPerRow: parkingSpot.noSlotsPerRow,
+    //   pricePerHour: parkingSpot.price,
+    // );
 

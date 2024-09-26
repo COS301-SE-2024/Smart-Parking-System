@@ -14,7 +14,6 @@
 //   // You can add logic here to handle the background message
 // }
 
-
 // Future<void> main() async {
 //   await dotenv.load(fileName: ".env");
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +21,7 @@
 //   //dotenv.env['API_KEY']!
 //   if (kIsWeb) {
 //     await Firebase.initializeApp(
-//       options: FirebaseOptions(
+//       options:  FirebaseOptions(
 //         apiKey: dotenv.env['API_KEY']!,
 //         appId: "1:808791551084:web:6cf351cf1ebb0a5238fc49",
 //         messagingSenderId: "808791551084",
@@ -35,7 +34,7 @@
 //   }
 
 //   // Get a reference to the storage service
-  
+
 //   // final FirebaseStorage storage = FirebaseStorage.instanceFor(bucket: 'gs://parkme-c2508.appspot.com');
 //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -45,25 +44,23 @@
 //   runApp(const MyApp());
 // }
 
-
-
 // class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
+//   const MyApp({super.key});
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
-//       title: 'Login Demo',
+//       debugShowCheckedModeBanner: false,
+//       title: 'Signup & Login',
 //       theme: ThemeData(
 //         primarySwatch: Colors.blue,
-//         // You can customize the theme further here
 //       ),
-//       home: const Splash(), // This should now work correctly
+//       home: const SplashScreen(
+//         child: LoginMainPage(),
+//       ),
 //     );
 //   }
 // }
-
-
 
 
 //web config

@@ -1,13 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
+
+import 'package:smart_parking_system/webApp/components/registration1.dart';
 
 
 class Registration2 extends StatefulWidget {
   final Function onRegisterComplete;
+  final ParkingSpot ps;
 
-  const Registration2({super.key, required this.onRegisterComplete});
+  const Registration2({super.key, required this.ps, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -16,6 +17,8 @@ class Registration2 extends StatefulWidget {
 
 class _Registration2State extends State<Registration2> {
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
   Map<String, String> operationalHours = {
     'Monday': '--',
     'Tuesday': '--',
@@ -27,54 +30,28 @@ class _Registration2State extends State<Registration2> {
   };
   bool _isLoading = false;
 
-
   Future<void> _clientRegisterParkingDetails() async {
-    final String location = _locationController.text;
     setState((){
       _isLoading = true;
     });
 
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      
-      if (user != null) {
-        // Query for existing document
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('client_parking_details')
-            .where('userId', isEqualTo: user.uid)
-            .get();
+      final String location = _locationController.text;
+      final double latitude = double.parse(_latitudeController.text);
+      final double longitude = double.parse(_longitudeController.text);
+      widget.ps.name = location;
+      widget.ps.operationHours = operationalHours;
+      widget.ps.latitude = latitude;
+      widget.ps.longitude = longitude;
 
-        if (querySnapshot.docs.isNotEmpty) {
-          // Document exists, update it
-          await querySnapshot.docs.first.reference.update({
-            'location': location,
-            'operationHours': operationalHours,
-          });
-          showToast(message: 'Parking Detail updated Successfully!');
-        } else {
-          // Document doesn't exist, add new one
-          await FirebaseFirestore.instance.collection('client_parking_details').add({
-            'userId': user.uid,
-            'location': location,
-            'operationHours': operationalHours,
-            'pricingPerHour': null,
-          });
-          showToast(message: 'Parking Detail added Successfully!');
-        }
-        setState((){
-          _isLoading = false;
-        });
-        // ignore: use_build_context_synchronously
-        widget.onRegisterComplete();
-      } else {
-        setState((){
-          _isLoading = false;
-        });
-        showToast(message: 'User not logged in');
-      }
+      widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Error: $e');
     }
+
+    setState((){
+      _isLoading = false;
+    });
   }
 
   @override
@@ -84,7 +61,11 @@ class _Registration2State extends State<Registration2> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
-          _buildLabeledTextField('Parking location *', 'Enter the parking address'),
+          _buildLabeledTextField('Parking location name *', 'Enter the parking name', _locationController),
+          const SizedBox(height: 15),
+          _buildLabeledTextField('Parking latitude *', 'Enter the parking latitude', _latitudeController),
+          const SizedBox(height: 15),
+          _buildLabeledTextField('Parking longitude *', 'Enter the parking longitude', _longitudeController),
           const SizedBox(height: 15),
           _buildOperationalHoursField('Operational hours *'),
           const SizedBox(height: 25),
@@ -127,7 +108,7 @@ class _Registration2State extends State<Registration2> {
     );
   }
 
-  Widget _buildLabeledTextField(String label, String hintText, {bool obscureText = false}) {
+  Widget _buildLabeledTextField(String label, String hintText, TextEditingController controller, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -140,28 +121,24 @@ class _Registration2State extends State<Registration2> {
           ),
         ),
         const SizedBox(height: 4),
-        _buildTextField(hintText, obscureText: obscureText),
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          style: const TextStyle(color: Colors.white, fontSize: 14),
+          cursorColor: const Color(0xFF58C6A9),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF58C6A9)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+        ),
       ],
-    );
-  }
-
-  Widget _buildTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _locationController,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
     );
   }
 

@@ -1,12 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
+import 'package:smart_parking_system/webApp/components/registration1.dart';
+
 class Registration4 extends StatefulWidget {
   final Function onRegisterComplete;
+  final ParkingSpot ps;
 
-  const Registration4({super.key, required this.onRegisterComplete});
+  const Registration4({super.key, required this.ps, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -14,53 +15,25 @@ class Registration4 extends StatefulWidget {
 }
 
 class _Registration4State extends State<Registration4> {
-  double _pricePerHour = 20.0; // Default price
+  double _pricePerHour = 20; // Default price
   bool _isLoading = false;
 
   Future<void> _clientRegisterParkingDetails() async {
     setState((){
       _isLoading = true;
     });
+    
     try {
-      User? user = FirebaseAuth.instance.currentUser;
+      widget.ps.price = _pricePerHour.toString();
       
-      if (user != null) {
-        // Query for existing document
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('client_parking_details')
-            .where('userId', isEqualTo: user.uid)
-            .get();
-
-        if (querySnapshot.docs.isNotEmpty) {
-          // Document exists, update it
-          await querySnapshot.docs.first.reference.update({
-            'pricingPerHour': _pricePerHour,
-          });
-          showToast(message: 'Parking Detail updated Successfully!');
-        } else {
-          // Document doesn't exist, add new one
-          await FirebaseFirestore.instance.collection('client_parking_details').add({
-            'userId': user.uid,
-            'location': null,
-            'operationHours': null,
-            'pricingPerHour': _pricePerHour,
-          });
-          showToast(message: 'Parking Detail added Successfully!');
-        }
-          setState((){
-            _isLoading = false;
-          });
-        // ignore: use_build_context_synchronously
-        widget.onRegisterComplete();
-      } else {
-        setState((){
-          _isLoading = false;
-        });
-        showToast(message: 'User not logged in');
-      }
+      widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Error: $e');
     }
+
+    setState((){
+      _isLoading = false;
+    });
   }
 
   @override
@@ -143,8 +116,8 @@ class _Registration4State extends State<Registration4> {
     return Slider(
       value: _pricePerHour,
       min: 10,
-      max: 100,
-      divisions: 90,
+      max: 50,
+      divisions: 40,
       activeColor: const Color(0xFF58C6A9),
       inactiveColor: Colors.grey,
       onChanged: (value) {

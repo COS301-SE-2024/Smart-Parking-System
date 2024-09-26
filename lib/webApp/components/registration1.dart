@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/firebase/firebase_auth_services.dart';
+import 'package:smart_parking_system/components/firebase/firebase_common_functions.dart';
 import 'package:smart_parking_system/webApp/components/login.dart';
+import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
 
 import 'package:smart_parking_system/webApp/components/registration2.dart';
 import 'package:smart_parking_system/webApp/components/registration3.dart';
@@ -23,53 +25,7 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   late int _currentStep;
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _accountHolderController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  final FireBaseAuthServices _auth = FireBaseAuthServices();
-
-  bool _isLoading = false;
-
-  Future<void> registerUser() async {
-    final String password = _passwordController.text;
-    final String accountHolder = _accountHolderController.text;
-    final String email = _emailController.text;
-    final String company = _companyController.text;
-
-    setState((){
-      _isLoading = true;
-    });
-
-    final User? user = await _auth.signUpWithEmailAndPassword(email, password);
-
-    setState((){
-      _isLoading = false;
-    });
-
-    if (user != null) {
-      if(mounted) { // Check if the widget is still in the tree
-        final firestore = FirebaseFirestore.instance;
-
-        await firestore.collection('clients').doc(user.uid).set(
-          {
-            'accountHolder': accountHolder,
-            'company': company,
-            'email': email,
-          }
-        );
-
-        if (mounted) { // Check if the widget is still in the tree before navigating
-          _goToNextStep();
-        }
-      }
-    } else {
-      // ignore: avoid_print
-      showToast(message: 'An Error Occured');
-    }
-    
-  }
+  ParkingSpot parkingSpot = ParkingSpot();
 
   @override
   void initState() {
@@ -79,33 +35,30 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void _goToNextStep() {
     if (_currentStep < 5) {
+      if (_currentStep == 4) { addParking(); }
       setState(() {
         _currentStep++;
       });
     }
   }
 
-  void _navigateToStep(int step) {
-    setState(() {
-      _currentStep = step;
-    });
-  }
+  void addParking() {
+    // User ID
+    final User? user = FirebaseAuth.instance.currentUser;
+    parkingSpot.userId = user!.uid;
 
-  Widget _getCurrentRegistrationStep() {
-    switch (_currentStep) {
-      case 1:
-        return _buildRegistrationStep1();
-      case 2:
-        return Registration2(onRegisterComplete: _goToNextStep,);
-      case 3:
-        return  Registration3(onRegisterComplete: _goToNextStep,);
-      case 4:
-        return  Registration4(onRegisterComplete: _goToNextStep,);
-      case 5:
-        return const Registration5();
-      default:
-        return _buildRegistrationStep1();
-    }
+    addParkingToFirestore(
+      userId: parkingSpot.userId,
+      parkingName: parkingSpot.name,
+      operationHours: parkingSpot.operationHours,
+      posLatitude: parkingSpot.latitude,
+      posLongitude: parkingSpot.longitude,
+      noZones: parkingSpot.noZones,
+      noLevels: parkingSpot.noLevels,
+      noRows: parkingSpot.noRows,
+      noSlotsPerRow: parkingSpot.noSlotsPerRow,
+      pricePerHour: parkingSpot.price,
+    );
   }
 
   @override
@@ -208,7 +161,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ],
                   ),
                   const SizedBox(height: 40),
-                  _getCurrentRegistrationStep(),
+                  if (_currentStep == 1) Registration1(onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 2) Registration2(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 3) Registration3(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 4) Registration4(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 5) Registration5(onRegisterComplete: () 
+                  { Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const DashboardScreen(),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -220,7 +183,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget _buildStyledStepIndicator(int step, bool isActive) {
     return GestureDetector(
-      onTap: () => _navigateToStep(step),
+      // onTap: () => setState(() { _currentStep = step; }),
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
@@ -241,8 +204,102 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
+}
 
-  Widget _buildRegistrationStep1() {
+class ParkingSpot {
+  late String userId;
+  late String name;
+  late Map<String, String> operationHours;
+  late double latitude;
+  late double longitude;
+  late int noZones;
+  late int noLevels;
+  late int noRows;
+  late int noSlotsPerRow;
+  late String price;
+}
+
+class ArrowClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.moveTo(0, size.height * 0.25);
+    path.lineTo(size.width * 0.9, size.height * 0.25);
+    path.lineTo(size.width, size.height * 0.5);
+    path.lineTo(size.width * 0.9, size.height * 0.75);
+    path.lineTo(0, size.height * 0.75);
+    path.lineTo(size.width * 0.1, size.height * 0.5);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+////////////////////////////////////////////////
+
+class Registration1 extends StatefulWidget {
+  final Function onRegisterComplete;
+
+  const Registration1({super.key, required this.onRegisterComplete});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _Registration1State createState() => _Registration1State();
+}
+
+class _Registration1State extends State<Registration1> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  final FireBaseAuthServices _auth = FireBaseAuthServices();
+
+  bool _isLoading = false;
+
+  Future<void> registerUser() async {
+    setState((){
+      _isLoading = true;
+    });
+
+    final String password = _passwordController.text;
+    final String accountHolder = _accountHolderController.text;
+    final String email = _emailController.text;
+    final String company = _companyController.text;
+
+    final User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      if(mounted) { // Check if the widget is still in the tree
+        final firestore = FirebaseFirestore.instance;
+
+        await firestore.collection('clients').doc(user.uid).set(
+          {
+            'accountHolder': accountHolder,
+            'company': company,
+            'email': email,
+          }
+        );
+
+        if (mounted) { // Check if the widget is still in the tree before navigating
+          widget.onRegisterComplete();
+        }
+      }
+    } else {
+      showToast(message: 'An Error Occured');
+    }
+
+    setState((){
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,13 +320,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
         ),
         const SizedBox(height: 40),
-        _buildLabeledTextField('Account holder name *', 'Enter your name'),
+        _buildLabeledTextField('Account holder name *', 'Enter your name', _accountHolderController),
         const SizedBox(height: 15),
-        _buildLabeledTextField('Company name *', 'Enter company name'),
+        _buildLabeledTextField('Company name *', 'Enter company name', _companyController),
         const SizedBox(height: 15),
-        _buildLabeledTextField('Email *', 'Enter your email'),
+        _buildLabeledTextField('Email *', 'Enter your email', _emailController),
         const SizedBox(height: 15),
-        _buildLabeledTextField('Password *', 'Enter your password', obscureText: true),
+        _buildLabeledTextField('Password *', 'Enter your password', _passwordController, obscureText: true),
         const SizedBox(height: 25),
         Center(
           child: SizedBox(
@@ -335,7 +392,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  Widget _buildLabeledTextField(String label, String hintText, {bool obscureText = false}) {
+  Widget _buildLabeledTextField(String label, String hintText, TextEditingController controller, {bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -348,116 +405,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
         ),
         const SizedBox(height: 4),
-        if (label == 'Company name *')
-          _buildCompanyTextField(hintText, obscureText: obscureText)
-        else if (label == 'Email *')
-          _buildEmailTextField(hintText, obscureText: obscureText)
-        else if (label == 'Account holder name *')
-          _buildAHTextField(hintText, obscureText: obscureText)
-        else if (label == 'Password *')
-          _buildPasswordTextField(hintText, obscureText: obscureText),
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          style: const TextStyle(color: Colors.white, fontSize: 14),
+          cursorColor: const Color(0xFF58C6A9),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF58C6A9)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+        ),
       ],
     );
-  }
-
-  Widget _buildAHTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _accountHolderController,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
-    );
-  }
-
-  Widget _buildPasswordTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _passwordController,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
-    );
-  }
-
-  Widget _buildCompanyTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _companyController,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
-    );
-  }
-
-  Widget _buildEmailTextField(String hintText, {bool obscureText = false}) {
-    return TextField(
-      controller: _emailController,
-      obscureText: obscureText,
-      keyboardType: TextInputType.emailAddress,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      cursorColor: const Color(0xFF58C6A9),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF58C6A9)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      ),
-    );
-  }
-}
-
-class ArrowClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.moveTo(0, size.height * 0.25);
-    path.lineTo(size.width * 0.9, size.height * 0.25);
-    path.lineTo(size.width, size.height * 0.5);
-    path.lineTo(size.width * 0.9, size.height * 0.75);
-    path.lineTo(0, size.height * 0.75);
-    path.lineTo(size.width * 0.1, size.height * 0.5);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
   }
 }
