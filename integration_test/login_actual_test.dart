@@ -45,7 +45,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Input this text
-      const emailText = 'mekhailqm@gmail.com';
+      const emailText = 'john.doe@example.com';
       const passwordText = '123456';
       await tester.enterText(find.byKey(const Key('Email')), emailText);
       await tester.enterText(find.byKey(const Key('Password')), passwordText);
