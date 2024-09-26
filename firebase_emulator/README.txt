@@ -8,6 +8,14 @@ firebase init
 
 firebase init emulators
 
+// Select these emulators for the emulator:
+// - Authentication
+// - Functions
+// - Firestore
+// - Databases
+// - Storage
+
+
 firebase emulators:start
 
 // It will start 2 java applications, but in the terminal it should appear an box with ip address to the Emulator UI
