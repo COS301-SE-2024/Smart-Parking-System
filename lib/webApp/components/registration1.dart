@@ -46,7 +46,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     // User ID
     final User? user = FirebaseAuth.instance.currentUser;
     parkingSpot.userId = user!.uid;
-    
+
     addParkingToFirestore(
       userId: parkingSpot.userId,
       parkingName: parkingSpot.name,
@@ -183,7 +183,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget _buildStyledStepIndicator(int step, bool isActive) {
     return GestureDetector(
-      onTap: () => setState(() { _currentStep = step; }),  //TODO : REMOVE THIS
+      // onTap: () => setState(() { _currentStep = step; }),
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
