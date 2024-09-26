@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,9 +26,9 @@ void main() {
         email: 'john.doe@example.com',
         password: '123456',
       );
-      print('Test user created successfully');
+      // print('Test user created successfully');
     } catch (e) {
-      print('Test user already exists or could not be created: $e');
+      // print('Test user already exists or could not be created: $e');
     }
   });
 
@@ -56,24 +55,24 @@ void main() {
       expect(submitButton, findsOneWidget, reason: 'Submit button not found');
       await tester.tap(submitButton);
       // After tapping the login button
-      await tester.pump(Duration(seconds: 2));  // Wait for login to process
+      await tester.pump(const Duration(seconds: 2));  // Wait for login to process
 
       // Check if user is logged in
-      User? user = FirebaseAuth.instance.currentUser;
-      print("Current user: ${user?.uid ?? 'No user logged in'}");
+      // User? user = FirebaseAuth.instance.currentUser;
+      // print("Current user: ${user?.uid ?? 'No user logged in'}");
       
       // Increase wait time and add debug prints
       for (int i = 0; i < 5; i++) {
-        await tester.pump(Duration(seconds: 5));
-        print('Waiting for MainPage... Attempt ${i + 1}');
+        await tester.pump(const Duration(seconds: 5));
+        // print('Waiting for MainPage... Attempt ${i + 1}');
         if (find.byType(MainPage).evaluate().isNotEmpty) break;
       }
 
       expect(find.byType(MainPage), findsOneWidget, reason: 'MainPage not found after login');
       
       // Print current widget tree for debugging
-      print('Current widget tree:');
-      print(tester.allWidgets.map((w) => w.runtimeType).toList());
+      // print('Current widget tree:');
+      // print(tester.allWidgets.map((w) => w.runtimeType).toList());
     },
   );
 }
