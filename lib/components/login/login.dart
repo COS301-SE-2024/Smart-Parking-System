@@ -158,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Email Text Field
                     TextField(
                       controller: _emailController,
+                      key: const Key('Email'),
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -198,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Password Text Field
                     TextField(
                       controller: _passwordController,
+                      key: const Key('Password'),
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: TextStyle(
