@@ -57,9 +57,9 @@ class _ProfileCardState extends State<ProfileCard> {
             ),
           ),
           const SizedBox(height: 34),
-          Text(
+          const Text(
             'Sandton City, 83 Rivonia Rd, Sandhurst, Sandton, 2196', // You may want to load this dynamically as well
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 15,
               fontWeight: FontWeight.w500,
@@ -77,7 +77,7 @@ class _ProfileCardState extends State<ProfileCard> {
               fontFamily: 'Roboto',
             ),
           ),
-          const SizedBox(height: 21),
+          const SizedBox(height: 71),
           Text(
             email,
             style: const TextStyle(
@@ -87,7 +87,7 @@ class _ProfileCardState extends State<ProfileCard> {
               fontFamily: 'Roboto',
             ),
           ),
-          const SizedBox(height: 53),
+          const SizedBox(height: 73),
         ],
       ),
     );
