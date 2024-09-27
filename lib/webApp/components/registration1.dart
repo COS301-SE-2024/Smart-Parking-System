@@ -182,9 +182,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  Widget _buildStyledStepIndicator(int step, bool isActive) {       //Change This line for nav
+  Widget _buildStyledStepIndicator(int step, bool isActive) {       //Change "This line" for nav
     return GestureDetector(
-      onTap: () => setState(() { _currentStep = step; }),      // This Line
+      // onTap: () => setState(() { _currentStep = step; }),      // This Line
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
