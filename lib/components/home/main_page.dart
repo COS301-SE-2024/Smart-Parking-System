@@ -23,6 +23,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 
+
+
+// Add the import for your loading screen
+import 'package:smart_parking_system/components/home/loading_screen.dart';
+
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -56,6 +62,11 @@ class _MainPageState extends State<MainPage> {
   final Set<Marker> _markers = {};
   final TextEditingController _destinationController = TextEditingController();
 
+  bool _isLoading = true; // New variable to manage loading state
+
+
+
+
   late Parking parking;
   // Parking parking = Parking('', '', '', '', 0);                                         //Change to this if main page gives error
 
@@ -65,6 +76,7 @@ class _MainPageState extends State<MainPage> {
     requestLocation();
     _addCarMarker();
   }
+
 
   void displayPrediction(Prediction? p) async {
     if (p != null) {
@@ -92,6 +104,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _addCarMarker() async {
+      setState(() {
+      _isLoading = true; // Set loading state to true
+    });
+
     final BitmapDescriptor carIcon = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(100, 100)),
       'assets/Purple_ParkMe.png',
@@ -159,6 +175,7 @@ class _MainPageState extends State<MainPage> {
 
     setState(() {
       _markers.addAll(markers);
+       _isLoading = false; 
     });
 
   }
@@ -385,6 +402,10 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Stack(
         children: <Widget>[
+
+          if (_isLoading) const LoadingScreen(), 
+          if (!_isLoading)
+
           GoogleMap(
             initialCameraPosition: const CameraPosition(
               target: LatLng(-30.983819953976862, 23.84867659935075), // Default location
@@ -549,3 +570,4 @@ void main() async {
     home: MainPage(),
   ));
 }
+
