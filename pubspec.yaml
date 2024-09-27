@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  lottie: ^2.3.2
   http: ^1.2.2
   flutter_svg: ^2.0.10+1
   google_fonts: ^6.2.1
@@ -50,4 +51,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+  
 
