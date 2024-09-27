@@ -10,7 +10,8 @@ Future<void> addParkingToFirestore({
   required double posLatitude,
   required double posLongitude,
   required int noZones,
-  required int noLevels,
+  required int noBasementLevels,
+  required int noUpperLevels,
   required int noRows,
   required int noSlotsPerRow,
   required String pricePerHour,
@@ -45,8 +46,32 @@ Future<void> addParkingToFirestore({
 
       // Add levels sub-collection
       int totalSlotsInZone = 0;
-      for (int levelIndex = 0; levelIndex < noLevels; levelIndex++) {
-        final levelId = levelIndex == 0 ? 'Ground' : 'L$levelIndex';
+      for (int levelIndex = 0; levelIndex < noUpperLevels; levelIndex++) {
+        final levelId = 'L$levelIndex';
+        final levelDocRef = zoneDocRef.collection('levels').doc(levelId);
+
+        // Add rows sub-collection
+        int totalSlotsInLevel = 0;
+        for (int rowIndex = 0; rowIndex < noRows; rowIndex++) {
+          final rowId = alphabet[rowIndex];
+          final totalSlotsInRow = noSlotsPerRow;
+          totalSlotsInLevel += totalSlotsInRow;
+          totalSlotsInZone += totalSlotsInRow;
+          totalSlots += totalSlotsInRow;
+
+          final rowDocRef = levelDocRef.collection('rows').doc(rowId);
+
+          await rowDocRef.set({
+            'slots': "$totalSlotsInRow/$totalSlotsInRow",
+          });
+        }
+
+        await levelDocRef.set({
+          'slots': "$totalSlotsInLevel/$totalSlotsInLevel",
+        });
+      }
+      for (int levelIndex = 0; levelIndex < noBasementLevels; levelIndex++) {
+        final levelId = 'B${levelIndex+1}';
         final levelDocRef = zoneDocRef.collection('levels').doc(levelId);
 
         // Add rows sub-collection
