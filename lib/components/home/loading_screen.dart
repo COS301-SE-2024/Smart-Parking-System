@@ -5,6 +5,7 @@ class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
@@ -48,7 +49,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                 height: 200,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
-                  print('Lottie error: $error');
+                  // print('Lottie error: $error');
                   return const CircularProgressIndicator();
                 },
               ),
