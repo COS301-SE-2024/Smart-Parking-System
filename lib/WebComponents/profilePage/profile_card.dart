@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -20,7 +21,8 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   Future<void> _loadClientData() async {
-    var document = FirebaseFirestore.instance.collection('clients').doc('EugcZ1UIqWPegpfwMDDADWWVTmV2'); // Your document ID here
+    final currentUser = FirebaseAuth.instance.currentUser;
+    var document = FirebaseFirestore.instance.collection('clients').doc(currentUser!.uid);
     var snapshot = await document.get();
     if (snapshot.exists) {
       setState(() {
