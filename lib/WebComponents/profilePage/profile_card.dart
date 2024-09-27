@@ -6,7 +6,8 @@ class ProfileCard extends StatefulWidget {
   const ProfileCard({super.key});
 
   @override
-  _ProfileCardState createState() => _ProfileCardState();
+  // _ProfileCardState createState() => _ProfileCardState();
+  State<ProfileCard> createState() => _ProfileCardState();
 }
 
 class _ProfileCardState extends State<ProfileCard> {
