@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
-
 import 'package:smart_parking_system/webApp/components/registration1.dart';
-
 
 class Registration3 extends StatefulWidget {
   final Function onRegisterComplete;
@@ -16,12 +14,8 @@ class Registration3 extends StatefulWidget {
 }
 
 class _Registration3State extends State<Registration3> {
-  final TextEditingController _noZonesController = TextEditingController();
-  final TextEditingController _noBasementLevelsController = TextEditingController();
-  final TextEditingController _noUpperLevelsController = TextEditingController();
-  final TextEditingController _noRowsController = TextEditingController();
-  final TextEditingController _noSlotsController = TextEditingController();
   bool _isLoading = false;
+  final List<Offset> _markers = [];
 
   Future<void> _saveParkingDetails() async {
     setState(() {
@@ -29,53 +23,101 @@ class _Registration3State extends State<Registration3> {
     });
 
     try {
-      final int noZones = int.parse(_noZonesController.text);
-      final int noBasementLevels = int.parse(_noBasementLevelsController.text);
-      final int noUpperLevels = int.parse(_noUpperLevelsController.text);
-      final int noRows = int.parse(_noRowsController.text);
-      final int noSlots = int.parse(_noSlotsController.text);
+      if (_markers.isEmpty) {
+        showToast(message: 'Please add at least one parking zone marker.');
+        return;
+      }
 
-      widget.ps.noZones = noZones;
-      widget.ps.noBasementLevels = noBasementLevels;
-      widget.ps.noUpperLevels = noUpperLevels;
-      widget.ps.noRows = noRows;
-      widget.ps.noSlotsPerRow = noSlots;
+      // Here you would typically save the markers to your ParkingSpot object
+      // For example:
+      // widget.ps.markers = _markers.map((offset) => LatLng(offset.dy, offset.dx)).toList();
 
+      // Call onRegisterComplete to move to the next step
       widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Failed to save parking details: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-      
-    setState(() {
-      _isLoading = false;
-    });
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _buildLabeledTextField('Number of zones *', 'Enter number of zones', _noZonesController),
+          const SizedBox(height: 20),
+          const Text(
+            'Pin the parking zones below *',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Select the area on the map to place a parking zone to indicate the zones at your parking location',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: GestureDetector(
+                onTapUp: (TapUpDetails details) {
+                  setState(() {
+                    _markers.add(details.localPosition);
+                  });
+                },
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      'assets/map_placeholder.png',
+                      height: 400,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    ..._markers.map((offset) => Positioned(
+                      left: offset.dx - 15,
+                      top: offset.dy - 30,
+                      child: const Icon(Icons.local_parking, color: Colors.green, size: 30),
+                    )),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.local_parking, color: Colors.green, size: 30),
+              SizedBox(width: 10),
+              Text(
+                'Denotes a Parking Zone',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
+          ),
+
           const SizedBox(height: 15),
-          _buildLabeledTextField('Number of basement levels in each zone *', 'Enter number of floors', _noBasementLevelsController),
-          const SizedBox(height: 15),
-          _buildLabeledTextField('Number of upper levels in each zone (including ground) *', 'Enter number of floors', _noUpperLevelsController),
-          const SizedBox(height: 15),
-          _buildLabeledTextField('Number of rows on each floor *', 'Enter number of rows', _noRowsController),
-          const SizedBox(height: 15),
-          _buildLabeledTextField('Number of slots in each row *', 'Enter number of slots', _noSlotsController),
-          const SizedBox(height: 25),
           Center(
             child: SizedBox(
               width: 200,
               height: 40,
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle next step action
-                  _saveParkingDetails();
-                },
+                onPressed: _saveParkingDetails,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF58C6A9),
                   shape: RoundedRectangleBorder(
@@ -83,61 +125,28 @@ class _Registration3State extends State<Registration3> {
                   ),
                 ),
                 child: _isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.0,
-                    ),
-                  )
-                : const Text(
-                  'Next',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                    : const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ),
           const SizedBox(height: 15),
         ],
       ),
-    );
-  }
-
-  Widget _buildLabeledTextField(String label, String hintText, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-          cursorColor: const Color(0xFF58C6A9),
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFF58C6A9)),
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 8),
-          ),
-        ),
-      ],
     );
   }
 }
