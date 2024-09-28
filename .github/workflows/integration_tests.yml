@@ -2,7 +2,7 @@ name: Integration Tests
 
 on:
   push:
-    branches: 
+    branches:
     - main
   pull_request:
     branches:
@@ -37,4 +37,11 @@ jobs:
     
     - name: Run integration tests with Firebase Emulator
       run: |
-        firebase emulators:exec --only auth,firestore "flutter test integration_test"
+        firebase emulators:exec --project demo-project --only auth,firestore "flutter test integration_test"
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: integration-test-results
+        path: integration_test/
