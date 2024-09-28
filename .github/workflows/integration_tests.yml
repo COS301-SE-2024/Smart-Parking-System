@@ -42,7 +42,7 @@ jobs:
     
     - name: Run integration tests with Firebase Emulator
       run: |
-        firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d web-server"
+        firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/add_vehicle_integration_test.dart -d web-server"
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
