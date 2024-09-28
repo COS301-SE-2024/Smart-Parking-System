@@ -42,6 +42,8 @@ jobs:
     
     - name: Install Chrome
       uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
 
     - name: Install ChromeDriver
       uses: nanasess/setup-chromedriver@v2
@@ -52,8 +54,8 @@ jobs:
         chromedriver --port=4444 &
         # Wait for ChromeDriver to start
         sleep 5
-        # Run the tests
-        firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/add_vehicle_integration_test.dart -d web-server --browser-name=chrome --no-headless"
+        # Run the tests with xvfb
+        xvfb-run --auto-servernum firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/add_vehicle_integration_test.dart -d web-server --browser-name=chrome"
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
