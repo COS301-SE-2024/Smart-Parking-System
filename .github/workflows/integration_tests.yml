@@ -19,7 +19,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.x'  # Specify your Flutter version
+        flutter-version: '3.x'
         channel: 'stable'
     
     - name: Install dependencies
@@ -40,9 +40,20 @@ jobs:
     - name: Enable web
       run: flutter config --enable-web
     
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@latest
+
+    - name: Install ChromeDriver
+      uses: nanasess/setup-chromedriver@v2
+
     - name: Run integration tests with Firebase Emulator
       run: |
-        firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/add_vehicle_integration_test.dart -d web-server"
+        # Start ChromeDriver
+        chromedriver --port=4444 &
+        # Wait for ChromeDriver to start
+        sleep 5
+        # Run the tests
+        firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=integration_test/add_vehicle_integration_test.dart -d web-server --browser-name=chrome --no-headless"
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
