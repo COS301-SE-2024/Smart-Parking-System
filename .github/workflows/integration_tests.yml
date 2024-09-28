@@ -45,20 +45,18 @@ jobs:
       with:
         chrome-version: stable
 
-    - name: Install ChromeDriver
-      uses: nanasess/setup-chromedriver@v2
-
-    - name: Run all integration tests with Firebase Emulator
+    - name: Debug info
       run: |
-        # Start ChromeDriver
-        chromedriver --port=4444 &
-        # Wait for ChromeDriver to start
-        sleep 5
-        # Find all test files and run them
-        for test_file in integration_test/*_test.dart; do
-          echo "Running test: $test_file"
-          xvfb-run --auto-servernum firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=$test_file -d web-server --browser-name=chrome --verbose-system-logs" || exit 1
-        done
+        echo "Chrome version:"
+        google-chrome --version
+        echo "Flutter version:"
+        flutter --version
+        echo "Listing integration test files:"
+        ls -l integration_test/
+
+    - name: Run all integration tests
+      run: |
+        firebase emulators:exec --project demo-project --only auth,firestore "flutter test integration_test"
       env:
         CHROME_EXECUTABLE: /usr/bin/google-chrome
 
@@ -67,6 +65,4 @@ jobs:
       if: always()
       with:
         name: integration-test-results
-        path: |
-          integration_test/
-          /home/runner/flutter_drive_*
+        path: integration_test/
