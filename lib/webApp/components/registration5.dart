@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
+import 'package:smart_parking_system/webApp/components/registration1.dart';
+
+
 class Registration5 extends StatefulWidget {
   final Function onRegisterComplete;
+  final ParkingSpot ps;
 
-  const Registration5({super.key, required this.onRegisterComplete});
+  const Registration5({super.key, required this.ps, required this.onRegisterComplete});
 
   @override
   // ignore: library_private_types_in_public_api
