@@ -1,0 +1,45 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: 
+    - main
+  pull_request:
+    branches:
+    - main
+    - develop
+
+jobs:
+  integration_test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'  # Specify your Flutter version
+        channel: 'stable'
+    
+    - name: Install dependencies
+      run: flutter pub get
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    
+    - name: Setup Firebase Emulator
+      run: |
+        npm install -g firebase-tools
+        firebase emulators:start --only auth,firestore &
+        sleep 10  # Give emulators time to start
+    
+    - name: Run integration tests
+      run: flutter test integration_test
+    
+    - name: Stop Firebase Emulator
+      if: always()
+      run: firebase emulators:stop
