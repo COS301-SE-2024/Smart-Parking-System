@@ -71,7 +71,7 @@ void main() {
 
       // Verify navigation and new vehicle display
       expect(find.text('My Vehicles'), findsOneWidget);
-      expect(find.text('Honda'), findsOneWidget);
+      expect(find.text('Honda 2'), findsOneWidget);
       expect(find.text('Civic'), findsOneWidget);
       expect(find.text('Red'), findsOneWidget);
     },
