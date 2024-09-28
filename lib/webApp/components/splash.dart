@@ -82,9 +82,9 @@ class SplashScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 40),
                           Padding(
-                            padding: const EdgeInsets.only(left: 60, top: 50, bottom: 30),
+                            padding: const EdgeInsets.only(top: 50, bottom: 30),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
                                   width: constraints.maxWidth * 0.15,
