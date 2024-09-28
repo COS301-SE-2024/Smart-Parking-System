@@ -12,6 +12,7 @@ import 'package:smart_parking_system/webApp/components/registration2.dart';
 import 'package:smart_parking_system/webApp/components/registration3.dart';
 import 'package:smart_parking_system/webApp/components/registration4.dart';
 import 'package:smart_parking_system/webApp/components/registration5.dart';
+import 'package:smart_parking_system/webApp/components/registration6.dart';
 
 class RegistrationPage extends StatefulWidget {
   final int currentStep;
@@ -34,8 +35,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void _goToNextStep() {
-    if (_currentStep < 5) {
-      if (_currentStep == 4) { addParking(); }
+    if (_currentStep < 6) {
+      if (_currentStep == 5) { addParking(); }
       setState(() {
         _currentStep++;
       });
@@ -123,7 +124,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         alignment: Alignment.centerLeft,
         // ignore: sized_box_for_whitespace
         child: Container(
-          width: 600,
+          width: 650,
           child: Card(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -158,6 +159,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       _buildStyledStepIndicator(4, _currentStep >= 4),
                       const SizedBox(width: 10),
                       _buildStyledStepIndicator(5, _currentStep >= 5),
+                       const SizedBox(width: 10),
+                      _buildStyledStepIndicator(6, _currentStep >= 6),
                     ],
                   ),
                   const SizedBox(height: 40),
@@ -165,7 +168,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   else if (_currentStep == 2) Registration2(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 3) Registration3(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
                   else if (_currentStep == 4) Registration4(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
-                  else if (_currentStep == 5) Registration5(onRegisterComplete: () 
+                  else if (_currentStep == 5) Registration5(ps: parkingSpot, onRegisterComplete: _goToNextStep,)
+                  else if (_currentStep == 6) Registration6(onRegisterComplete: () 
                   { Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const DashboardScreen(),
