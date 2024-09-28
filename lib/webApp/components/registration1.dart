@@ -217,12 +217,14 @@ class ParkingSpot {
   late Map<String, String> operationHours;
   late double latitude;
   late double longitude;
-  late int noZones;
+  late int noZones;  
   late int noBasementLevels;
   late int noUpperLevels;
   late int noRows;
   late int noSlotsPerRow;
   late String price;
+
+  
 }
 
 class ArrowClipper extends CustomClipper<Path> {

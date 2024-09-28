@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
@@ -18,7 +17,8 @@ class Registration4 extends StatefulWidget {
 
 class _Registration4State extends State<Registration4> {
   final TextEditingController _noZonesController = TextEditingController();
-  final TextEditingController _noFloorsController = TextEditingController();
+  final TextEditingController _noBasementLevelsController = TextEditingController();
+  final TextEditingController _noUpperLevelsController = TextEditingController();
   final TextEditingController _noRowsController = TextEditingController();
   final TextEditingController _noSlotsController = TextEditingController();
   bool _isLoading = false;
@@ -30,12 +30,14 @@ class _Registration4State extends State<Registration4> {
 
     try {
       final int noZones = int.parse(_noZonesController.text);
-      final int noFloors = int.parse(_noFloorsController.text);
+      final int noBasementLevels = int.parse(_noBasementLevelsController.text);
+      final int noUpperLevels = int.parse(_noUpperLevelsController.text);
       final int noRows = int.parse(_noRowsController.text);
       final int noSlots = int.parse(_noSlotsController.text);
 
       widget.ps.noZones = noZones;
-      widget.ps.noLevels = noFloors;
+      widget.ps.noBasementLevels = noBasementLevels;
+      widget.ps.noUpperLevels = noUpperLevels;
       widget.ps.noRows = noRows;
       widget.ps.noSlotsPerRow = noSlots;
 
@@ -57,7 +59,9 @@ class _Registration4State extends State<Registration4> {
         children: [
           _buildLabeledTextField('Number of zones *', 'Enter number of zones', _noZonesController),
           const SizedBox(height: 15),
-          _buildLabeledTextField('Number of floors in each zone *', 'Enter number of floors', _noFloorsController),
+          _buildLabeledTextField('Number of basement levels in each zone *', 'Enter number of floors', _noBasementLevelsController),
+          const SizedBox(height: 15),
+          _buildLabeledTextField('Number of upper levels in each zone (including ground) *', 'Enter number of floors', _noUpperLevelsController),
           const SizedBox(height: 15),
           _buildLabeledTextField('Number of rows on each floor *', 'Enter number of rows', _noRowsController),
           const SizedBox(height: 15),

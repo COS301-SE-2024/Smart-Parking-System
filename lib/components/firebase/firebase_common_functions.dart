@@ -133,4 +133,3 @@ Future<void> addParkingToFirestore({
     //   noSlotsPerRow: parkingSpot.noSlotsPerRow,
     //   pricePerHour: parkingSpot.price,
     // );
-
