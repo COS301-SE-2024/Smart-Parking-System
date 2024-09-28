@@ -55,7 +55,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
       posLatitude: parkingSpot.latitude,
       posLongitude: parkingSpot.longitude,
       noZones: parkingSpot.noZones,
-      noLevels: parkingSpot.noLevels,
+      noBasementLevels: parkingSpot.noBasementLevels,
+      noUpperLevels: parkingSpot.noUpperLevels,
       noRows: parkingSpot.noRows,
       noSlotsPerRow: parkingSpot.noSlotsPerRow,
       pricePerHour: parkingSpot.price,
@@ -185,9 +186,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  Widget _buildStyledStepIndicator(int step, bool isActive) {
+  Widget _buildStyledStepIndicator(int step, bool isActive) {       //Change "This line" for nav
     return GestureDetector(
-      // onTap: () => setState(() { _currentStep = step; }),
+      // onTap: () => setState(() { _currentStep = step; }),      // This Line
       child: ClipPath(
         clipper: ArrowClipper(),
         child: Container(
@@ -217,7 +218,8 @@ class ParkingSpot {
   late double latitude;
   late double longitude;
   late int noZones;
-  late int noLevels;
+  late int noBasementLevels;
+  late int noUpperLevels;
   late int noRows;
   late int noSlotsPerRow;
   late String price;

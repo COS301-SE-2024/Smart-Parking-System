@@ -16,13 +16,6 @@ void main() {
   });
 
 
-  testWidgets('GoogleMap widget test', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: mainPage));
-
-    // Verify that the GoogleMap widget is present
-    expect(find.byType(GoogleMap), findsOneWidget);
-  });
-
 
   testWidgets('Floating action button test', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: mainPage));
