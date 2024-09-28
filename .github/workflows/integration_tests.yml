@@ -50,26 +50,15 @@ jobs:
 
     - name: Run all integration tests with Firebase Emulator
       run: |
+        # Start ChromeDriver
         chromedriver --port=4444 &
+        # Wait for ChromeDriver to start
         sleep 5
-        passed_tests=0
-        failed_tests=0
-        failed_test_names=""
+        # Find all test files and run them
         for test_file in integration_test/*_test.dart; do
           echo "Running test: $test_file"
-          if xvfb-run --auto-servernum firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=$test_file -d web-server --browser-name=chrome"; then
-            ((passed_tests++))
-          else
-            ((failed_tests++))
-            failed_test_names="$failed_test_names $(basename $test_file)"
-          fi
+          xvfb-run --auto-servernum firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=$test_file -d web-server --browser-name=chrome"
         done
-        echo "Tests passed: $passed_tests"
-        echo "Tests failed: $failed_tests"
-        if [ $failed_tests -gt 0 ]; then
-          echo "Failed tests: $failed_test_names"
-          exit 1
-        fi
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
