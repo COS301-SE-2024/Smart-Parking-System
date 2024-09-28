@@ -35,9 +35,15 @@ jobs:
       run: |
         npm install -g firebase-tools
     
+    - name: Install Chrome Driver
+      run: |
+        flutter config --enable-web
+        flutter pub get
+        flutter pub run integration_test:integration_driver --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d web-server
+    
     - name: Run integration tests with Firebase Emulator
       run: |
-        firebase emulators:exec --project demo-project --only auth,firestore "flutter test integration_test"
+        firebase emulators:exec --project demo-project --only auth,firestore "flutter test -d web --platform chrome integration_test"
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
