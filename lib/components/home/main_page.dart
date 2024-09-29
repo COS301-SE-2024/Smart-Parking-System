@@ -77,6 +77,39 @@ class _MainPageState extends State<MainPage> {
     _addCarMarker();
   }
 
+  void findNearestLoaction() async {
+    try{
+      Marker nearestMarker = _markers.first; //Use this to compare for the nearest marker;
+      for (var marker in _markers){
+        double distanceMarker = Geolocator.distanceBetween(
+          locationData!.latitude!,
+          locationData!.longitude!,
+          marker.position.latitude,
+          marker.position.longitude,
+        );
+        double distanceNearestMarker = Geolocator.distanceBetween(
+          locationData!.latitude!,
+          locationData!.longitude!,
+          nearestMarker.position.latitude,
+          nearestMarker.position.longitude,
+        );
+        if (distanceMarker < distanceNearestMarker){
+          nearestMarker = marker;
+        }
+      }
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: nearestMarker.position,
+            zoom: 19.0,
+          ),
+        ),
+      );
+    } catch (e) {
+      showToast(message: 'Error retrieving closest parking: $e');
+    }
+  }
 
   void displayPrediction(Prediction? p) async {
     if (p != null) {
@@ -114,21 +147,46 @@ class _MainPageState extends State<MainPage> {
     );
 
     List<Marker> markers = [];
-    try {
-      // Firebase Functions
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      // Query the 'parkings' collection for all documents
-      QuerySnapshot querySnapshot = await firestore.collection('parkings').get();
+    // Firebase Functions
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // Query the 'parkings' collection for all documents
+    QuerySnapshot querySnapshot = await firestore.collection('parkings').get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Loop through each document
-        for (var document in querySnapshot.docs) {
+    if (querySnapshot.docs.isNotEmpty) {
+      // Loop through each document
+      for (var document in querySnapshot.docs) {
+        try {
           // Retrieve the fields
           String name = document.get('name') as String;
           String price = document.get('price') as String;
           String slots = document.get('slots_available') as String;
-          double latitude = document.get('latitude') as double;
-          double longitude = document.get('longitude') as double;
+          double latitude = 0.0;
+          double longitude = 0.0;
+          try {
+            latitude = document.get('latitude') as double;
+            longitude = document.get('longitude') as double;
+          } catch (e) {
+            try {
+              latitude = document.get('latitude') as double;
+              int temp = document.get('longitude') as int;
+              longitude = double.parse(temp.toString());
+            } catch (e) {
+              try {
+                int temp = document.get('latitude') as int;
+                longitude = document.get('longitude') as double;
+                latitude = double.parse(temp.toString());
+              } catch (e) {
+                try {
+                  int temp1 = document.get('latitude') as int;
+                  int temp2 = document.get('longitude') as int;
+                  latitude = double.parse(temp1.toString());
+                  longitude = double.parse(temp2.toString());
+                } catch (e) {
+                  showToast(message: "latitude/longitude error: $e");
+                }
+              }
+            }
+          }
 
           // Add to the parkingList
           markers.add(
@@ -164,13 +222,13 @@ class _MainPageState extends State<MainPage> {
               },
             ),
           );
+        } catch (e) {
+          showToast(message: 'Firebase error $e');
         }
-      } else {
-        // No matching documents found
-        showToast(message: 'No parkings found');
       }
-    } catch (e) {
-      showToast(message: 'Firebase error $e');
+    } else {
+      // No matching documents found
+      showToast(message: 'No parkings found');
     }
 
     setState(() {
@@ -551,7 +609,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: findNearestLoaction,
         backgroundColor: const Color(0xFF58C6A9),
         shape: const CircleBorder(),
         child: const Icon(
