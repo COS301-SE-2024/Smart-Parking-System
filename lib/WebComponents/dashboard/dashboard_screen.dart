@@ -15,7 +15,9 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: Color(0xFF35344A),
       body: Row(
         children: [
+          // Sidebar
           Sidebar(),
+          // Main Content
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -23,14 +25,19 @@ class DashboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header
                     Header(),
                     SizedBox(height: 20),
+                    // Stats Cards
                     StatsCards(),
                     SizedBox(height: 46),
+                    // Booking Billings
                     BookingBillings(),
                     SizedBox(height: 45),
+                    // Invoices
                     Invoices(),
                     SizedBox(height: 45),
+                    // Booking Details
                     BookingDetails(),
                   ],
                 ),
