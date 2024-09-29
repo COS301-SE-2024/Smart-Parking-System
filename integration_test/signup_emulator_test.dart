@@ -23,7 +23,7 @@ void main() {
         (WidgetTester tester) async {
       // Build the SignupPage widget
       await tester.pumpWidget(const MaterialApp(
-        home: const SignupPage(),
+        home: SignupPage(),
       ));
 
       await tester.pumpAndSettle();
