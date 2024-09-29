@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/webApp/components/registration1.dart';
 
@@ -15,7 +16,25 @@ class Registration3 extends StatefulWidget {
 
 class _Registration3State extends State<Registration3> {
   bool _isLoading = false;
-  final List<Offset> _markers = [];
+  final Set<Marker> _markers = {};
+  late GoogleMapController mapController;
+
+  // You might want to set this to a default location or the user's current location
+  final LatLng _center = const LatLng(45.521563, -122.677433);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  void _addMarker(LatLng position) {
+    setState(() {
+      _markers.add(Marker(
+        markerId: MarkerId(position.toString()),
+        position: position,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      ));
+    });
+  }
 
   Future<void> _saveParkingDetails() async {
     setState(() {
@@ -30,7 +49,7 @@ class _Registration3State extends State<Registration3> {
 
       // Here you would typically save the markers to your ParkingSpot object
       // For example:
-      // widget.ps.markers = _markers.map((offset) => LatLng(offset.dy, offset.dx)).toList();
+      // widget.ps.markers = _markers.map((marker) => marker.position).toList();
 
       // Call onRegisterComplete to move to the next step
       widget.onRegisterComplete();
@@ -61,7 +80,7 @@ class _Registration3State extends State<Registration3> {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Select the area on the map to place a parking zone to indicate the zones at your parking location',
+            'Tap on the map to place parking zone markers at your parking location',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -74,26 +93,16 @@ class _Registration3State extends State<Registration3> {
             padding: const EdgeInsets.only(bottom: 16.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
-              child: GestureDetector(
-                onTapUp: (TapUpDetails details) {
-                  setState(() {
-                    _markers.add(details.localPosition);
-                  });
-                },
-                child: Stack(
-                  children: [
-                    Image.asset(
-                      'assets/map_placeholder.png',
-                      height: 400,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                    ..._markers.map((offset) => Positioned(
-                      left: offset.dx - 15,
-                      top: offset.dy - 30,
-                      child: const Icon(Icons.local_parking, color: Colors.green, size: 30),
-                    )),
-                  ],
+              child: SizedBox(
+                height: 400,
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: _center,
+                    zoom: 11.0,
+                  ),
+                  markers: _markers,
+                  onTap: _addMarker,
                 ),
               ),
             ),
