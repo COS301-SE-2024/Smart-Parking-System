@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +21,7 @@ void main() {
         password: 'testpassword123',
       );
     } catch (e) {
-      print('Error in test setup: $e');
+      // print('Error in test setup: $e');
     }
   });
 
@@ -34,7 +33,7 @@ void main() {
     );
 
     // Build our app and trigger a frame
-    await tester.pumpWidget(MaterialApp(home: AddCardPage()));
+    await tester.pumpWidget(const MaterialApp(home: AddCardPage()));
 
     // Usability Testing: Verify all required fields are present
     expect(find.byType(TextField), findsNWidgets(5)); // Card Number, Bank, Holder Name, Expiry, CVV
