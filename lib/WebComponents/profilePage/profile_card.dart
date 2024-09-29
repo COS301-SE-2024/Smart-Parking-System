@@ -1,7 +1,38 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfileCard extends StatelessWidget {
+class ProfileCard extends StatefulWidget {
   const ProfileCard({super.key});
+
+  @override
+  // _ProfileCardState createState() => _ProfileCardState();
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  String fullName = '';
+  String email = '';
+  String address = 'Loading...'; // Initial placeholder text
+
+  @override
+  void initState() {
+    super.initState();
+    _loadClientData();
+  }
+
+  Future<void> _loadClientData() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    var document = FirebaseFirestore.instance.collection('clients').doc(currentUser!.uid);
+    var snapshot = await document.get();
+    if (snapshot.exists) {
+      setState(() {
+        fullName = snapshot.data()?['accountHolder'] ?? 'N/A';
+        email = snapshot.data()?['email'] ?? 'N/A';
+        address = snapshot.data()?['company'] ?? 'N/A';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,26 +42,26 @@ class ProfileCard extends StatelessWidget {
         color: const Color(0xFF1A1F37),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 112.5,
             backgroundImage: AssetImage('assets/Image 113.png'),
           ),
-          SizedBox(height: 69),
+          const SizedBox(height: 69),
           Text(
-            'Sandton City Parking',
-            style: TextStyle(
+            address,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 34),
-          Text(
-            'Sandton City, 83 Rivonia Rd, Sandhurst, Sandton, 2196',
+          const SizedBox(height: 34),
+          const Text(
+            'Sandton City, 83 Rivonia Rd, Sandhurst, Sandton, 2196', // You may want to load this dynamically as well
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,
@@ -39,39 +70,27 @@ class ProfileCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 33),
-          SizedBox(height: 47),
+          const SizedBox(height: 33),
           Text(
-            'James Smith',
-            style: TextStyle(
+            fullName,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 21),
+          const SizedBox(height: 71),
           Text(
-            'sandtonParking@gmail.com',
-            style: TextStyle(
+            email,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w700,
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(height: 53),
-          SizedBox(height: 80),
-          Text(
-            'Next billing:\n\n1 October 2024',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Roboto',
-            ),
-            textAlign: TextAlign.center,
-          ),
+          const SizedBox(height: 73),
         ],
       ),
     );
