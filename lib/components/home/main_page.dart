@@ -125,10 +125,17 @@ class _MainPageState extends State<MainPage> {
         for (var document in querySnapshot.docs) {
           // Retrieve the fields
           String name = document.get('name') as String;
+
+          // Check if the marker is for "EPI-USE Labs"
+          if (name == 'EPI-USE Labs') {
+            // Call the detectCars function with the appropriate YouTube URL
+            detectCars('https://www.youtube.com/live/CH8GegCF9FI');
+          }
+
           String price = document.get('price') as String;
           String slots = document.get('slots_available') as String;
-          double latitude = document.get('latitude') as double;
-          double longitude = document.get('longitude') as double;
+          double latitude = (document.get('latitude') as num).toDouble();
+          double longitude = (document.get('longitude') as num).toDouble();
 
           // Add to the parkingList
           markers.add(
@@ -160,6 +167,7 @@ class _MainPageState extends State<MainPage> {
                   latitude,
                   longitude,
                 );
+
                 _showParkingInfo();
               },
             ),
@@ -214,6 +222,39 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  Future<void> detectCars(String youtubeUrl) async {
+    const url = 'https://detectcars-syx3usysxa-uc.a.run.app';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'youtube_url': youtubeUrl}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      int carCount = data['car_count'];
+
+      // Fetch the parking location from Firestore
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot = await firestore.collection('parkings').where('name', isEqualTo: 'EPI-USE Labs').get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Update the slotsAvailable field for the location
+        DocumentSnapshot document = querySnapshot.docs.first;
+        int availableSlots = 5 - carCount;
+        await firestore.collection('parkings').doc(document.id).update({
+          'slots_available': '$availableSlots/5',
+        });
+
+        showToast(message: 'Updated slots available for EPI-USE Labs to $carCount');
+      } else {
+        showToast(message: 'Parking location not found');
+      }
+    } else {
+      showToast(message: 'Error: ${response.body}');
+    }
   }
 
   @override
