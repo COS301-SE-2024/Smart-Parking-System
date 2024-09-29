@@ -216,6 +216,22 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Future<void> detectCars(String youtubeUrl) async {
+    const url = 'https://detectcars-syx3usysxa-uc.a.run.app';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'youtube_url': youtubeUrl}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      
+    } else {
+      showToast(message: 'Error: ${response.body}');
+    }
+  }
+
   @override
   void dispose() {
     _destinationController.dispose();
