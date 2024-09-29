@@ -1,0 +1,72 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+    - develop
+
+jobs:
+  integration_test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'
+        channel: 'stable'
+    
+    - name: Install dependencies
+      run: |
+        flutter pub get
+        flutter pub run build_runner build --delete-conflicting-outputs
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    
+    - name: Setup Firebase Emulator
+      run: |
+        npm install -g firebase-tools
+    
+    - name: Enable web
+      run: flutter config --enable-web
+    
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
+
+    - name: Install ChromeDriver
+      uses: nanasess/setup-chromedriver@v2
+
+    - name: Run all integration tests with Firebase Emulator
+      run: |
+        # Start ChromeDriver
+        chromedriver --port=4444 &
+        # Wait for ChromeDriver to start
+        sleep 5
+        # Find all test files and run them
+        for test_file in integration_test/*_test.dart; do
+          echo "Running test: $test_file"
+          xvfb-run --auto-servernum firebase emulators:exec --project demo-project --only auth,firestore "flutter drive --driver=test_driver/integration_test.dart --target=$test_file -d web-server --browser-name=chrome --verbose-system-logs" || exit 1
+        done
+      env:
+        CHROME_EXECUTABLE: /usr/bin/google-chrome
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-results
+        path: |
+          integration_test/
+          /home/runner/flutter_drive_*
