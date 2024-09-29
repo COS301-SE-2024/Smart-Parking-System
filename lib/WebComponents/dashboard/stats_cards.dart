@@ -74,7 +74,7 @@ class StatsCards extends StatelessWidget {
       0,
           (currentSum, doc) => currentSum + (doc['price'] as int),
     );
-    var todaysMoney = totalIncome; 
+    var todaysMoney = totalIncome; // Assuming totalIncome is today's income
 
     return Column(
       children: [
