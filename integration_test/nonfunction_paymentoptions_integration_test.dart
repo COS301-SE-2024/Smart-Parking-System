@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/card/edit_card.dart';
-import 'dart:async';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -94,7 +93,7 @@ void main() {
         password: 'password123',
       );
 
-      await tester.pumpWidget(MaterialApp(home: PaymentMethodPage()));
+      await tester.pumpWidget(const MaterialApp(home: PaymentMethodPage()));
       await tester.pumpAndSettle();
 
       // Verify that modular components are used
@@ -173,7 +172,7 @@ void main() {
 
       // Verify that the transaction is recorded in Firestore
       final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      print('User document data: ${userDoc.data()}');
+      // print('User document data: ${userDoc.data()}');
       
       // Check if 'balance' exists and is a number
       expect(userDoc.data(), containsPair('balance', isA<num>()));

@@ -71,7 +71,7 @@ void main() {
     final renderTime = stopwatch.elapsedMilliseconds;
 
     // Print the render time
-    print('Time to render ParkingHistoryPage: $renderTime ms');
+    // print('Time to render ParkingHistoryPage: $renderTime ms');
 
     // Verify that the page title is displayed
     expect(find.text('Parking History'), findsOneWidget);
@@ -95,7 +95,7 @@ void main() {
     stopwatchScroll.stop();
     final scrollTime = stopwatchScroll.elapsedMilliseconds;
 
-    print('Time to scroll: $scrollTime ms');
+    // print('Time to scroll: $scrollTime ms');
 
     // Performance assertion: scroll time should be under 1 second
     expect(scrollTime, lessThan(3000),

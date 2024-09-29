@@ -66,7 +66,7 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
     stopwatch.stop();
-    print('Signup process took ${stopwatch.elapsedMilliseconds} milliseconds');
+    // print('Signup process took ${stopwatch.elapsedMilliseconds} milliseconds');
 
     // Security Testing: Verify password strength requirements
     expect(find.text('Invalid password'), findsNothing);
