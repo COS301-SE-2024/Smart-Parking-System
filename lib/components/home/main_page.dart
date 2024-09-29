@@ -127,8 +127,8 @@ class _MainPageState extends State<MainPage> {
           String name = document.get('name') as String;
           String price = document.get('price') as String;
           String slots = document.get('slots_available') as String;
-          double latitude = document.get('latitude') as double;
-          double longitude = document.get('longitude') as double;
+          double latitude = (document.get('latitude') as num).toDouble();
+          double longitude = (document.get('longitude') as num).toDouble();
 
           // Add to the parkingList
           markers.add(
