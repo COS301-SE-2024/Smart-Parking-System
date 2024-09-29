@@ -22,7 +22,7 @@ void main() {
 
       // Build the ConfirmBookingPage widget
       await tester.pumpWidget(MaterialApp(
-        home: ConfirmBookingPage(
+        home: const ConfirmBookingPage(
           bookedAddress: bookedAddress,
           price: price,
           selectedZone: selectedZone,

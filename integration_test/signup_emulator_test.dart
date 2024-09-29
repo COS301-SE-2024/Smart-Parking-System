@@ -22,8 +22,8 @@ void main() {
     "SignupPage should allow user to sign up with email and password",
         (WidgetTester tester) async {
       // Build the SignupPage widget
-      await tester.pumpWidget(MaterialApp(
-        home: SignupPage(),
+      await tester.pumpWidget(const MaterialApp(
+        home: const SignupPage(),
       ));
 
       await tester.pumpAndSettle();
