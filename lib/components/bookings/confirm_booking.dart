@@ -106,7 +106,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
         showToast(message: "Invalid time");
         return;
       }
-    }                                                                     //TODO :: Check if this works
+    }
     // Create a DateTime object for the check in time
     DateTime checkInDateTime = DateTime(_checkInDate.year, _checkInDate.month, _checkInDate.day, hours, minutes);
 
