@@ -7,7 +7,7 @@ class BookingDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
+    // final currentUser = FirebaseAuth.instance.currentUser;
     final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
 
     return Card(
@@ -32,7 +32,6 @@ class BookingDetails extends StatelessWidget {
             // Fetch bookings from Firestore
             StreamBuilder<QuerySnapshot>(
               stream: bookingsCollection
-                  .where('userId', isEqualTo: currentUser?.uid)
                   .orderBy('notificationTime', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {

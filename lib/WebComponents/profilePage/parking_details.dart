@@ -10,9 +10,9 @@ class ParkingDetails extends StatefulWidget {
 }
 
 class _ParkingDetailsState extends State<ParkingDetails> {
-  int totalSlots = 0;
-  int totalZones = 0;
-  int totalFloors = 0;
+  int totalSlots = 750;
+  int totalZones = 3;
+  int totalFloors = 3;
   int rowsPerZone = 25;  // Given that one zone has 25 rows
 
   @override
@@ -24,7 +24,8 @@ class _ParkingDetailsState extends State<ParkingDetails> {
   Future<void> _loadParkingData() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     // var collection = FirebaseFirestore.instance.collection('parkings').doc('FRT...').collection('zones');
-    var collection = FirebaseFirestore.instance.collection('parkings').doc(currentUser!.uid).collection('zones');
+    // var collection = FirebaseFirestore.instance.collection('parkings').doc(currentUser!.uid).collection('zones');
+    var collection = FirebaseFirestore.instance.collection('parkings').doc('FRT...').collection('zones');
     var snapshot = await collection.get();
     if (snapshot.docs.isNotEmpty) {
       int slots = 0;

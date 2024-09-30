@@ -10,7 +10,6 @@ class Invoices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
     final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
 
     return Card(
@@ -62,10 +61,9 @@ class Invoices extends StatelessWidget {
             // Fetch invoices from Firestore
             StreamBuilder<QuerySnapshot>(
               stream: bookingsCollection
-                  .where('userId', isEqualTo: currentUser?.uid)
-                  .orderBy('notificationTime', descending: true)
-                  .limit(5) // Limit to the latest 5 invoices
-                  .snapshots(),
+                .orderBy('notificationTime', descending: true)
+                .snapshots(),
+
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
