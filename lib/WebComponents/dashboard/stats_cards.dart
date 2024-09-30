@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StatsCards extends StatelessWidget {
   const StatsCards({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Retrieve the current user and bookings collection
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
+
     return Row(
       children: [
-        Expanded(child: _buildIncomeCard(context)),
+        Expanded(child: _buildIncomeCard(context, currentUser, bookingsCollection)),
         const SizedBox(width: 20),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('bookings')
+            stream: bookingsCollection
+                .where('userId', isEqualTo: currentUser!.uid) // Filter by current user
                 .where('date', isEqualTo: DateTime.now().toString().substring(0, 10))
                 .snapshots(),
             builder: (context, snapshot) {
@@ -25,9 +30,11 @@ class StatsCards extends StatelessWidget {
     );
   }
 
-  Widget _buildIncomeCard(BuildContext context) {
+  Widget _buildIncomeCard(BuildContext context, User? currentUser, CollectionReference bookingsCollection) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('bookings').snapshots(),
+      stream: bookingsCollection
+          .where('userId', isEqualTo: currentUser!.uid) // Filter by current user
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return _buildLoadingCard(context);
 
@@ -36,7 +43,7 @@ class StatsCards extends StatelessWidget {
               (currentSum, doc) => currentSum + (doc['price'] as int),
         );
 
-        var latestBooking = snapshot.data!.docs.last;
+        var latestBooking = snapshot.data!.docs.isNotEmpty ? snapshot.data!.docs.last : null;
 
         return Card(
           color: const Color(0xFF1A1F37),
@@ -57,7 +64,12 @@ class StatsCards extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildLatestBookingInfo(context, latestBooking),
+                latestBooking != null
+                    ? _buildLatestBookingInfo(context, latestBooking)
+                    : const Text(
+                  'No bookings yet',
+                  style: TextStyle(color: Colors.white),
+                ),
               ],
             ),
           ),
@@ -101,7 +113,6 @@ class StatsCards extends StatelessWidget {
       ],
     );
   }
-
   Widget _buildStatsCard(BuildContext context,
       {required String title, required String value, required IconData icon}) {
     return Card(

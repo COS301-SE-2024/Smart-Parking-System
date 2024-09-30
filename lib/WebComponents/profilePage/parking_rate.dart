@@ -10,7 +10,7 @@ class ParkingRate extends StatefulWidget {
 }
 
 class _ParkingRateState extends State<ParkingRate> {
-  String rate = 'R 12'; // Placeholder text before data loads
+  String rate = 'Loading '; // Placeholder text before data loads
 
   @override
   void initState() {
@@ -19,8 +19,9 @@ class _ParkingRateState extends State<ParkingRate> {
   }
 
   Future<void> _loadParkingRate() async {
-    // final currentUser = FirebaseAuth.instance.currentUser;
-    var document = FirebaseFirestore.instance.collection('users').doc('00UJCwBnhBtmkadt1PUu');
+    final currentUser = FirebaseAuth.instance.currentUser;
+    // var document = FirebaseFirestore.instance.collection('users').doc('00UJCwBnhBtmkadt1PUu');
+    var document = FirebaseFirestore.instance.collection('parkings').doc(currentUser!.uid);
     var snapshot = await document.get();
     if (snapshot.exists) {
       setState(() {

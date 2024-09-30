@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -13,7 +14,7 @@ class _ParkingDetailsState extends State<ParkingDetails> {
   int totalSlots = 750;
   int totalZones = 3;
   int totalFloors = 3;
-  int rowsPerZone = 25;  // Given that one zone has 25 rows
+  int rowsPerZone = 25; // Given that one zone has 25 rows
 
   @override
   void initState() {
@@ -23,20 +24,48 @@ class _ParkingDetailsState extends State<ParkingDetails> {
 
   Future<void> _loadParkingData() async {
     final currentUser = FirebaseAuth.instance.currentUser;
-    // var collection = FirebaseFirestore.instance.collection('parkings').doc('FRT...').collection('zones');
-    // var collection = FirebaseFirestore.instance.collection('parkings').doc(currentUser!.uid).collection('zones');
-    var collection = FirebaseFirestore.instance.collection('parkings').doc('FRT...').collection('zones');
-    var snapshot = await collection.get();
-    if (snapshot.docs.isNotEmpty) {
-      int slots = 0;
-      for (var doc in snapshot.docs) {
-        slots += int.parse(doc.data()['slots_available'].split('/')[1]); // Assuming the format 'available/total'
+    if (currentUser == null) {
+      // Handle the case when the user is not logged in
+      return;
+    }
+
+    try {
+      // Query the 'parkings' collection where 'userId' equals the current user's UID
+      var parkingQuerySnapshot = await FirebaseFirestore.instance
+          .collection('parkings')
+          .where('userId', isEqualTo: currentUser.uid)
+          .get();
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {
+        // Assuming the user has only one parking document
+        var parkingDoc = parkingQuerySnapshot.docs.first;
+        var zonesCollection = parkingDoc.reference.collection('zones');
+        var zonesSnapshot = await zonesCollection.get();
+
+        if (zonesSnapshot.docs.isNotEmpty) {
+          int slots = 0;
+          for (var doc in zonesSnapshot.docs) {
+            var slotsAvailableStr = doc.data()['slots_available']; // Format 'available/total'
+            var totalSlotsStr = slotsAvailableStr.split('/')[1];
+            slots += int.parse(totalSlotsStr);
+          }
+          setState(() {
+            totalSlots = slots;
+            totalZones = zonesSnapshot.docs.length;
+            totalFloors = 5; // Update as necessary
+          });
+        }
+      } else {
+        // Handle the case when there is no parking document for the current user
+        if (kDebugMode) {
+          print('No parking document found for the current user.');
+        }
       }
-      setState(() {
-        totalSlots = slots;
-        totalZones = snapshot.docs.length;
-        totalFloors = 5;
-      });
+    } catch (e) {
+      // Handle any errors
+      if (kDebugMode) {
+        print('Error loading parking data: $e');
+      }
     }
   }
 
