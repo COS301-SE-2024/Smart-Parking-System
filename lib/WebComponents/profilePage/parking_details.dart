@@ -14,7 +14,7 @@ class _ParkingDetailsState extends State<ParkingDetails> {
   int totalSlots = 750;
   int totalZones = 3;
   int totalFloors = 3;
-  int rowsPerZone = 25; // Given that one zone has 25 rows
+  int rowsPerZone = 25;
 
   @override
   void initState() {
@@ -26,10 +26,17 @@ class _ParkingDetailsState extends State<ParkingDetails> {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
       // Handle the case when the user is not logged in
+      if (kDebugMode) {
+        print('No user is currently logged in.');
+      }
       return;
     }
 
     try {
+      if (kDebugMode) {
+        print('Current user UID: ${currentUser.uid}');
+      }
+
       // Query the 'parkings' collection where 'userId' equals the current user's UID
       var parkingQuerySnapshot = await FirebaseFirestore.instance
           .collection('parkings')
@@ -39,26 +46,67 @@ class _ParkingDetailsState extends State<ParkingDetails> {
       if (parkingQuerySnapshot.docs.isNotEmpty) {
         // Assuming the user has only one parking document
         var parkingDoc = parkingQuerySnapshot.docs.first;
-        var zonesCollection = parkingDoc.reference.collection('zones');
+        var parkingDocRef = parkingDoc.reference;
+
+        if (kDebugMode) {
+          print('Parking document found with ID: ${parkingDoc.id}');
+          print('Parking document data: ${parkingDoc.data()}');
+        }
+
+        var zonesCollection = parkingDocRef.collection('zones');
         var zonesSnapshot = await zonesCollection.get();
+
+        if (kDebugMode) {
+          print('Fetched zones snapshot. Number of zones: ${zonesSnapshot.docs.length}');
+        }
 
         if (zonesSnapshot.docs.isNotEmpty) {
           int slots = 0;
           for (var doc in zonesSnapshot.docs) {
-            var slotsAvailableStr = doc.data()['slots_available']; // Format 'available/total'
-            var totalSlotsStr = slotsAvailableStr.split('/')[1];
-            slots += int.parse(totalSlotsStr);
+            var data = doc.data();
+            if (kDebugMode) {
+              print('Zone document ID: ${doc.id}');
+              print('Zone document data: $data');
+            }
+
+            var slotsAvailableStr = data['slots_available']; // Format 'available/total'
+            if (slotsAvailableStr != null && slotsAvailableStr.contains('/')) {
+              var parts = slotsAvailableStr.split('/');
+              if (parts.length == 2) {
+                var totalSlotsStr = parts[1];
+                slots += int.parse(totalSlotsStr);
+                if (kDebugMode) {
+                  print('Total slots in this zone: $totalSlotsStr');
+                  print('Accumulated slots: $slots');
+                }
+              } else {
+                if (kDebugMode) {
+                  print('Unexpected slots_available format in zone ${doc.id}: $slotsAvailableStr');
+                }
+              }
+            } else {
+              if (kDebugMode) {
+                print('slots_available is null or improperly formatted in zone ${doc.id}');
+              }
+            }
           }
           setState(() {
             totalSlots = slots;
             totalZones = zonesSnapshot.docs.length;
-            totalFloors = 5; // Update as necessary
+            totalFloors = 3; // Update as necessary
           });
+          if (kDebugMode) {
+            print('Updated state with totalSlots: $totalSlots, totalZones: $totalZones, totalFloors: $totalFloors');
+          }
+        } else {
+          if (kDebugMode) {
+            print('No zones found in the zones subcollection.');
+          }
         }
       } else {
         // Handle the case when there is no parking document for the current user
         if (kDebugMode) {
-          print('No parking document found for the current user.');
+          print('No parking document found for the current user UID: ${currentUser.uid}');
         }
       }
     } catch (e) {
@@ -68,6 +116,7 @@ class _ParkingDetailsState extends State<ParkingDetails> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
