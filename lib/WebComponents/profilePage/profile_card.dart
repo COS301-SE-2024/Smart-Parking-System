@@ -47,7 +47,7 @@ class _ProfileCardState extends State<ProfileCard> {
         children: [
           const CircleAvatar(
             radius: 112.5,
-            backgroundImage: AssetImage('assets/Image 113.png'),
+            backgroundImage: AssetImage('assets/logo1.png'),
           ),
           const SizedBox(height: 69),
           Text(
@@ -60,16 +60,6 @@ class _ProfileCardState extends State<ProfileCard> {
             ),
           ),
           const SizedBox(height: 34),
-          const Text(
-            'Sandton City, 83 Rivonia Rd, Sandhurst, Sandton, 2196', // You may want to load this dynamically as well
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Roboto',
-            ),
-            textAlign: TextAlign.center,
-          ),
           const SizedBox(height: 33),
           Text(
             fullName,

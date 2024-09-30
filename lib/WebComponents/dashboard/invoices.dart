@@ -44,8 +44,6 @@ class Invoices extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                    //add right margin to the button
-
                   ),
                   child: const Text(
                     'VIEW ALL',
@@ -64,7 +62,6 @@ class Invoices extends StatelessWidget {
               stream: bookingsCollection
                   .where('userId', isEqualTo: currentUser?.uid)
                   .orderBy('notificationTime', descending: true)
-                  .limit(5) // Limit to the latest 5 invoices
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -92,6 +89,12 @@ class Invoices extends StatelessWidget {
                     if (notificationTime != null) {
                       final dateTime = notificationTime.toDate();
                       formattedDate = '${_formatMonth(dateTime.month)} ${dateTime.day}, ${dateTime.year}';
+                    } else {
+                      // Fallback to 'date' field if 'notificationTime' is null
+                      final dateString = data['date'] as String?;
+                      if (dateString != null) {
+                        formattedDate = dateString;
+                      }
                     }
 
                     final invoiceNumber = '#${doc.id.substring(0, 8).toUpperCase()}'; // Shortened doc ID as invoice number
@@ -138,7 +141,7 @@ class Invoices extends StatelessWidget {
         ),
         trailing: ElevatedButton(
           onPressed: () {
-            _generateAndOpenPdf(context, data);
+            _generateAndOpenPdf(context, data, invoiceNumber, date);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF58C6A9),
@@ -160,17 +163,10 @@ class Invoices extends StatelessWidget {
     );
   }
 
-  void _generateAndOpenPdf(BuildContext context, Map<String, dynamic> data) async {
+  void _generateAndOpenPdf(BuildContext context, Map<String, dynamic> data, String invoiceNumber, String formattedDate) async {
     final pdf = pw.Document();
 
     // Extract data needed for the invoice
-    final notificationTime = data['notificationTime'] as Timestamp?;
-    String formattedDate = '';
-    if (notificationTime != null) {
-      final dateTime = notificationTime.toDate();
-      formattedDate = '${_formatMonth(dateTime.month)} ${dateTime.day}, ${dateTime.year}';
-    }
-
     final price = data['price'] ?? 0;
     final zone = data['zone'] ?? '';
     final row = data['row'] ?? '';
@@ -178,7 +174,8 @@ class Invoices extends StatelessWidget {
     final duration = data['duration'] ?? 0;
     final address = data['address'] ?? '';
     final userId = data['userId'] ?? '';
-    final invoiceNumber = userId.substring(0, 8).toUpperCase();
+    final time = data['time'] ?? '';
+    final date = data['date'] ?? formattedDate;
 
     // Build the PDF content
     pdf.addPage(
@@ -197,7 +194,7 @@ class Invoices extends StatelessWidget {
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Text('Date: $formattedDate'),
+                    pw.Text('Date: $date'),
                     pw.Text('Invoice #: $invoiceNumber'),
                   ],
                 ),
@@ -212,6 +209,7 @@ class Invoices extends StatelessWidget {
                 pw.Bullet(text: 'Row: $row'),
                 pw.Bullet(text: 'Level: $level'),
                 pw.Bullet(text: 'Duration: $duration hour(s)'),
+                pw.Bullet(text: 'Time: $time'),
                 pw.SizedBox(height: 20),
                 pw.Divider(),
                 pw.Row(

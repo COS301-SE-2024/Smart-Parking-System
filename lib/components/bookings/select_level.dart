@@ -9,8 +9,15 @@ class LevelSelectPage extends StatefulWidget {
   final String bookedAddress;
   final double price;
   final String selectedZone;
+  final bool futureBooking;
 
-  const LevelSelectPage({required this.bookedAddress, required this.price, required this.selectedZone, super.key});
+  const LevelSelectPage({
+    required this.bookedAddress,
+    required this.price,
+    required this.selectedZone,
+    required this.futureBooking,
+    super.key
+  });
 
   @override
   State<LevelSelectPage> createState() => _LevelSelectPageState();
@@ -26,6 +33,7 @@ class Level {
 class _LevelSelectPageState extends State<LevelSelectPage> {
   String? selectedLevel;
   int totalSlots = 0;
+  late bool futureBooking;
 
   List<Level> levels = [
     // Add more levels here
@@ -116,6 +124,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
   void initState() {
     super.initState();
     getDetails();
+    futureBooking = widget.futureBooking;
   }
   @override
   Widget build(BuildContext context) {
@@ -209,6 +218,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
                             price: widget.price,
                             selectedZone: widget.selectedZone,
                             selectedLevel: selectedLevel!,
+                            futureBooking: futureBooking,
                           ),
                         ),
                       );
@@ -241,33 +251,18 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
         ),
         onPressed: isAvailable
             ? () {
-          setState(() {
-            selectedLevel = levels.level;
-          });
-        }
+                setState(() {
+                  selectedLevel = levels.level;
+                  futureBooking = false;
+                });
+              }
             : () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: const Color(0xFF2D2F41),
-                title: const Center(
-                  child: Text('No Slots Available!', style: TextStyle(color: Colors.white)),
-                ),
-                actions: [
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('OK', style: TextStyle(color: Color(0xFF58C6A9))),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        },
+                setState(() {
+                  selectedLevel = levels.level;
+                  futureBooking = true;
+                  showToast(message: 'This must be a future booking');
+                });
+              },
         child: Row(
             children: [
               const Icon(Icons.directions_car, color: Colors.white),

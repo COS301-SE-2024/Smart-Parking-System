@@ -42,6 +42,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   MarkerId? initialMarkerId;
   BitmapDescriptor? carIcon;
   BitmapDescriptor? zoneIcon;
+  bool futureBooking = false;
 
   Future<void> loadCustomMarker() async {
     carIcon = await BitmapDescriptor.asset(
@@ -328,6 +329,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                                     bookedAddress: widget.bookedAddress,
                                     price: widget.price,
                                     selectedZone: selectedZone!,
+                                    futureBooking: futureBooking,
                                   ),
                                 ),
                               );
@@ -340,6 +342,35 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                 const SizedBox(height: 20),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildZoneButton(Zone zones) {
+    return Positioned(
+      left: zones.x,
+      top: zones.y,
+      child: GestureDetector(
+        onTap: () {
+          selectZone(zones.zone);
+          if(zones.slots == 0) {
+            futureBooking = true;
+            showToast(message: 'This must be a future booking');
+          } else { 
+            futureBooking = false;
+          }
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: selectedZone == zones.zone ? const Color(0xFF58C6A9) : Colors.green,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Center(
+            child: Icon(Icons.local_parking, color: Colors.white),
           ),
         ),
       ),

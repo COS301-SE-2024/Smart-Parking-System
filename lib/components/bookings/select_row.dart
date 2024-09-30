@@ -10,12 +10,14 @@ class SelectRowPage extends StatefulWidget {
   final double price;
   final String selectedZone;
   final String selectedLevel;
+  final bool futureBooking;
 
   const SelectRowPage({
     required this.bookedAddress,
     required this.price,
     required this.selectedZone,
     required this.selectedLevel,
+    required this.futureBooking,
     super.key,
   });
 
@@ -33,6 +35,7 @@ class RowSpace {
 class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
   int totalSlots = 0;
+  late bool futureBooking;
 
   List<RowSpace> rows = [
     // Add more rows here
@@ -135,6 +138,7 @@ class SelectRowPageState extends State<SelectRowPage> {
   void initState() {
     super.initState();
     getDetails();
+    futureBooking = widget.futureBooking;
   }
   @override
   Widget build(BuildContext context) {
@@ -224,7 +228,14 @@ class SelectRowPageState extends State<SelectRowPage> {
                       // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => ConfirmBookingPage(bookedAddress: widget.bookedAddress, price: widget.price, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: selectedRow,),
+                          builder: (_) => ConfirmBookingPage(
+                            bookedAddress: widget.bookedAddress,
+                            price: widget.price,
+                            selectedZone: widget.selectedZone,
+                            selectedLevel: widget.selectedLevel,
+                            selectedRow: selectedRow,
+                            futureBooking: futureBooking,
+                          ),
                         ),
                       );
                     }
@@ -273,11 +284,20 @@ class SelectRowPageState extends State<SelectRowPage> {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              onPressed: isDisabled ? null : () {
-                setState(() {
-                  selectedRow = row;
-                });
-              },
+              onPressed: isDisabled 
+                ? () {
+                  setState(() {
+                    selectedRow = row;
+                    futureBooking = true;
+                    showToast(message: 'This must be a future booking');
+                  });
+                } 
+                : () {
+                  setState(() {
+                    selectedRow = row;
+                    futureBooking = false;
+                  });
+                },
               child: Stack(
                 children: [
                   if (isSelected)
