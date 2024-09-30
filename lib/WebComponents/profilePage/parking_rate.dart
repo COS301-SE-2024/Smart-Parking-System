@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,7 +11,7 @@ class ParkingRate extends StatefulWidget {
 }
 
 class _ParkingRateState extends State<ParkingRate> {
-  String rate = 'Loading '; // Placeholder text before data loads
+  String rate = 'Loading...'; // Placeholder text before data loads
 
   @override
   void initState() {
@@ -20,13 +21,44 @@ class _ParkingRateState extends State<ParkingRate> {
 
   Future<void> _loadParkingRate() async {
     final currentUser = FirebaseAuth.instance.currentUser;
-    // var document = FirebaseFirestore.instance.collection('users').doc('00UJCwBnhBtmkadt1PUu');
-    var document = FirebaseFirestore.instance.collection('parkings').doc(currentUser!.uid);
-    var snapshot = await document.get();
-    if (snapshot.exists) {
+    if (currentUser == null) {
+      // Handle the case when the user is not logged in
       setState(() {
-        // rate = 'R' + (snapshot.data()?['price'] ?? 'N/A');
-        rate = 'R${snapshot.data()?['price'] ?? 'N/A'}';
+        rate = 'N/A';
+      });
+      return;
+    }
+
+    try {
+      // Query the 'parkings' collection where 'userId' equals the current user's UID
+      var parkingQuerySnapshot = await FirebaseFirestore.instance
+          .collection('parkings')
+          .where('userId', isEqualTo: currentUser.uid)
+          .get();
+
+      if (parkingQuerySnapshot.docs.isNotEmpty) {
+        // Assuming the user has only one parking document
+        var parkingDoc = parkingQuerySnapshot.docs.first;
+        var price = parkingDoc.data()['price'] ?? 'N/A';
+        setState(() {
+          rate = 'R$price';
+        });
+      } else {
+        // Handle the case when there is no parking document for the current user
+        setState(() {
+          rate = 'N/A';
+        });
+        if (kDebugMode) {
+          print('No parking document found for the current user.');
+        }
+      }
+    } catch (e) {
+      // Handle any errors
+      if (kDebugMode) {
+        print('Error loading parking rate: $e');
+      }
+      setState(() {
+        rate = 'N/A';
       });
     }
   }
