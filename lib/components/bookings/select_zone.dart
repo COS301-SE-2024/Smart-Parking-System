@@ -4,6 +4,7 @@ import 'package:smart_parking_system/components/bookings/select_level.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ZoneSelectPage extends StatefulWidget {
   final double price;
@@ -27,7 +28,6 @@ class Zone {
   final double x;
   final double y;
 
-
   Zone(this.zone, this.slots, this.timeDistance, this.x, this.y);
 }
 
@@ -35,8 +35,30 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   String? selectedZone;
   int totalSlots = 0;
   List<Zone> zones = [];
+  late GoogleMapController mapController;
+  final Set<Marker> _markers = {};
+  final Set<Marker> _markersZones = {};
+  LatLng? initialPosition;
+  MarkerId? initialMarkerId;
+  BitmapDescriptor? carIcon;
+  BitmapDescriptor? zoneIcon;
 
-  Future<void> getDetails() async {
+  Future<void> loadCustomMarker() async {
+    carIcon = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(100, 100)),
+      'assets/Purple_ParkMe.png',
+    );
+    zoneIcon = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(40, 40)),
+      'assets/zone.png',
+    );
+  }
+
+   String getZoneLetter(int index) {
+    return String.fromCharCode('A'.codeUnitAt(0) + index);
+  }
+
+   Future<void> getDetails() async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       QuerySnapshot querySnapshot = await firestore
@@ -45,27 +67,47 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
           .get();
 
       DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
-
+      
       if (documentSnapshot.exists) {
+        double latitude = documentSnapshot.get('latitude');
+        double longitude = documentSnapshot.get('longitude');
+        initialPosition = LatLng(latitude, longitude);
+        
         CollectionReference zonesCollection = documentSnapshot.reference.collection('zones');
         QuerySnapshot zonesQuerySnapshot = await zonesCollection.get();
         if (zonesQuerySnapshot.docs.isNotEmpty) {
           for (var zoneDocument in zonesQuerySnapshot.docs) {
             String zone = zoneDocument.id;
             String slots = zoneDocument.get('slots') as String;
-            int x = zoneDocument.get('x') as int;
-            int y = zoneDocument.get('y') as int;
+            double lat = zoneDocument.get('x') as double;
+            double long = zoneDocument.get('y') as double;
 
-            // Calculate total price
             int availableSlots = extractSlotsAvailable(slots);
 
-            zones.add(Zone(
+            Zone newZone = Zone(
               zone,
               availableSlots,
               5,
-              double.parse(x.toString()),
-              double.parse(y.toString()),
-            ));
+              lat,
+              long,
+            );
+
+            zones.add(newZone);
+
+            _markersZones.add(
+              Marker(
+                markerId: MarkerId("zone_$zone"),
+                position: LatLng(lat, long),
+                icon: zoneIcon ?? BitmapDescriptor.defaultMarker,
+                infoWindow: InfoWindow(
+                  title: 'Zone $zone',
+                  snippet: '$availableSlots slots available',
+                ),
+                onTap: () {
+                  selectZone(zone);
+                },
+              ),
+            );
           }
 
           zones.sort((a, b) => a.zone.compareTo(b.zone));
@@ -80,10 +122,28 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
       showToast(message: 'Error retrieving zone details: $e');
     }
 
-    setState(() {});
+    setState(() {
+      _markers.clear();
+      if (initialPosition != null) {
+        initialMarkerId = const MarkerId('initialPosition');
+        _markers.add(
+          Marker(
+            markerId: initialMarkerId!,
+            position: initialPosition!,
+            icon: carIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            infoWindow: InfoWindow(
+              title: widget.bookedAddress,
+            ),
+          ),
+        );
+      }
+      _markers.addAll(_markersZones);
+    });
   }
 
+
   void selectZone(String zone) {
+    showToast(message: zone);
     setState(() {
       selectedZone = zone;
     });
@@ -92,7 +152,9 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   @override
   void initState() {
     super.initState();
-    getDetails();
+    loadCustomMarker().then((_) {
+      getDetails();
+    });
   }
 
   @override
@@ -160,22 +222,16 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    Image(
+                      image: AssetImage('assets/zone.png'),
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(
-                        color: selectedZone == null ? Colors.green : const Color(0xFF58C6A9),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.local_parking, color: Colors.white),
-                      ),
                     ),
-                    const SizedBox(width: 8),
-                    const Text(
+                    SizedBox(width: 8),
+                    Text(
                       'Denotes a Parking Zone',
                       style: TextStyle(
                         color: Colors.tealAccent,
@@ -185,28 +241,25 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    // Calculate the size of the map based on the screen width
-                    double mapWidth = constraints.maxWidth * 0.8;
-                    double mapHeight = mapWidth * 0.67; // Maintain aspect ratio of the image
-
-                    return SizedBox(
-                      width: mapWidth,
-                      height: mapHeight,
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            'assets/s-map.png', // Replace with your image path
-                            width: mapWidth,
-                            height: mapHeight,
-                            fit: BoxFit.contain,
+                SizedBox(
+                  height: 400,
+                  child: initialPosition == null
+                      ? const Center(child: CircularProgressIndicator())
+                      : GoogleMap(
+                          onMapCreated: (GoogleMapController controller) {
+                            mapController = controller;
+                            if (initialMarkerId != null) {
+                              Future.delayed(const Duration(milliseconds: 500), () {
+                                mapController.showMarkerInfoWindow(initialMarkerId!);
+                              });
+                            }
+                          },
+                          initialCameraPosition: CameraPosition(
+                            target: initialPosition!,
+                            zoom: 17.0,
                           ),
-                          ...zones.map((zone) => _buildZoneButton(zone)),
-                        ],
-                      ),
-                    );
-                  },
+                          markers: _markers,
+                        ),
                 ),
                 if (selectedZone != null) ...[
                   const SizedBox(height: 20),
@@ -269,16 +322,16 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                       ),
                       onPressed: selectedZone != null
                           ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => LevelSelectPage(
-                              bookedAddress: widget.bookedAddress,
-                              price: widget.price,
-                              selectedZone: selectedZone!,
-                            ),
-                          ),
-                        );
-                      }
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => LevelSelectPage(
+                                    bookedAddress: widget.bookedAddress,
+                                    price: widget.price,
+                                    selectedZone: selectedZone!,
+                                  ),
+                                ),
+                              );
+                            }
                           : null,
                       child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
                     ),
@@ -287,29 +340,6 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                 const SizedBox(height: 20),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildZoneButton(Zone zones) {
-    return Positioned(
-      left: zones.x,
-      top: zones.y,
-      child: GestureDetector(
-        onTap: () {
-          selectZone(zones.zone);
-        },
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: selectedZone == zones.zone ? const Color(0xFF58C6A9) : Colors.green,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Center(
-            child: Icon(Icons.local_parking, color: Colors.white),
           ),
         ),
       ),
