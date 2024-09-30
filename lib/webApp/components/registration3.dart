@@ -67,8 +67,8 @@ class _Registration3State extends State<Registration3> {
 
     // Store marker in Firestore
     DocumentReference docRef = await FirebaseFirestore.instance.collection('markers').add({
-      'longitude': position.longitude.toStringAsFixed(20),
-      'latitude': position.latitude.toStringAsFixed(20),
+      'longitude': double.parse(position.longitude.toStringAsFixed(20)),
+      'latitude': double.parse(position.latitude.toStringAsFixed(20)),
       'location_name': locationName,
     });
 
