@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 
@@ -19,7 +17,7 @@ Future<void> addParkingToFirestore({
 }) async {
   final firestore = FirebaseFirestore.instance;
   final List<String> alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-  final random = Random();
+  // final random = Random();
 
   try {
     // Check if parking name already exists
@@ -95,11 +93,33 @@ Future<void> addParkingToFirestore({
         });
       }
 
-      await zoneDocRef.set({
-        'slots': "$totalSlotsInZone/$totalSlotsInZone",
-        'x': 30 + random.nextInt(121),
-        'y': 30 + random.nextInt(121),
-      });
+      // - - - - - HERE - - - - -
+      try {
+        //Get first marker
+        QuerySnapshot markerQuery = await firestore
+          .collection('markers')
+          .where('location_name', isEqualTo: parkingName)
+          .limit(1)
+          .get();
+          
+        if (markerQuery.docs.isNotEmpty) {
+          //Get doc ref
+          QueryDocumentSnapshot markerDoc = markerQuery.docs.first;
+
+          //Set data
+          await zoneDocRef.set({
+            'slots': "$totalSlotsInZone/$totalSlotsInZone",
+            'x': markerDoc.get('latitude') as double,
+            'y': markerDoc.get('longitude') as double,
+          });
+
+          //Delete doc
+          await markerDoc.reference.delete();
+        }
+        // - - - - - HERE - - - - -
+      } catch (e) {
+        showToast(message: "Error retrieving markers: $e");
+      }
     }
 
     // Add parking details
@@ -118,18 +138,3 @@ Future<void> addParkingToFirestore({
     showToast(message: 'ERROR: $e');
   }
 }
-
-//How To Call :
-
-    // addParkingToFirestore(
-    //   userId: parkingSpot.userId,
-    //   parkingName: parkingSpot.name,
-    //   operationHours: parkingSpot.operationHours,
-    //   posLatitude: parkingSpot.latitude,
-    //   posLongitude: parkingSpot.longitude,
-    //   noZones: parkingSpot.noZones,
-    //   noLevels: parkingSpot.noLevels,
-    //   noRows: parkingSpot.noRows,
-    //   noSlotsPerRow: parkingSpot.noSlotsPerRow,
-    //   pricePerHour: parkingSpot.price,
-    // );
