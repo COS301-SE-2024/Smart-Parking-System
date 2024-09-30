@@ -35,6 +35,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   String? selectedZone;
   int totalSlots = 0;
   List<Zone> zones = [];
+  bool futureBooking = false;
 
   Future<void> getDetails() async {
     try {
@@ -269,16 +270,17 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                       ),
                       onPressed: selectedZone != null
                           ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => LevelSelectPage(
-                              bookedAddress: widget.bookedAddress,
-                              price: widget.price,
-                              selectedZone: selectedZone!,
-                            ),
-                          ),
-                        );
-                      }
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => LevelSelectPage(
+                                    bookedAddress: widget.bookedAddress,
+                                    price: widget.price,
+                                    selectedZone: selectedZone!,
+                                    futureBooking: futureBooking,
+                                  ),
+                                ),
+                              );
+                            }
                           : null,
                       child: const Text('Continue', style: TextStyle(color: Colors.white, fontSize: 18)),
                     ),
@@ -300,6 +302,12 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
       child: GestureDetector(
         onTap: () {
           selectZone(zones.zone);
+          if(zones.slots == 0) {
+            futureBooking = true;
+            showToast(message: 'This must be a future booking');
+          } else { 
+            futureBooking = false;
+          }
         },
         child: Container(
           width: 40,
