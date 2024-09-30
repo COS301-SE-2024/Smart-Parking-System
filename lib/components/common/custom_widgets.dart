@@ -55,7 +55,7 @@ Widget nextButtonWithSkip ({required String displayText, required void Function(
         const SizedBox(height: 10.0),
         GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => nextPage,
               ),

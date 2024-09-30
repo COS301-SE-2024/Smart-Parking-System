@@ -13,7 +13,7 @@ class LoginMainPage extends StatefulWidget {
 }
 
 class LoginMainPageState extends State<LoginMainPage> {
-  Future<void> _handleLogin() async {
+  Future<void> _checkIfLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
@@ -34,18 +34,18 @@ class LoginMainPageState extends State<LoginMainPage> {
     if (!mounted) return;
 
     if (isLoggedIn) {
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const MainPage(), // Replace with your main page
         ),
       );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfLoggedIn();
   }
 
   @override
@@ -73,7 +73,13 @@ class LoginMainPageState extends State<LoginMainPage> {
                 const SizedBox(height: 30), // Space between logo and buttons
                 // Login Button
                 OutlinedButton(
-                  onPressed: _handleLogin,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white, side: const BorderSide(color: Colors.white, width: 2),
                     shape: RoundedRectangleBorder(
@@ -95,7 +101,7 @@ class LoginMainPageState extends State<LoginMainPage> {
                 // Sign Up Button
                 OutlinedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const SignupPage(),
                       ),

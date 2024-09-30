@@ -43,7 +43,7 @@ Future<void> updateNotificationPreference(bool isEnabled) async {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  String _username = 'John Doe';
+  String _username = 'Username';
   String? _profileImageUrl;
 
   @override
@@ -132,85 +132,97 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
-              const Divider(
-                color: Colors.grey,
-                thickness: 1,
-              ),
-              const Text(
-                'Account Settings',
-                style: TextStyle(
-                  color: Color(0xFFADADAD),
-                  fontSize: 16,
+              Center(
+                child: SizedBox(
+                  width: 500,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                      const Text(
+                        '   Account Settings',
+                        style: TextStyle(
+                          color: Color(0xFFADADAD),
+                          fontSize: 16,
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Edit profile', style: TextStyle(color: Colors.white)),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const UserProfilePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('My vehicles', style: TextStyle(color: Colors.white)),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ViewVehiclePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('My payment options', style: TextStyle(color: Colors.white)),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const PaymentMethodPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Push notifications', style: TextStyle(color: Colors.white)),
+                        trailing: Switch(
+                          value: _isSwitched,
+                          onChanged: (bool value) async {
+                            setState(() {
+                              _isSwitched = value;
+                            });
+                            await updateNotificationPreference(value);
+                          },
+                          activeColor: Colors.tealAccent,
+                        ),
+                      ),
+                      const Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                      const Text(
+                        '   More',
+                        style: TextStyle(
+                          color: Color(0xFFADADAD),
+                          fontSize: 16,
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('About', style: TextStyle(color: Colors.white)),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const AboutUsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              ListTile(
-                title: const Text('Edit profile', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const UserProfilePage(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('My vehicles', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const ViewVehiclePage(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('My payment options', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const PaymentMethodPage(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Push notifications', style: TextStyle(color: Colors.white)),
-                trailing: Switch(
-                  value: _isSwitched,
-                  onChanged: (bool value) async {
-                    setState(() {
-                      _isSwitched = value;
-                    });
-                    await updateNotificationPreference(value);
-                  },
-                  activeColor: Colors.tealAccent,
-                ),
-              ),
-              const Divider(
-                color: Colors.grey,
-                thickness: 1,
-              ),
-              const Text(
-                'More',
-                style: TextStyle(
-                  color: Color(0xFFADADAD),
-                  fontSize: 16,
-                ),
-              ),
-              ListTile(
-                title: const Text('About', style: TextStyle(color: Colors.white)),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const AboutUsPage(),
-                    ),
-                  );
-                },
-              ),
+              
+              
             ],
           ),
         ),

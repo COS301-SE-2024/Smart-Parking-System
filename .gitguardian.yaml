@@ -1,0 +1,6 @@
+version: 2
+paths-ignore:
+  - 'lib/WebComponents/dashboard/sidebar.dart:17'
+  - 'lib/WebComponents/dashboard/sidebar.dart:18'
+  - 'lib/WebComponents/dashboard/sidebar.dart:46'
+  - 'lib/WebComponents/dashboard/stats_cards.dart:78'

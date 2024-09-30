@@ -266,51 +266,37 @@ class _NotificationPageState extends State<NotificationApp> {
             //           onPressed: clearAllNotifications,
             //           tooltip: 'Clear All Notifications',
             //         ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionTitle(title: 'Today'),
-                for (var notification in today)
-                _buildNotification(notification),
-                // if (today.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (today.isEmpty)
-                //   const Text(
-                //     'There are no Notifications for Today.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                const SizedBox(height: 10),
-                const SectionTitle(title: 'This Week'),
-                for (var notification in thisweek)
-                _buildNotification(notification),
-                // if (thisweek.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (thisweek.isEmpty)
-                //   const Text(
-                //     'There are no Notifications for this Week.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                const SizedBox(height: 10),
-                const SectionTitle(title: 'Older'),
-                for (var notification in older)
-                _buildNotification(notification),
-                // if (older.isEmpty)
-                //   const SizedBox(height: 20),
-                // if (older.isEmpty)
-                //   const Text(
-                //     'There are no Notifications that are older than 1 week.',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                
-                
-              ],
+            Center(
+              child: SizedBox(
+                width: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SectionTitle(title: 'Today'),
+                    for (var notification in today)
+                    _buildNotification(notification),
+                    if(today.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    const SizedBox(height: 10),
+                    const SectionTitle(title: 'This Week'),
+                    for (var notification in thisweek)
+                    _buildNotification(notification),
+                    if(thisweek.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    const SizedBox(height: 10),
+                    const SectionTitle(title: 'Older'),
+                    for (var notification in older)
+                    _buildNotification(notification),
+                    if(older.isEmpty)
+                          const Text('       -', style: TextStyle(color: Colors.white, fontSize: 25),),
+                    
+                    
+                  ],
+                ),
+              ),
             ),
+            
+            
           ],
         ),
       ),
@@ -357,19 +343,19 @@ class _NotificationPageState extends State<NotificationApp> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
@@ -450,7 +436,7 @@ Widget _buildNotification(Notification notification) {
               const SizedBox(height: 5),
               if (notification is BookedNotification)
                 Text(
-                  '${notification.location}, Parking Slot ${notification.parkingslot}',
+                  ' • ${notification.location}\n • ${notification.parkingslot}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,

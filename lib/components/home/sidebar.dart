@@ -31,7 +31,7 @@ class SideMenu extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false); // Set isLoggedIn to false
     if (!context.mounted) return;
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => const LoginPage(),
       ),
@@ -78,7 +78,7 @@ class SideMenu extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                // Navigator.of(context).pushReplacement(
+                                // Navigator.of(context).push(
                                 //   MaterialPageRoute(
                                 //     builder: (_) => const UserProfilePage(),
                                 //   ),
@@ -119,7 +119,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.payment, color: Colors.white),
                           title: const Text('Payment methods', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const PaymentMethodPage(),
                               ),
@@ -130,7 +130,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.history, color: Colors.white),
                           title: const Text('Parking History', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const ParkingHistoryPage(),
                               ),
@@ -141,7 +141,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.local_offer, color: Colors.white),
                           title: const Text('Promotion code', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const PromotionCode(),
                               ),
@@ -153,7 +153,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.notifications, color: Colors.white),
                           title: const Text('Notification', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const NotificationApp(),
                               ),
@@ -164,7 +164,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.support, color: Colors.white),
                           title: const Text('Support', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const SupportApp(),
                               ),
@@ -175,7 +175,7 @@ class SideMenu extends StatelessWidget {
                           leading: const Icon(Icons.settings, color: Colors.white),
                           title: const Text('Settings', style: TextStyle(color: Colors.white)),
                           onTap: () {
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const SettingsPage(),
                               ),
@@ -188,8 +188,8 @@ class SideMenu extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0),
                     child: Image.asset(
-                      'assets/logo.jpg', // Path to the image asset
-                      height: 200, // Adjust height as needed
+                      'assets/logo_small.png', // Path to the image asset
+                      height: 100, // Adjust height as needed
                     ),
                   ),
                   ListTile(

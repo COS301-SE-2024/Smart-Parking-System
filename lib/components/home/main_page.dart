@@ -23,6 +23,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 
+
+
+// Add the import for your loading screen
+import 'package:smart_parking_system/components/home/loading_screen.dart';
+
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -56,6 +62,11 @@ class _MainPageState extends State<MainPage> {
   final Set<Marker> _markers = {};
   final TextEditingController _destinationController = TextEditingController();
 
+  bool _isLoading = true; // New variable to manage loading state
+
+
+
+
   late Parking parking;
   // Parking parking = Parking('', '', '', '', 0);                                         //Change to this if main page gives error
 
@@ -64,6 +75,40 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     requestLocation();
     _addCarMarker();
+  }
+
+  void findNearestLoaction() async {
+    try{
+      Marker nearestMarker = _markers.first; //Use this to compare for the nearest marker;
+      for (var marker in _markers){
+        double distanceMarker = Geolocator.distanceBetween(
+          locationData!.latitude!,
+          locationData!.longitude!,
+          marker.position.latitude,
+          marker.position.longitude,
+        );
+        double distanceNearestMarker = Geolocator.distanceBetween(
+          locationData!.latitude!,
+          locationData!.longitude!,
+          nearestMarker.position.latitude,
+          nearestMarker.position.longitude,
+        );
+        if (distanceMarker < distanceNearestMarker){
+          nearestMarker = marker;
+        }
+      }
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: nearestMarker.position,
+            zoom: 19.0,
+          ),
+        ),
+      );
+    } catch (e) {
+      showToast(message: 'Error retrieving closest parking: $e');
+    }
   }
 
   void displayPrediction(Prediction? p) async {
@@ -92,27 +137,63 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _addCarMarker() async {
+      setState(() {
+      _isLoading = true; // Set loading state to true
+    });
+
     final BitmapDescriptor carIcon = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(100, 100)),
       'assets/Purple_ParkMe.png',
     );
 
     List<Marker> markers = [];
-    try {
-      // Firebase Functions
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      // Query the 'parkings' collection for all documents
-      QuerySnapshot querySnapshot = await firestore.collection('parkings').get();
+    // Firebase Functions
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // Query the 'parkings' collection for all documents
+    QuerySnapshot querySnapshot = await firestore.collection('parkings').get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Loop through each document
-        for (var document in querySnapshot.docs) {
+    if (querySnapshot.docs.isNotEmpty) {
+      // Loop through each document
+      for (var document in querySnapshot.docs) {
+        try {
           // Retrieve the fields
           String name = document.get('name') as String;
+
+          // Check if the marker is for "EPI-USE Labs"
+          if (name == 'EPI-USE Labs') {
+            // Call the detectCars function with the appropriate YouTube URL
+            detectCars('https://www.youtube.com/live/CH8GegCF9FI');
+          }
+
           String price = document.get('price') as String;
           String slots = document.get('slots_available') as String;
-          double latitude = document.get('latitude') as double;
-          double longitude = document.get('longitude') as double;
+          double latitude = 0.0;
+          double longitude = 0.0;
+          try {
+            latitude = document.get('latitude') as double;
+            longitude = document.get('longitude') as double;
+          } catch (e) {
+            try {
+              latitude = document.get('latitude') as double;
+              int temp = document.get('longitude') as int;
+              longitude = double.parse(temp.toString());
+            } catch (e) {
+              try {
+                int temp = document.get('latitude') as int;
+                longitude = document.get('longitude') as double;
+                latitude = double.parse(temp.toString());
+              } catch (e) {
+                try {
+                  int temp1 = document.get('latitude') as int;
+                  int temp2 = document.get('longitude') as int;
+                  latitude = double.parse(temp1.toString());
+                  longitude = double.parse(temp2.toString());
+                } catch (e) {
+                  showToast(message: "latitude/longitude error: $e");
+                }
+              }
+            }
+          }
 
           // Add to the parkingList
           markers.add(
@@ -144,21 +225,23 @@ class _MainPageState extends State<MainPage> {
                   latitude,
                   longitude,
                 );
+
                 _showParkingInfo();
               },
             ),
           );
+        } catch (e) {
+          showToast(message: 'Firebase error $e');
         }
-      } else {
-        // No matching documents found
-        showToast(message: 'No parkings found');
       }
-    } catch (e) {
-      showToast(message: 'Firebase error $e');
+    } else {
+      // No matching documents found
+      showToast(message: 'No parkings found');
     }
 
     setState(() {
       _markers.addAll(markers);
+       _isLoading = false; 
     });
 
   }
@@ -197,6 +280,39 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  Future<void> detectCars(String youtubeUrl) async {
+    const url = 'https://detectcars-syx3usysxa-uc.a.run.app';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'youtube_url': youtubeUrl}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      int carCount = data['car_count'];
+
+      // Fetch the parking location from Firestore
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot = await firestore.collection('parkings').where('name', isEqualTo: 'EPI-USE Labs').get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Update the slotsAvailable field for the location
+        DocumentSnapshot document = querySnapshot.docs.first;
+        int availableSlots = 5 - carCount;
+        await firestore.collection('parkings').doc(document.id).update({
+          'slots_available': '$availableSlots/5',
+        });
+
+        showToast(message: 'Updated slots available for EPI-USE Labs to $carCount');
+      } else {
+        showToast(message: 'Parking location not found');
+      }
+    } else {
+      showToast(message: 'Error: ${response.body}');
+    }
   }
 
   @override
@@ -330,7 +446,7 @@ class _MainPageState extends State<MainPage> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => ZoneSelectPage(bookedAddress: parking.name, price: double.parse(parking.price), distanceAndDurationString: distanceAndDurationString,),
                         ),
@@ -385,6 +501,10 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Stack(
         children: <Widget>[
+
+          if (_isLoading) const LoadingScreen(), 
+          if (!_isLoading)
+
           GoogleMap(
             initialCameraPosition: const CameraPosition(
               target: LatLng(-30.983819953976862, 23.84867659935075), // Default location
@@ -496,25 +616,25 @@ class _MainPageState extends State<MainPage> {
                 _selectedIndex = index;
 
                 if (_selectedIndex == 0) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const MainPage(),
                     ),
                   );
                 } else if (_selectedIndex == 1) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PaymentMethodPage(),
                     ),
                   );
                 } else if (_selectedIndex == 2) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ParkingHistoryPage(),
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const SettingsPage(),
                     ),
@@ -530,7 +650,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: findNearestLoaction,
         backgroundColor: const Color(0xFF58C6A9),
         shape: const CircleBorder(),
         child: const Icon(
@@ -549,3 +669,4 @@ void main() async {
     home: MainPage(),
   ));
 }
+

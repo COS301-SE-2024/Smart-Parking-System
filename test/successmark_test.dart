@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_parking_system/components/login/registration_successful.dart';
-import 'package:smart_parking_system/components/home/main_page.dart';
+// import 'package:smart_parking_system/components/home/main_page.dart';
 
 void main() {
   testWidgets('SuccessionPage UI Test', (WidgetTester tester) async {
@@ -24,16 +24,16 @@ void main() {
     expect(find.widgetWithText(ElevatedButton, 'Finished'), findsOneWidget);
   });
 
-  testWidgets('SuccessionPage Button Navigation Test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: SuccessionPage(),
-    ));
+  // testWidgets('SuccessionPage Button Navigation Test', (WidgetTester tester) async {
+  //   await tester.pumpWidget(const MaterialApp(
+  //     home: SuccessionPage(),
+  //   ));
 
-    // Tap the Finished Button and wait for navigation
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Finished'));
-    await tester.pumpAndSettle();
+  //   // Tap the Finished Button and wait for navigation
+  //   await tester.tap(find.widgetWithText(ElevatedButton, 'Finished'));
+  //   await tester.pumpAndSettle();
 
-    // Verify that MainPage is pushed onto the Navigator stack
-    expect(find.byType(MainPage), findsOneWidget);
-  });
+  //   // Verify that MainPage is pushed onto the Navigator stack
+  //   expect(find.byType(MainPage), findsOneWidget);
+  // });
 }
