@@ -413,6 +413,7 @@ class _SignupPageState extends State<SignupPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
+                          key: const Key('google'),
                           onTap: () {
                             _signUpWithGoogle();
                             // Add functionality to signup with Google
