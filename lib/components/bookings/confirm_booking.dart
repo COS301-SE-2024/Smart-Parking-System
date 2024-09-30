@@ -9,6 +9,7 @@ class ConfirmBookingPage extends StatefulWidget {
   final String selectedZone;
   final String selectedLevel;
   final String? selectedRow;
+  final bool futureBooking;
 
   const ConfirmBookingPage({
     required this.bookedAddress,
@@ -16,6 +17,7 @@ class ConfirmBookingPage extends StatefulWidget {
     required this.selectedZone,
     required this.selectedLevel,
     required this.selectedRow,
+    required this.futureBooking,
     super.key
   });
 
@@ -84,13 +86,13 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
     bool isToday = _checkInDate.year == now.year &&
                   _checkInDate.month == now.month &&
                   _checkInDate.day == now.day;
+    
+    // Split the time string into hours and minutes
+    List<String> timeParts = _checkInTime.split(":");
+    int hours = int.parse(timeParts[0]);
+    int minutes = int.parse(timeParts[1]);
 
     if(isToday){
-      // Split the time string into hours and minutes
-      List<String> timeParts = _checkInTime.split(":");
-      int hours = int.parse(timeParts[0]);
-      int minutes = int.parse(timeParts[1]);
-
       // Create a DateTime object for today with the given time
       DateTime now = DateTime.now();
       DateTime checkInDateTime = DateTime(now.year, now.month, now.day, hours, minutes);
@@ -98,16 +100,41 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
       // Add the duration to the check-in time
       DateTime endDateTime = checkInDateTime.add(Duration(hours: _currentSliderValue.toInt()));
 
+      // if( widget.futureBooking ) { endDateTime = endDateTime.add(const Duration(hours: 24)); }
+
       if(endDateTime.isBefore(now)){
         showToast(message: "Invalid time");
         return;
       }
+    }                                                                     //TODO :: Check if this works
+    // Create a DateTime object for the check in time
+    DateTime checkInDateTime = DateTime(_checkInDate.year, _checkInDate.month, _checkInDate.day, hours, minutes);
+
+    // Add the duration to the check-in time
+    DateTime startDateTime = checkInDateTime;
+    if ( widget.futureBooking ) { startDateTime = startDateTime.subtract(const Duration(hours: 24));}
+
+    // if( widget.futureBooking ) { endDateTime = endDateTime.add(const Duration(hours: 24)); }
+
+    if(startDateTime.isBefore(now)){
+      showToast(message: "Invalid time");
+      return;
     }
 
     if(mounted){
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ChooseVehiclePage(bookedAddress: widget.bookedAddress, selectedZone: widget.selectedZone, selectedLevel: widget.selectedLevel, selectedRow: widget.selectedRow, selectedTime: _checkInTime, selectedDate: _checkInDate, selectedDuration:  _currentSliderValue, price: widget.price, selectedDisabled: _disabledParking,),
+          builder: (_) => ChooseVehiclePage(
+                            bookedAddress: widget.bookedAddress,
+                            selectedZone: widget.selectedZone,
+                            selectedLevel: widget.selectedLevel,
+                            selectedRow: widget.selectedRow,
+                            selectedTime: _checkInTime,
+                            selectedDate: _checkInDate,
+                            selectedDuration: _currentSliderValue,
+                            price: widget.price,
+                            selectedDisabled: _disabledParking,
+                          ),
         ),
       );
     }
