@@ -11,6 +11,7 @@ jobs:
 
     env:
       MAPS_API_KEY_WEB: ${{ secrets.MAPS_API_KEY_WEB }}
+      API_KEY_WEB: ${{ secrets.API_KEY_WEB }}
 
     steps:
       - name: Checkout code
