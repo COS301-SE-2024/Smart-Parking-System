@@ -21,5 +21,5 @@ void main() {
   final updatedContent = content.replaceAll('YOUR_API_KEY', apiKey);
 
   file.writeAsStringSync(updatedContent);
-  print('Updated $filePath with API_KEY_WEB.');
+  print('Updated $filePath with MAPS_API_KEY_WEB.');
 }
