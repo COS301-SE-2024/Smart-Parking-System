@@ -40,11 +40,17 @@ jobs:
 
       - name: List build directory contents
         run: ls -la build/web
+      
+      - name: Link to Vercel project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npm install -g vercel
+          vercel link --token $VERCEL_TOKEN --project parkme
 
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npm install -g vercel
           cd build/web
-          vercel --prod --token $VERCEL_TOKEN --yes --project parkme
+          vercel --prod --token $VERCEL_TOKEN --yes
