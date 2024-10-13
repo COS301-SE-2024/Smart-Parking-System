@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      MAPS_API_KEY_WEB: ${{ secrets.MAPS_API_KEY_WEB }}
       API_KEY_WEB: ${{ secrets.API_KEY_WEB }}
+      MAPS_API_KEY_WEB: ${{ secrets.MAPS_API_KEY_WEB }}
+      
 
     steps:
       - name: Checkout code
@@ -35,7 +36,7 @@ jobs:
         run: echo $API_KEY_WEB
 
       - name: Build Flutter web
-        run: flutter build web
+        run: flutter build web --dart-define=API_KEY_WEB=${{ secrets.API_KEY_WEB }}
 
       - name: List build directory contents
         run: ls -la build/web
