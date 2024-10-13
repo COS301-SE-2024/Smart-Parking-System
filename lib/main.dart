@@ -97,6 +97,13 @@ class MyApp extends StatelessWidget {
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
+
+//   // Print the API key for debugging purposes
+//   if (kIsWeb) {
+//     // ignore: avoid_print
+//     print('API_KEY_WEB: ${const String.fromEnvironment('API_KEY_WEB')}');
+//   }
+  
 //   await Firebase.initializeApp(
 //     options: DefaultFirebaseOptions.currentPlatform,
 //   );
