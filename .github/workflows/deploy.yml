@@ -47,4 +47,4 @@ jobs:
         run: |
           npm install -g vercel
           cd build/web
-          vercel --prod --token $VERCEL_TOKEN --yes
+          vercel --prod --token $VERCEL_TOKEN --yes --project parkme
