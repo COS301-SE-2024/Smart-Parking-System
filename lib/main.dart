@@ -64,6 +64,8 @@ class MyApp extends StatelessWidget {
 
 
 //web config
+// import 'dart:io';
+
 // import 'package:flutter/material.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:flutter/foundation.dart'
@@ -82,8 +84,8 @@ class MyApp extends StatelessWidget {
 //   }
 
 
-//   static FirebaseOptions web = const FirebaseOptions(
-//     apiKey: String.fromEnvironment('API_KEY_WEB'),
+//   static FirebaseOptions web = FirebaseOptions(
+//     apiKey: Platform.environment['API_KEY_WEB']!,
 //     authDomain: "parkme-c2508.firebaseapp.com",
 //     projectId: "parkme-c2508",
 //     storageBucket: "parkme-c2508.appspot.com",
