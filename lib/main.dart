@@ -68,7 +68,6 @@ class MyApp extends StatelessWidget {
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:flutter/foundation.dart'
 //     show kIsWeb;
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:smart_parking_system/webApp/components/splash.dart';
 
 // class DefaultFirebaseOptions {
@@ -97,7 +96,6 @@ class MyApp extends StatelessWidget {
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
-//   await dotenv.load(fileName: ".env");
 //   await Firebase.initializeApp(
 //     options: DefaultFirebaseOptions.currentPlatform,
 //   );
