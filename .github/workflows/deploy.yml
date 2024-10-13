@@ -1,0 +1,41 @@
+name: Web App Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      API_KEY_WEB: ${{ secrets.API_KEY_WEB }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1' # Replace with your Flutter version
+
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Configure main.dart to Web Configuration
+        run: dart run update_main_config.dart
+      
+      - name: Set API Key in index.html
+        run: dart run replace_api_key_web.dart
+
+      - name: Build Flutter web
+        run: flutter build web
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npm install -g vercel
+          vercel --prod --token $VERCEL_TOKEN --confirm --cwd build/web
