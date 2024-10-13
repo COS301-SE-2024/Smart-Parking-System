@@ -12,7 +12,6 @@ jobs:
     env:
       API_KEY_WEB: ${{ secrets.API_KEY_WEB }}
       MAPS_API_KEY_WEB: ${{ secrets.MAPS_API_KEY_WEB }}
-      
 
     steps:
       - name: Checkout code
@@ -37,20 +36,11 @@ jobs:
 
       - name: Build Flutter web
         run: flutter build web --dart-define=API_KEY_WEB=${{ secrets.API_KEY_WEB }}
-
-      - name: List build directory contents
-        run: ls -la build/web
       
-      - name: Link to Vercel project
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          npm install -g vercel
-          vercel link --token $VERCEL_TOKEN --project parkme --yes
-
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
+          npm install -g vercel
           cd build/web
           vercel --prod --token $VERCEL_TOKEN --yes
