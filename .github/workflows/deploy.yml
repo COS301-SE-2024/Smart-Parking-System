@@ -30,6 +30,9 @@ jobs:
       
       - name: Set Maps Api Key in index.html
         run: dart run replace_maps_api_key_web.dart
+      
+      - name: Print API_KEY_WEB
+        run: echo $API_KEY_WEB
 
       - name: Build Flutter web
         run: flutter build web
