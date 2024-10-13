@@ -11,9 +11,9 @@ void main() {
     return;
   }
 
-  final apiKey = Platform.environment['API_KEY_WEB'];
+  final apiKey = Platform.environment['MAPS_API_KEY_WEB'];
   if (apiKey == null) {
-    print('API_KEY_WEB environment variable not set.');
+    print('MAPS_API_KEY_WEB environment variable not set.');
     return;
   }
 

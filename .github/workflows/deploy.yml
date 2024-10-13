@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_KEY_WEB: ${{ secrets.API_KEY_WEB }}
+      MAPS_API_KEY_WEB: ${{ secrets.MAPS_API_KEY_WEB }}
 
     steps:
       - name: Checkout code
@@ -27,8 +27,8 @@ jobs:
       - name: Configure main.dart to Web Configuration
         run: dart run update_main_config.dart
       
-      - name: Set API Key in index.html
-        run: dart run replace_api_key_web.dart
+      - name: Set Maps Api Key in index.html
+        run: dart run replace_maps_api_key_web.dart
 
       - name: Build Flutter web
         run: flutter build web
