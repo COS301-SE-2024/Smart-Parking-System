@@ -27,9 +27,6 @@ jobs:
       - name: Configure main.dart to Web Configuration
         run: dart run update_main_config.dart
       
-      - name: Replace ENV API key in main.dart
-        run: dart run replace_env_api_key.dart
-      
       - name: Set API Key in index.html
         run: dart run replace_api_key_web.dart
 
