@@ -42,7 +42,16 @@ class BookingBillings extends StatelessWidget {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: Text(
+                      "Your booking billings details will be displayed here",
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
                 }
 
                 final bookings = snapshot.data!.docs;
