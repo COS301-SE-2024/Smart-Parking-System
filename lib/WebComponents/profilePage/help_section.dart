@@ -27,17 +27,17 @@ class HelpSection extends StatelessWidget {
           const SizedBox(height: 39),
           _buildHelpItem(
             'Contact us',
-            'You can reach us at support@example.com or call us at (123) 456-7890.',
+            'You can reach us at davincicode.capstone@gmail.com or call us at (082) 573-3268.',
           ),
           const SizedBox(height: 21),
           _buildHelpItem(
             'Billing details',
-            'Update your billing details in your account settings. For assistance, contact our billing department.',
+            'Update your billing details in your account settings. For assistance, contact our billing department at davincicode.capstone@gmail.com.',
           ),
           const SizedBox(height: 21),
           _buildHelpItem(
             'Support',
-            'Visit our support center or email us at support@example.com for help.',
+            'Visit our support center or email us at davincicode.capstone@gmail.com for help.',
           ),
         ],
       ),
