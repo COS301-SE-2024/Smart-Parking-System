@@ -940,49 +940,36 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           BoxShadow(
             color: Colors.white.withOpacity(0.2),
             spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 3), // changes position of shadow
+            blurRadius: 3,
+            offset: const Offset(0, 1), // changes position of shadow
           ),
         ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     const Icon(Icons.check_circle, color: Colors.white, size: 30),
-          //     const SizedBox(width: 10),
-          //     _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
-          //   ],
-          // ),
           Row(
             children: [
+              _locationTextCompleted(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
               const Spacer(),
-              _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
-              const Spacer(),
-            ],
-          ),
-          const SizedBox(height: 5),
-          const Divider(
-            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-            thickness: 1, // Thickness of the lines
-          ),
-          const SizedBox(height: 5), 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                completedsession.date,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              Text(
-                completedsession.time,
-                style: const TextStyle(color: Colors.grey),
-              ),
               Text(
                 completedsession.amount,
                 style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          // const SizedBox(height: 5),
+          // const Divider(
+          //   color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+          //   thickness: 1, // Thickness of the lines
+          // ),
+          const SizedBox(height: 5), 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '${completedsession.date} @ ${completedsession.time}',
+                style: const TextStyle(color: Colors.grey),
               ),
             ],
           ),
@@ -1128,6 +1115,46 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   Widget _locationText(String location, String zone, String level, String row) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      children:[
+        Text(
+          location,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
+        ),
+        Row(
+          children: [
+            Text(
+              'Zone:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)), 
+            ),
+            Text(
+              zone,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Level:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              level,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Row:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              row,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ]
+    );
+  }
+
+  Widget _locationTextCompleted(String location, String zone, String level, String row) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children:[
         Text(
           location,
