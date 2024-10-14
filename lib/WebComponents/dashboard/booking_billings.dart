@@ -57,10 +57,14 @@ class BookingBillings extends StatelessWidget {
                 final bookings = snapshot.data!.docs;
 
                 if (bookings.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      'No bookings found.',
-                      style: TextStyle(color: Colors.white),
+                      "Your booking billings details will be displayed here",
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   );
                 }
