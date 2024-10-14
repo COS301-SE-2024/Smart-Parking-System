@@ -144,7 +144,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
 
 
   void selectZone(String zone) {
-    showToast(message: zone);
+    // showToast(message: zone);
     setState(() {
       selectedZone = zone;
     });
