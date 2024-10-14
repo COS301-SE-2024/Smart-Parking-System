@@ -11,10 +11,10 @@ class ParkingDetails extends StatefulWidget {
 }
 
 class _ParkingDetailsState extends State<ParkingDetails> {
-  int totalSlots = 750;
-  int totalZones = 3;
-  int totalFloors = 3;
-  int rowsPerZone = 25;
+  int totalSlots = 0;
+  int totalZones = 0;
+  int totalFloors = 0;
+  int rowsPerZone = 0;
 
   @override
   void initState() {
