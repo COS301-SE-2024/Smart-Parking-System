@@ -14,6 +14,20 @@ int extractSlotsAvailable(String slots) {
   return 0;
 }
 
+int extractTotalSlotsAvailable(String slots) {
+  // Use a regular expression to match the number after "/"
+  RegExp regex = RegExp(r'\/\s*(\d+)');
+  Match? match = regex.firstMatch(slots);
+  
+  if (match != null) {
+    String number = match.group(1)!; // Get the number after the "/"
+    return int.parse(number);
+  }
+  
+  // Return a default value if no match is found
+  return 0;
+}
+
 bool isValidString(String testString, String regexPatter) {
     // Define the regex pattern for a name
   String pattern = regexPatter;

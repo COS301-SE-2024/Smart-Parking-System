@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
 
 class ParkingDetails extends StatefulWidget {
   const ParkingDetails({super.key});
@@ -48,59 +49,52 @@ class _ParkingDetailsState extends State<ParkingDetails> {
         var parkingDoc = parkingQuerySnapshot.docs.first;
         var parkingDocRef = parkingDoc.reference;
 
-        if (kDebugMode) {
-          print('Parking document found with ID: ${parkingDoc.id}');
-          print('Parking document data: ${parkingDoc.data()}');
-        }
+        int totalSlotsAvailable = extractTotalSlotsAvailable(parkingDoc.get('slots_available') as String);
 
-        var zonesCollection = parkingDocRef.collection('zones');
-        var zonesSnapshot = await zonesCollection.get();
-
+        var zonesSnapshot = await parkingDocRef.collection('zones').get();
         if (kDebugMode) {
           print('Fetched zones snapshot. Number of zones: ${zonesSnapshot.docs.length}');
         }
 
         if (zonesSnapshot.docs.isNotEmpty) {
-          int slots = 0;
-          for (var doc in zonesSnapshot.docs) {
-            var data = doc.data();
+          // Assuming the user has only one parking document
+          var zonesDoc = zonesSnapshot.docs.first;
+          var zonesDocRef = zonesDoc.reference;
+
+          var levelsSnapshot = await zonesDocRef.collection('levels').get();
+          if (kDebugMode) {
+            print('Fetched levels snapshot. Number of levels: ${levelsSnapshot.docs.length}');
+          }
+          
+          
+          if (levelsSnapshot.docs.isNotEmpty) {
+            // Assuming the user has only one parking document
+            var levelsDoc = levelsSnapshot.docs.first;
+            var levelsDocRef = levelsDoc.reference;
+
+            var rowsSnapshot = await levelsDocRef.collection('rows').get();
             if (kDebugMode) {
-              print('Zone document ID: ${doc.id}');
-              print('Zone document data: $data');
+              print('Fetched rows snapshot. Number of rows: ${rowsSnapshot.docs.length}');
             }
 
-            var slotsAvailableStr = data['slots_available']; // Format 'available/total'
-            if (slotsAvailableStr != null && slotsAvailableStr.contains('/')) {
-              var parts = slotsAvailableStr.split('/');
-              if (parts.length == 2) {
-                var totalSlotsStr = parts[1];
-                slots += int.parse(totalSlotsStr);
-                if (kDebugMode) {
-                  print('Total slots in this zone: $totalSlotsStr');
-                  print('Accumulated slots: $slots');
-                }
-              } else {
-                if (kDebugMode) {
-                  print('Unexpected slots_available format in zone ${doc.id}: $slotsAvailableStr');
-                }
-              }
-            } else {
-              if (kDebugMode) {
-                print('slots_available is null or improperly formatted in zone ${doc.id}');
-              }
+            setState(() {
+              totalSlots = totalSlotsAvailable;
+              totalZones = zonesSnapshot.docs.length;
+              totalFloors = levelsSnapshot.docs.length;
+              rowsPerZone = rowsSnapshot.docs.length;
+            });
+            if (kDebugMode) {
+              print('Updated state with totalSlots: $totalSlots, totalZones: $totalZones, totalFloors: $totalFloors, rowsPerZone: $rowsPerZone');
             }
-          }
-          setState(() {
-            totalSlots = slots;
-            totalZones = zonesSnapshot.docs.length;
-            totalFloors = 3; // Update as necessary
-          });
-          if (kDebugMode) {
-            print('Updated state with totalSlots: $totalSlots, totalZones: $totalZones, totalFloors: $totalFloors');
+
+          } else {
+            if (kDebugMode) {
+              print('No zone document found for the current user UID: ${currentUser.uid}');
+            }
           }
         } else {
           if (kDebugMode) {
-            print('No zones found in the zones subcollection.');
+            print('No zone document found for the current user UID: ${currentUser.uid}');
           }
         }
       } else {
