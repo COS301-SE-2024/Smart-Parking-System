@@ -45,7 +45,8 @@ Future<void> addParkingToFirestore({
       // Add levels sub-collection
       int totalSlotsInZone = 0;
       for (int levelIndex = 0; levelIndex < noUpperLevels; levelIndex++) {
-        final levelId = 'L$levelIndex';
+        if (levelIndex == 0) {final levelId = 'Ground';}
+        else {final levelId = 'L$levelIndex';}
         final levelDocRef = zoneDocRef.collection('levels').doc(levelId);
 
         // Add rows sub-collection
