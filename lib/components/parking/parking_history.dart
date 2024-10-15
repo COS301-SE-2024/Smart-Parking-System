@@ -600,8 +600,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             discount = int.parse(bookingData['discount'] as String);
           }
         }
-        double refundAmount = 0;
-        if (price - discount > 0) {refundAmount = (price - discount).toDouble();}
+        int refundAmount = 0;
+        if (price - discount > 0) {refundAmount = price - discount;}
 
         _refund(refundAmount);
         
@@ -702,8 +702,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         double rate = price/duration;
         double didPaid = (price - discount).toDouble();
         double shouldPaid = rate * actualDurationHours;
-        double refundAmount = 0;
-        if (didPaid - shouldPaid > 0) {refundAmount = didPaid - shouldPaid;}
+        int refundAmount = 0;
+        if (didPaid - shouldPaid > 0) {refundAmount = (didPaid - shouldPaid).toInt();}
 
         _refund(refundAmount);
         
@@ -748,7 +748,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   }
   
   // void _refund(double price, double discount, int finalPrice) async {
-  void _refund(double refundAmount) async {
+  void _refund(int refundAmount) async {
     // double refundAmount = (price - discount) - finalPrice;
 
     //Refund Amount as credit here

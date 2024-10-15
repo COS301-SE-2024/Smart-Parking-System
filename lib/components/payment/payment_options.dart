@@ -19,7 +19,7 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
-  double creditAmount = 0.00; // Changed to default 0 and will fetch from database
+  int creditAmount = 0; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
 
   @override
@@ -76,7 +76,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
       final data = userDoc.data() as Map<String, dynamic>;
       setState(() {
-        creditAmount = data['balance']?.toDouble() ?? 0.00;
+        creditAmount = data['balance']?.toInt() ?? 0;
       });
     } catch (e) {
       // 这里可以添加更多错误处理逻辑
@@ -116,7 +116,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 if (isValidString(topUpAmount.toString(), r'^\d+(\.\d+)?$')) {
                   User? user = FirebaseAuth.instance.currentUser;
                   setState(() {
-                    creditAmount += topUpAmount!;
+                    creditAmount += (topUpAmount ?? 0).toInt();
                   });
 
                   // Update credit amount in Firestore
