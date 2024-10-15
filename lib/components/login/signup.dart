@@ -64,6 +64,9 @@ class _SignupPageState extends State<SignupPage> {
               'username': username,
               'email': email,
               'phoneNumber': null,
+              'balance': 0,
+              'profileImageUrl': null,
+              'notificationsEnabled': false,
             }
           );
 
