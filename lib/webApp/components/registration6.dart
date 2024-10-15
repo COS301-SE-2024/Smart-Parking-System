@@ -39,7 +39,7 @@ class _Registration6State extends State<Registration6> {
     if(!isValidString(accountNumber, r'^[0-9]{8,12}$')){showToast(message: "Invalid Account Number. Must be 8-12 digits long."); return;}
     if(!isValidString(billingName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
     if(!isValidString(accountType, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
-    if(!isValidString(bank, r'^[a-zA-Z]+$')){showToast(message: "Invalid Bank Name"); return;}
+    if(!isValidString(bank, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Bank Name"); return;}
 
 
 
