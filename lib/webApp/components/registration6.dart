@@ -17,6 +17,13 @@ class Registration6 extends StatefulWidget {
   _Registration6State createState() => _Registration6State();
 }
 
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return this;
+    return this[0].toUpperCase() + substring(1).toLowerCase();
+  }
+}
+
 class _Registration6State extends State<Registration6> {
   final TextEditingController _billingNameController = TextEditingController();
   final TextEditingController _accountNumberController = TextEditingController();
@@ -24,11 +31,34 @@ class _Registration6State extends State<Registration6> {
   final TextEditingController _bankController = TextEditingController();
   bool _isLoading = false;
 
+  final Map<String, String> _validBanks = {
+    "ABSA": "Absa Bank",
+    "CAPITEC": "Capitec Bank",
+    "FNB": "First National Bank",
+    "INVESTEC": "Investec Bank",
+    "NEDBANK": "Nedbank",
+    "STANDARD BANK": "Standard Bank",
+    "AFRICAN BANK": "African Bank",
+    "BIDVEST": "Bidvest Bank",
+    "DISCOVERY": "Discovery Bank",
+    "TYMEBANK": "TymeBank",
+    "AL BARAKA": "Al Baraka Bank",
+    "GROBANK": "Grobank",
+    "SASFIN": "Sasfin Bank",
+    "UBANK": "UBank",
+    "MERCANTILE": "Mercantile Bank",
+    "HBZ": "HBZ Bank",
+    "ZERO": "Bank Zero",
+    "CITIBANK": "Citibank South Africa",
+    "SBI": "State Bank of India South Africa",
+    "BANK OF CHINA": "Bank of China South Africa",
+    "FIRSTRAND": "FirstRand Bank"
+  };
+
   Future<void> _saveCardDetails() async {
     setState((){
       _isLoading = true;
     });
-
     User? user = FirebaseAuth.instance.currentUser;
 
     final String billingName = _billingNameController.text;
@@ -39,10 +69,15 @@ class _Registration6State extends State<Registration6> {
     if(!isValidString(accountNumber, r'^[0-9]{8,12}$')){showToast(message: "Invalid Account Number. Must be 8-12 digits long."); return;}
     if(!isValidString(billingName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
     if(!isValidString(accountType, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
-    if(!isValidString(bank, r'^[a-zA-Z]+$')){showToast(message: "Invalid Bank Name"); return;}
+   
+  bool isValidBank = _validBanks.keys.map((k) => k.toLowerCase()).contains(bank.toLowerCase()) ||_validBanks.values.map((v) => v.toLowerCase()).contains(bank.toLowerCase());
 
-
-
+  if (!isValidBank) {
+    showToast(message: "Invalid Bank Name. Please enter a valid South African bank.");
+    setState(() => _isLoading = false);
+    return;
+  }
+  
     if (user != null) {
       try {
         await FirebaseFirestore.instance.collection('client_cards').add({
