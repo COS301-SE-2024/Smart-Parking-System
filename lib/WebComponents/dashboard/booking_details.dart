@@ -1,15 +1,75 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class BookingDetails extends StatelessWidget {
+class BookingDetails extends StatefulWidget {
   const BookingDetails({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
+  State<BookingDetails> createState() => _BookingDetailsState();
+}
 
+class _BookingDetailsState extends State<BookingDetails> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  List<QueryDocumentSnapshot> bookings = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBookings();
+  }
+
+  Future<void> fetchBookings() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception("No user logged in");
+      }
+
+      // Query the parkings collection
+      final parkingQuery = await _firestore.collection('parkings')
+          .where('userId', isEqualTo: currentUser.uid)
+          .limit(1)
+          .get();
+
+      if (parkingQuery.docs.isEmpty) {
+        throw Exception("No parking spot found for this user");
+      }
+
+      final address = parkingQuery.docs.first.get('name') as String?;
+
+      if (address == null) {
+        throw Exception("Parking spot name not found");
+      }
+
+      // Query the bookings collection
+      QuerySnapshot bookingsQuery = await _firestore
+          .collection('bookings')
+          .where('address', isEqualTo: address)
+          .get();
+
+      setState(() {
+        bookings = bookingsQuery.docs;
+      });
+    } catch (e) {
+      if(kDebugMode){
+        print("Error: $e");
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       color: const Color(0xFF1A1F37),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -19,7 +79,6 @@ class BookingDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row
             const Text(
               'Booking Details',
               style: TextStyle(
@@ -29,63 +88,37 @@ class BookingDetails extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Fetch bookings from Firestore
-            StreamBuilder<QuerySnapshot>(
-              stream: bookingsCollection
-                  .where('userId', isEqualTo: currentUser?.uid)
-                  .orderBy('notificationTime', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text(
-                      "Your customer booking details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
-
-                final bookings = snapshot.data!.docs;
-
-                if (bookings.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Your customer booking details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
-
-                // Build booking items
-                return Column(
-                  children: bookings.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    final zone = data['zone'] ?? '';
-                    final row = data['row'] ?? '';
-                    final title = '$zone$row Parking Booking';
-
-                    final date = data['date'] ?? ''; // e.g., "2024-11-14"
-                    final time = data['time'] ?? ''; // e.g., "12:00"
-                    final dateTimeString = '$date, at $time';
-
-                    return _buildBookingItem(context, doc.id, title, dateTimeString, data);
-                  }).toList(),
-                );
-              },
-            ),
+            isLoading ? const Center(child: CircularProgressIndicator()) :
+            bookings.isEmpty ?
+              Center(
+                child: Text(
+                  "All your bookings found for this parking spot will be displayed here",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            :
+              Column(
+                children: bookings.map((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  final zone = data['zone'] ?? '';
+                  final row = data['row'] ?? '';
+                  final title = 'Zone/Row : $zone/$row - Parking Booking';
+                  final date = data['date'] ?? '';
+                  final time = data['time'] ?? '';
+                  final dateTimeString = '$date, at $time';
+                  return _buildBookingItem(context, doc.id, title, dateTimeString, data);
+                }).toList(),
+              ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildBookingItem(BuildContext context, String bookingId, String title, String date, Map<String, dynamic> data) {
     return Card(
@@ -249,10 +282,10 @@ class BookingDetails extends StatelessWidget {
                       .collection('bookings')
                       .doc(bookingId)
                       .update({
-                    'date': dateController.text,
-                    'time': timeController.text,
-                    'duration': int.parse(durationController.text),
-                  });
+                        'date': dateController.text,
+                        'time': timeController.text,
+                        'duration': int.parse(durationController.text),
+                      });
                   navigator.pop(); // Close the dialog after saving
                 }
               },

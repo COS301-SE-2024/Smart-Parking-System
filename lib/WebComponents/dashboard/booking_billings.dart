@@ -1,15 +1,77 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class BookingBillings extends StatelessWidget {
+
+class BookingBillings extends StatefulWidget {
   const BookingBillings({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
+  State<BookingBillings> createState() => _BookingBillingsState();
+}
 
+class _BookingBillingsState extends State<BookingBillings> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  List<QueryDocumentSnapshot> bookings = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBookingBillings();
+  }
+
+  Future<void> fetchBookingBillings() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception("No user logged in");
+      }
+
+      // Query the parkings collection
+      final parkingQuery = await _firestore.collection('parkings')
+          .where('userId', isEqualTo: currentUser.uid)
+          .limit(1)
+          .get();
+
+      if (parkingQuery.docs.isEmpty) {
+        throw Exception("No parking spot found for this user");
+      }
+
+      final address = parkingQuery.docs.first.get('name') as String?;
+
+      if (address == null) {
+        throw Exception("Parking spot name not found");
+      }
+
+      // Query the bookings collection
+      QuerySnapshot bookingsQuery = await _firestore
+          .collection('bookings')
+          .where('address', isEqualTo: address)
+          .get();
+
+      setState(() {
+        bookings = bookingsQuery.docs;
+      });
+    } catch (e) {
+      if(kDebugMode){
+        print("Error: $e");
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       color: const Color(0xFF1A1F37),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -34,73 +96,48 @@ class BookingBillings extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Use a StreamBuilder to fetch bookings from Firestore
-            StreamBuilder<QuerySnapshot>(
-              stream: bookingsCollection
-                  .where('userId', isEqualTo: currentUser?.uid)
-                  .orderBy('notificationTime', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text(
-                      "Your booking billings details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
+            isLoading ? const Center(child: CircularProgressIndicator()) :
+            bookings.isEmpty ?
+              Center(
+                child: Text(
+                  "Your booking billings details will be displayed here",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            :
+              Column(
+                children: bookings.map((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  final zone = data['zone'] ?? '';
+                  final row = data['row'] ?? '';
+                  final title = 'Zone/Row : $zone/$row - Parking Booking';
 
-                final bookings = snapshot.data!.docs;
+                  final date = data['date'] ?? ''; // e.g., "2024-11-14"
+                  final time = data['time'] ?? ''; // e.g., "12:00"
+                  final dateTimeString = '$date, at $time';
 
-                if (bookings.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Your booking billings details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
+                  final price = data['price'] ?? 0; // e.g., 10
+                  String amount = '+R$price';
 
-                // Build a list of billing items
-                return Column(
-                  children: bookings.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    final zone = data['zone'] ?? '';
-                    final row = data['row'] ?? '';
-                    final title = '$zone$row Parking Booking';
+                  // Determine the amount based on booking status
+                  final disabled = data['disabled'] ?? false;
+                  final sent = data['sent'] ?? false;
 
-                    final date = data['date'] ?? ''; // e.g., "2024-11-14"
-                    final time = data['time'] ?? ''; // e.g., "12:00"
-                    final dateTimeString = '$date, at $time';
+                  if (disabled) {
+                    // Booking was canceled/refunded
+                    amount = '-R$price';
+                  } else if (!sent) {
+                    // Booking is pending
+                    amount = 'Pending';
+                  }
 
-                    final price = data['price'] ?? 0; // e.g., 10
-                    String amount = '+R$price';
-
-                    // Determine the amount based on booking status
-                    final disabled = data['disabled'] ?? false;
-                    final sent = data['sent'] ?? false;
-
-                    if (disabled) {
-                      // Booking was canceled/refunded
-                      amount = '-R$price';
-                    } else if (!sent) {
-                      // Booking is pending
-                      amount = 'Pending';
-                    }
-
-                    return _buildBillingItem(context, title, dateTimeString, amount);
-                  }).toList(),
-                );
-              },
-            ),
+                  return _buildBillingItem(context, title, dateTimeString, amount);
+                }).toList(),
+              ),
           ],
         ),
       ),

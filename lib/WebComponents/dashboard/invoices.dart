@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,14 +6,73 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-class Invoices extends StatelessWidget {
+class Invoices extends StatefulWidget {
   const Invoices({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final bookingsCollection = FirebaseFirestore.instance.collection('bookings');
+  State<Invoices> createState() => _InvoicesState();
+}
 
+class _InvoicesState extends State<Invoices> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  List<QueryDocumentSnapshot> bookings = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBookings();
+  }
+
+  Future<void> fetchBookings() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        throw Exception("No user logged in");
+      }
+
+      // Query the parkings collection
+      final parkingQuery = await _firestore.collection('parkings')
+          .where('userId', isEqualTo: currentUser.uid)
+          .limit(1)
+          .get();
+
+      if (parkingQuery.docs.isEmpty) {
+        throw Exception("No parking spot found for this user");
+      }
+
+      final address = parkingQuery.docs.first.get('name') as String?;
+
+      if (address == null) {
+        throw Exception("Parking spot name not found");
+      }
+
+      // Query the bookings collection
+      QuerySnapshot bookingsQuery = await _firestore
+          .collection('bookings')
+          .where('address', isEqualTo: address)
+          .get();
+
+      setState(() {
+        bookings = bookingsQuery.docs;
+      });
+    } catch (e) {
+      if(kDebugMode){
+        print("Error: $e");
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       color: const Color(0xFF1A1F37),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -37,67 +97,42 @@ class Invoices extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Fetch invoices from Firestore
-            StreamBuilder<QuerySnapshot>(
-              stream: bookingsCollection
-                  .where('userId', isEqualTo: currentUser?.uid)
-                  .orderBy('notificationTime', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text(
-                      "Your invoices details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
+            isLoading ? const Center(child: CircularProgressIndicator()) :
+            bookings.isEmpty ?
+              Center(
+                child: Text(
+                  "Your invoices details will be displayed here",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            :
+              Column(
+                children: bookings.map((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
 
-                final bookings = snapshot.data!.docs;
-
-                if (bookings.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Your invoices details will be displayed here",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                }
-
-                // Build a list of invoice items
-                return Column(
-                  children: bookings.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-
-                    final notificationTime = data['notificationTime'] as Timestamp?;
-                    String formattedDate = '';
-                    if (notificationTime != null) {
-                      final dateTime = notificationTime.toDate();
-                      formattedDate = '${_formatMonth(dateTime.month)} ${dateTime.day}, ${dateTime.year}';
-                    } else {
-                      // Fallback to 'date' field if 'notificationTime' is null
-                      final dateString = data['date'] as String?;
-                      if (dateString != null) {
-                        formattedDate = dateString;
-                      }
+                  final notificationTime = data['notificationTime'] as Timestamp?;
+                  String formattedDate = '';
+                  if (notificationTime != null) {
+                    final dateTime = notificationTime.toDate();
+                    formattedDate = '${_formatMonth(dateTime.month)} ${dateTime.day}, ${dateTime.year}';
+                  } else {
+                    // Fallback to 'date' field if 'notificationTime' is null
+                    final dateString = data['date'] as String?;
+                    if (dateString != null) {
+                      formattedDate = dateString;
                     }
+                  }
 
-                    final invoiceNumber = '#${doc.id.substring(0, 8).toUpperCase()}'; // Shortened doc ID as invoice number
-                    final amount = 'R ${data['price'] ?? 0}';
+                  final invoiceNumber = '#${doc.id.substring(0, 8).toUpperCase()}'; // Shortened doc ID as invoice number
+                  final amount = 'R ${data['price'] ?? 0}';
 
-                    return _buildInvoiceItem(context, formattedDate, invoiceNumber, amount, data);
-                  }).toList(),
-                );
-              },
-            ),
+                  return _buildInvoiceItem(context, formattedDate, invoiceNumber, amount, data);
+                }).toList(),
+              ),
           ],
         ),
       ),
