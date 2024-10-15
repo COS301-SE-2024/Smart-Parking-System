@@ -210,7 +210,7 @@ class _TopUpPageState extends State<TopUpPage> {
                         Text(
                           'ZAR ${creditAmount.toStringAsFixed(2)}',
                           style: const TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF58C6A9),
                           ),
@@ -218,7 +218,7 @@ class _TopUpPageState extends State<TopUpPage> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
                         onPressed: _showTopUpDialog,
                         style: ElevatedButton.styleFrom(
