@@ -28,6 +28,14 @@ int extractTotalSlotsAvailable(String slots) {
   return 0;
 }
 
+double extractPrice(String price) {
+  // Use a regular expression to extract the numeric portion
+  String numericString = price.replaceAll(RegExp(r'[^\d.]'), '');
+
+  // Parse the extracted numeric string to a double
+  return double.tryParse(numericString) ?? 0.0;
+}
+
 bool isValidString(String testString, String regexPatter) {
     // Define the regex pattern for a name
   String pattern = regexPatter;
