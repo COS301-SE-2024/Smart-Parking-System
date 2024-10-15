@@ -193,7 +193,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       
       setState(() {
         _sufficientFunds = price <= data['balance']?.toDouble();
-        _availableFunds = data['balance']?.toDouble() ?? 0.00;
+        // _availableFunds = data['balance']?.toDouble() ?? 0.00;
+        double balance = data['balance']?.toDouble() ?? 0.0;
+        _availableFunds = (balance * 100).truncateToDouble() / 100;
       });
     } catch (e) {
       //
@@ -449,17 +451,17 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 100,
+                        width: 90,
                         height: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
                             image: NetworkImage(carLogo),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitWidth,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 25),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -681,7 +683,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         SizedBox(height: 5),
                       ],
                     ),
-                    const SizedBox(width: 80),
+                    const SizedBox(width: 60),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the left
                       children: [
