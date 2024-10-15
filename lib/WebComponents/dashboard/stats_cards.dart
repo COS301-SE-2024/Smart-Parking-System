@@ -13,7 +13,6 @@ class StatsCards extends StatefulWidget {
 class _StatsCardsState extends State<StatsCards> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  List<QueryDocumentSnapshot> bookings = [];
   bool isLoading = true;
   bool isLatestBooking = false;
   late CollectionReference bookingsCollection;
@@ -122,7 +121,6 @@ class _StatsCardsState extends State<StatsCards> {
       }
 
       setState(() {
-        bookings = bookingsQuery.docs; // TODO::REMOVE
         totalIncome = tempTotalIncome;
         latestBooking = tempLatestBooking!;
         isLatestBooking = tempIsLatestBooking;
