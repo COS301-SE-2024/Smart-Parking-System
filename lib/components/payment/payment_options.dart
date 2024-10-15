@@ -220,7 +220,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         Text(
                           'ZAR ${creditAmount.toStringAsFixed(2)}',
                           style: const TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF58C6A9),
                           ),
@@ -228,7 +228,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
                         onPressed: _showTopUpDialog,
                         style: ElevatedButton.styleFrom(
