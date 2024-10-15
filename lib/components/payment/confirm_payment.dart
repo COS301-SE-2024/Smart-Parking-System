@@ -99,7 +99,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
           final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
-          double finalPrice = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
           await FirebaseFirestore.instance.collection('bookings').add({
             'userId': user.uid,
             'zone': widget.selectedZone,
@@ -108,7 +107,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             'time': startTime,
             'date': bookingDate,
             'duration': widget.selectedDuration,
-            'price': finalPrice.toDouble(),
+            'price': totalPrice.toDouble(),
+            'discount': discountedPrice.toDouble(),
             'address': widget.bookedAddress,
             'disabled': widget.selectedDisabled,
             'vehicleId': widget.vehicleId,
@@ -129,7 +129,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             }
           }
 
-          await _updateWallet(finalPrice);
+          await _updateWallet();
           await _updateSlotAvailability();
           await _makeNotifications();
           showToast(message: 'Booked Successfully!');
@@ -154,7 +154,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     }
   }
 
-  Future<void> _updateWallet(double price) async {
+  Future<void> _updateWallet() async {
+    double price = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
     User? user = FirebaseAuth.instance.currentUser;
 
     try {

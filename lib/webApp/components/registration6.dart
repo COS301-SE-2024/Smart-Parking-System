@@ -70,13 +70,13 @@ class _Registration6State extends State<Registration6> {
     if(!isValidString(billingName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
     if(!isValidString(accountType, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
    
-  bool isValidBank = _validBanks.keys.map((k) => k.toLowerCase()).contains(bank.toLowerCase()) ||_validBanks.values.map((v) => v.toLowerCase()).contains(bank.toLowerCase());
+    bool isValidBank = _validBanks.keys.map((k) => k.toLowerCase()).contains(bank.toLowerCase()) ||_validBanks.values.map((v) => v.toLowerCase()).contains(bank.toLowerCase());
 
-  if (!isValidBank) {
-    showToast(message: "Invalid Bank Name. Please enter a valid South African bank.");
-    setState(() => _isLoading = false);
-    return;
-  }
+    if (!isValidBank) {
+      showToast(message: "Invalid Bank Name. Please enter a valid South African bank.");
+      setState(() => _isLoading = false);
+      return;
+    }
   
     if (user != null) {
       try {
