@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> {
   bool _locationPermissionGranted = false;
   final Set<Marker> _markers = {};
   final TextEditingController _destinationController = TextEditingController();
-  PermissionStatus _permissionGranted = PermissionStatus.denied;
+  PermissionStatus _permissionGranted = PermissionStatus.granted;
 
   bool _isLoading = true; // New variable to manage loading state
 
