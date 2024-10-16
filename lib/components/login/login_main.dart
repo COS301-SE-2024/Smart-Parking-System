@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/components/login/login.dart';
 import 'package:smart_parking_system/components/login/signup.dart';
-import 'package:smart_parking_system/components/home/main_page.dart';
+// import 'package:smart_parking_system/components/home/main_page.dart';
 
 class LoginMainPage extends StatefulWidget {
   const LoginMainPage({super.key});
@@ -13,39 +13,39 @@ class LoginMainPage extends StatefulWidget {
 }
 
 class LoginMainPageState extends State<LoginMainPage> {
-  Future<void> _checkIfLoggedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  // Future<void> _checkIfLoggedIn() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    int? loginTimestamp = prefs.getInt('loginTimestamp');
+  //   int? loginTimestamp = prefs.getInt('loginTimestamp');
 
-    // Define the session duration (e.g., 1 day)
-    const int sessionDuration = 2 * 60 * 60 * 1000; // 24 hours in milliseconds
+  //   // Define the session duration (e.g., 1 day)
+  //   const int sessionDuration = 2 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-    if (isLoggedIn && loginTimestamp != null) {
-      int currentTime = DateTime.now().millisecondsSinceEpoch;
-      if (currentTime - loginTimestamp > sessionDuration) {
-        // Session has expired
-        isLoggedIn = false;
-        await prefs.setBool('isLoggedIn', false);
-      }
-    }
+  //   if (isLoggedIn && loginTimestamp != null) {
+  //     int currentTime = DateTime.now().millisecondsSinceEpoch;
+  //     if (currentTime - loginTimestamp > sessionDuration) {
+  //       // Session has expired
+  //       isLoggedIn = false;
+  //       await prefs.setBool('isLoggedIn', false);
+  //     }
+  //   }
 
-    if (!mounted) return;
+  //   if (!mounted) return;
 
-    if (isLoggedIn) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const MainPage(), // Replace with your main page
-        ),
-      );
-    }
-  }
+  //   if (isLoggedIn) {
+  //     Navigator.of(context).push(
+  //       MaterialPageRoute(
+  //         builder: (context) => const MainPage(), // Replace with your main page
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    _checkIfLoggedIn();
+    // _checkIfLoggedIn();
   }
 
   @override
