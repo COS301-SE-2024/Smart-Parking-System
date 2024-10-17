@@ -86,7 +86,7 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
             imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
             break;
           case 'toyota':
-            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FToyota_Logo.png?alt=media&token=e0c4d85e-4a41-4027-b9c2-db13b69f6ef8';
             break;
           case 'volvo':
             imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FVolvo_Logo.png?alt=media&token=6eb02bdb-2102-47d6-bedc-e28bc0993282';

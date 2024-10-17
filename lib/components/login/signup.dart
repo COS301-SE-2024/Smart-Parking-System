@@ -27,6 +27,7 @@ class _SignupPageState extends State<SignupPage> {
   final FireBaseAuthServices _auth = FireBaseAuthServices();
 
   bool _isLoading = false;
+  bool _obscureText = true;
 
   @override
   void dispose() {
@@ -323,40 +324,59 @@ class _SignupPageState extends State<SignupPage> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: TextStyle(
-                          color: Colors.grey.shade700, // Darker grey for label text
+                          color: Colors.grey.shade700,
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
                         ),
                         floatingLabelStyle: TextStyle(
-                          color: Colors.grey.shade700, // Color for floating label when focused
+                          color: Colors.grey.shade700,
                         ),
                         filled: true,
-                        fillColor: const Color(0xFFD9D9D9), // Light grey background color
+                        fillColor: const Color(0xFFD9D9D9),
                         contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color
+                            color: Color(0xFFD9D9D9),
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color when enabled
+                            color: Color(0xFFD9D9D9),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                           borderSide: const BorderSide(
-                            color: Color(0xFFD9D9D9), // Border color when focused
+                            color: Color(0xFFD9D9D9),
                           ),
+                        ),
+                        // Add suffix icon for visibility toggle
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey.shade700,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
+                        // Add helper text for password hint
+                        helperText: 'Password must be a minimum length of 8,\nAt least 1 uppercase, lowercase letter,\nAt least 1 number and special character (!@#%^&*)',
+                        helperStyle: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
                         ),
                       ),
                       style: TextStyle(
-                        color: Colors.grey.shade800, // Dark grey input text color
+                        color: Colors.grey.shade800,
                       ),
-                      obscureText: true,
+                      obscureText: _obscureText,  // Use the state variable here
                     ),
+  
                     const SizedBox(height: 30),
                     // Signup Button
                     ElevatedButton(
