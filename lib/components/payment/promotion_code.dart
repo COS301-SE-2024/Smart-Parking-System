@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
@@ -18,6 +19,7 @@ class _OfferPageState extends State<PromotionCode> {
   int _selectedIndex = 0;
   final Set<int> _appliedCouponIndices = {};
   List<Map<String, dynamic>> coupons = [];
+  bool _isFetching = true;
 
   @override
   void initState() {
@@ -26,6 +28,9 @@ class _OfferPageState extends State<PromotionCode> {
   }
 
   Future<void> fetchCoupons() async {
+    setState(() {
+      _isFetching = true;
+    });
     final user = FirebaseAuth.instance.currentUser; // Get the current user
     if (user != null) {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -46,13 +51,17 @@ class _OfferPageState extends State<PromotionCode> {
         coupons = fetchedCoupons;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(53, 52, 74, 1),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

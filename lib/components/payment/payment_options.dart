@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
@@ -21,6 +22,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
   int creditAmount = 0; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
+  bool _isFetching = true;
 
   @override
   void initState() {
@@ -30,6 +32,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   }
 
   Future<void> _fetchCards() async {
+    setState(() {
+      _isFetching = true;
+    });
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -62,10 +67,16 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     } catch (e) {
       //print('Error fetching cards: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
 
   Future<void> _fetchCreditAmount() async {
+    setState(() {
+      _isFetching = true;
+    });
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -81,6 +92,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     } catch (e) {
       // 这里可以添加更多错误处理逻辑
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   Future<void> _showTopUpDialog() async {
@@ -147,7 +161,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
