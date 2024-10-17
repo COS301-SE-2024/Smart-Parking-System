@@ -17,7 +17,7 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
   File? _profileImage; // Holds the selected profile image
@@ -49,7 +49,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
           if (userData != null) {
             _nameController.text = userData['username'] ?? '';
-            _emailController.text = userData['email'] ?? '';
+            _surnameController.text = userData['surname'] ?? '';
             _phoneController.text = userData['phoneNumber'] ?? '';
             _profileImageUrl = userData['profileImageUrl']; // Get the profile image URL
             setState(() {}); // Refresh UI
@@ -67,10 +67,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
 
     final String username = _nameController.text;
-    final String email = _emailController.text;
+    final String surname = _surnameController.text;
     final String phoneNumber = _phoneController.text;
     
-    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(surname, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid surname"); setState(() {_isUploading = false; }); return;}
     if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); setState(() {_isUploading = false; }); return;}
     if(!isValidString(username, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid name"); setState(() {_isUploading = false; }); return;}
 
@@ -85,7 +85,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'username': username,
-          'email': email,
+          'surname': surname,
           'phoneNumber': phoneNumber,
           'profileImageUrl': profileImageUrl, // Save the profile image URL
         }, SetOptions(merge: true));
@@ -242,8 +242,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         controller: _nameController,
                       ),
                       ProfileField(
-                        label: 'Email address',
-                        controller: _emailController,
+                        label: 'Surname',
+                        controller: _surnameController,
                       ),
                       ProfileField(
                         label: 'Phone number',
