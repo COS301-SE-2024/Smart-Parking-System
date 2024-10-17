@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -101,6 +102,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   List<ReservedSpot> reservedspots = [];
   List<CompletedSession> completedsessions = [];
   User? user = FirebaseAuth.instance.currentUser;
+  bool _isFetching = true;
 
   Timer? _timer;
 
@@ -117,6 +119,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     super.dispose();
   }
   void _startTimer() {
+    setState(() {
+      _isFetching = true;
+    });
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       setState(() {
         List<ActiveSession> finishedSessions = [];
@@ -139,6 +144,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         // Check and update reserved spots
         _checkAndUpdateReservedSpots();
       });
+    });
+    setState(() {
+      _isFetching = false;
     });
   }
   void _moveFinishedSessionsToCompleted(List<ActiveSession> finishedSessions) async {
@@ -341,6 +349,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   }
   // Get details on load
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     // String? userName = user?.displayName;
     String? userId = user?.uid;
 
@@ -540,7 +551,10 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       showToast(message: 'Error retrieving past booking details: $e');
     }
 
-    setState(() {}); // This will trigger a rebuild with the new values
+    
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   void _showDeleteConfirmation(BuildContext context, ReservedSpot reservedspot) {
@@ -786,7 +800,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
