@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscureText = true;
 
   final FireBaseAuthServices _auth = FireBaseAuthServices();
 
@@ -231,11 +232,23 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
+                        // Add suffix icon for visibility toggle
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey.shade700,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                       ),
                       style: TextStyle(
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
-                      obscureText: true,
+                      obscureText: _obscureText,
                     ),
                     const SizedBox(height: 30),
                     // Login Button
