@@ -15,7 +15,9 @@ class SideMenu extends StatelessWidget {
 
   Future<String> getUserName(String userId) async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return userDoc.get('username');
+    String username = userDoc.get('username');
+    String? surname = userDoc.get('surname');
+    return surname == null ? username : '$username $surname';
   }
 
   Future<String?> getProfileImageUrl(String userId) async {

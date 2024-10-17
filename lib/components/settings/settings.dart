@@ -19,7 +19,9 @@ class SettingsPage extends StatefulWidget {
 
 Future<String> getUserName(String userId) async {
   DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-  return userDoc.get('username');
+  String username = userDoc.get('username');
+  String? surname = userDoc.get('surname');
+  return surname == null ? username : '$username $surname';
 }
 
 Future<String?> getProfileImageUrl(String userId) async {
@@ -44,7 +46,7 @@ Future<void> updateNotificationPreference(bool isEnabled) async {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  String _username = 'Username';
+  String _username = 'Loading...';
   String? _profileImageUrl;
 
   @override
