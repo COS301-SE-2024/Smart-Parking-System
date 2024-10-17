@@ -38,7 +38,7 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-   _signUpWithGoogle () async {
+  _signUpWithGoogle () async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
@@ -97,10 +97,10 @@ class _SignupPageState extends State<SignupPage> {
     final String email = _emailController.text;
     final String phoneNumber = _noController.text;
 
-    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
-    if(!isValidString(password, r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')){showToast(message: "Invalid password:\n\nAt least 1 uppercase letter\nAt least 1 lowercase letter\nAt least 1 number\nAt least 1 special character (!@#\$%^&*)\nA minimum length of 8"); return;}
-    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); return;}
-    if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); return;}
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(password, r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')){showToast(message: "Invalid password:\n\nAt least 1 uppercase letter\nAt least 1 lowercase letter\nAt least 1 number\nAt least 1 special character (!@#\$%^&*)\nA minimum length of 8"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); setState((){_isLoading = false;}); return;}
 
     try{
       final User? user = await _auth.signUpWithEmailAndPassword(email, password);
