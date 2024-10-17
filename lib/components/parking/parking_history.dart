@@ -989,16 +989,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }
@@ -1263,24 +1253,5 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         ),
       ]
     );
-  }
-}
-
-class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
-  final double offset;
-
-  CustomCenterDockedFABLocation(this.offset);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Position the FAB slightly higher than centerDocked
-    final double fabX = (scaffoldGeometry.scaffoldSize.width / 2) -
-        (scaffoldGeometry.floatingActionButtonSize.width / 2);
-    final double fabY = scaffoldGeometry.scaffoldSize.height -
-        scaffoldGeometry.bottomSheetSize.height -
-        scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) - 
-        offset;
-    return Offset(fabX, fabY);
   }
 }
