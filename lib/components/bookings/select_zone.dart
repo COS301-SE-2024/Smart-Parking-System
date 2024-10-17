@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/select_level.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -43,8 +44,12 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   BitmapDescriptor? carIcon;
   BitmapDescriptor? zoneIcon;
   bool futureBooking = false;
+  bool _isFetching = true;
 
   Future<void> loadCustomMarker() async {
+    setState(() {
+      _isFetching = true;
+    });
     carIcon = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(100, 100)),
       'assets/Purple_ParkMe.png',
@@ -53,6 +58,9 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
       const ImageConfiguration(size: Size(40, 40)),
       'assets/zone.png',
     );
+    setState(() {
+      _isFetching = false;
+    });
   }
 
    String getZoneLetter(int index) {
@@ -60,6 +68,9 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   }
 
    Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       QuerySnapshot querySnapshot = await firestore
@@ -140,6 +151,9 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
       }
       _markers.addAll(_markersZones);
     });
+    setState(() {
+      _isFetching = false;
+    });
   }
 
 
@@ -162,7 +176,8 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: Container(
+      body: _isFetching ? loadingWidget()
+      : Container(
         color: const Color(0xFF2D2F41),
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -233,7 +248,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                     ),
                     SizedBox(width: 8),
                     Text(
-                      'Denotes a Parking Zone',
+                      '  Click on a icon which\ndenotes a parking zone',
                       style: TextStyle(
                         color: Colors.tealAccent,
                         fontSize: 18,

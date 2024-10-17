@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/select_row.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 
@@ -34,6 +35,7 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
   String? selectedLevel;
   int totalSlots = 0;
   late bool futureBooking;
+  bool _isFetching = true;
 
   List<Level> levels = [
     // Add more levels here
@@ -41,6 +43,9 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
 
     // Get details on load
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -117,7 +122,9 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
       showToast(message: 'Error retrieving level details: $e');
     }
 
-    setState(() {}); // This will trigger a rebuild with the new values
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -130,7 +137,8 @@ class _LevelSelectPageState extends State<LevelSelectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: SingleChildScrollView(
+      body: _isFetching ? loadingWidget()
+      : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

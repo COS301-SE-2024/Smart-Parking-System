@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/bookings/select_add_vehicle.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/payment/confirm_payment.dart';
 // import 'package:smart_parking_system/components/sidebar.dart';
 
@@ -40,6 +41,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   String? logo;
   bool isLoading = false;
   bool hasCars = false;
+  bool _isFetching = true;
 
   void selectCar(String vehicleId, String vehicleLogo) {
     setState(() {
@@ -152,6 +154,9 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         isLoading = false;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -164,7 +169,8 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(

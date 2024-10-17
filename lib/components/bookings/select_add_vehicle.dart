@@ -36,21 +36,10 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
     }
   }
 
-  // void getInformation(){
-  //   _brandController.text = 'VW';
-  //   _colorController.text = 'Blue';
-  //   _licenseController.text = 'TX029GP';
-  //   _modelController.text = 'Citi Golf';
-  // }
-
   @override
   void initState() {
     super.initState();
-    // getInformation();
   }
-
-  
-
 
   @override
   Widget build(BuildContext context) {
