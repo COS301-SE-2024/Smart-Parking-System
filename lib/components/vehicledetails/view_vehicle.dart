@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 import 'package:smart_parking_system/components/home/sidebar.dart';
 import 'package:smart_parking_system/components/vehicledetails/add_vehicle.dart';
@@ -17,10 +18,12 @@ class ViewVehiclePage extends StatefulWidget {
 class _ViewVehiclePageState extends State<ViewVehiclePage> {
   late List<Map<String, dynamic>> cars = [];
   bool isLoading = false;
+  bool _isFetching = true;
 
   Future<void> fetchUserVehicles() async {
     setState(() {
       isLoading = true;
+      _isFetching = true;
     });
     try {
       String currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -115,6 +118,9 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
         isLoading = false;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -127,7 +133,8 @@ class _ViewVehiclePageState extends State<ViewVehiclePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
@@ -21,6 +22,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   File? _profileImage; // Holds the selected profile image
   String? _profileImageUrl; // Holds the profile image URL from Firestore
+  bool _isFetching = true;
 
   bool _isUploading = false; // Track the upload state
 
@@ -38,6 +40,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<void> _loadUserProfile() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -57,6 +62,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     } catch (e) {
       showToast(message: 'Error loading profile: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   Future<void> _updateUserProfile() async {
@@ -169,7 +177,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
       ),
-      body: Stack(
+      body: _isFetching ? loadingWidget()
+      : Stack(
         children: [
           SingleChildScrollView(
             child: Center(
