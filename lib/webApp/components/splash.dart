@@ -168,7 +168,7 @@ class SplashScreen extends StatelessWidget {
                           const SizedBox(height: 20),
                           Center(
                             child: Text(
-                              '© 2024 DaVinci Code. All rights reserved.\nPrivacy policy | Contact us',
+                              '© 2024 DaVinci Code. All rights reserved.',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: constraints.maxWidth * 0.01,
