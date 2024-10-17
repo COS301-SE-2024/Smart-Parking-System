@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/payment/top_up.dart';
 import 'package:smart_parking_system/components/settings/about_us.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -177,7 +178,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const PaymentMethodPage(),
+                              builder: (_) => const TopUpPage(),
                             ),
                           );
                         },
