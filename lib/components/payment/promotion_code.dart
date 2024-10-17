@@ -188,7 +188,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                         style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop(); // Close the dialog
+                                                        Navigator.of(context).pop(true); // Close the dialog
                                                       },
                                                     ),
                                                     TextButton(
@@ -197,7 +197,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                         style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop(); // Close the confirmation dialog
+                                                        Navigator.of(context).pop(true); // Close the confirmation dialog
                                                         showDialog(
                                                           context: context,
                                                           builder: (BuildContext context) {
@@ -219,7 +219,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                                     ),
                                                                     onPressed: () {
-                                                                      Navigator.of(context).pop(); // Close the success dialog
+                                                                      Navigator.of(context).pop(true); // Close the success dialog
                                                                       setState(() {
                                                                         _appliedCouponIndices.add(index);
                                                                         coupons[index]['applied'] = true;
@@ -297,7 +297,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                     ),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(); // Close the dialog
+                                                      Navigator.of(context).pop(true); // Close the dialog
                                                     },
                                                   ),
                                                   TextButton(
@@ -306,7 +306,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                     ),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(); // Close the confirmation dialog
+                                                      Navigator.of(context).pop(true); // Close the confirmation dialog
                                                       showDialog(
                                                         context: context,
                                                         builder: (BuildContext context) {
@@ -328,7 +328,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                                     style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                                   ),
                                                                   onPressed: () {
-                                                                    Navigator.of(context).pop(); // Close the success dialog
+                                                                    Navigator.of(context).pop(true); // Close the success dialog
                                                                     setState(() {
                                                                       _appliedCouponIndices.remove(index);
                                                                       coupons[index]['applied'] = false;

@@ -87,7 +87,7 @@ class EditCardPageState extends State<EditCardPage> {
 
         if (mounted) {
           showToast(message: "Saved updated Card Information!");
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         }
       } catch (e) {
         showToast(message: 'Failed to edit card details: $e');
@@ -115,7 +115,7 @@ class EditCardPageState extends State<EditCardPage> {
                       child: IconButton(
                         icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true);
                         },
                       ),
                     ),

@@ -569,14 +569,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _deleteBooking(reservedspot);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -651,14 +651,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _endSession(activesession);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],

@@ -121,7 +121,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             TextButton(
               child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
@@ -144,7 +144,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   }
 
                   if(context.mounted) {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   }
                 } else {
                   showToast(message: "Invalid Amount : $topUpAmount");

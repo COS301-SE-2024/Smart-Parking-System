@@ -165,7 +165,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                     icon: const Icon(
                         Icons.arrow_back_ios_new_rounded, color: Colors.white,
                         size: 30.0),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.of(context).pop(true),
                   ),
                   const Expanded(
                     child: Text(

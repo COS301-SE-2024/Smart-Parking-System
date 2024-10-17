@@ -189,7 +189,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         padding: const EdgeInsets.only(left: 1.0),
                         child: IconButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           },
                           icon: const Icon(
                             Icons.arrow_back_ios,

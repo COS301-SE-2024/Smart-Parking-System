@@ -74,7 +74,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(true);
                       },
                       child: const Text(
                         'OK',

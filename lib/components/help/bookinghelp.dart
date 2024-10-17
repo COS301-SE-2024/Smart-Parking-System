@@ -24,7 +24,7 @@ class Bookinghelp extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => Navigator.of(context).pop(true),
                       ),
                       const Text(
                         'Booking questions',

@@ -194,7 +194,7 @@ class _ZoneSelectPageState extends State<ZoneSelectPage> {
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 30.0),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(true);
                         },
                       ),
                       const Align(

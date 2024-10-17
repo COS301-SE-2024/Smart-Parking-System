@@ -100,7 +100,7 @@ class SideMenu extends StatelessWidget {
                             IconButton(
                               icon: const Icon(Icons.close, color: Colors.white),
                               onPressed: () {
-                                Navigator.of(context).pop(); // Close the drawer
+                                Navigator.of(context).pop(true); // Close the drawer
                               },
                             ),
                           ],

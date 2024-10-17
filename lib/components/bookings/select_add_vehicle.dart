@@ -59,7 +59,7 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
                       icon: const Icon(
                           Icons.arrow_back_ios_new_rounded, color: Colors.white,
                           size: 30.0),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => Navigator.of(context).pop(true),
                     ),
                   ),
                   const Expanded(
@@ -136,7 +136,7 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
                       onPressed: () {
                         // Handle add button
                         _addVehicleDetails();
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(true);
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF58C6A9),

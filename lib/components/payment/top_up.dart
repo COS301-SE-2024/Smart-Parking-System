@@ -116,7 +116,7 @@ class _TopUpPageState extends State<TopUpPage> {
             TextButton(
               child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
@@ -138,7 +138,7 @@ class _TopUpPageState extends State<TopUpPage> {
                     // 这里可以添加更多错误处理逻辑
                   }
                   if(context.mounted){
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   }
                 } else {
                   showToast(message: "Invalid Amount : $topUpAmount");
