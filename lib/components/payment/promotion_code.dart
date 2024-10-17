@@ -504,16 +504,6 @@ class _OfferPageState extends State<PromotionCode> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }
