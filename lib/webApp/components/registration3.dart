@@ -23,6 +23,7 @@ class _Registration3State extends State<Registration3> {
   late LatLng _center;
   late BitmapDescriptor _parkingIcon;
   late String locationName; // Replace with actual user ID
+  int numZones = 0;
 
   @override
   void initState() {
@@ -74,6 +75,7 @@ class _Registration3State extends State<Registration3> {
 
     // Store the Firestore document ID
     _markerIdsToFirestoreIds[markerId] = docRef.id;
+    numZones++;
   }
 
   void _removeMarker(MarkerId markerId) async {
@@ -86,6 +88,7 @@ class _Registration3State extends State<Registration3> {
       String firestoreId = _markerIdsToFirestoreIds[markerId]!;
       await FirebaseFirestore.instance.collection('markers').doc(firestoreId).delete();
       _markerIdsToFirestoreIds.remove(markerId);
+      numZones--;
     }
   }
 
@@ -105,6 +108,7 @@ class _Registration3State extends State<Registration3> {
       // widget.ps.markers = _markers.map((marker) => marker.position).toList();
 
       // Call onRegisterComplete to move to the next step
+      widget.ps.noZones = numZones;
       widget.onRegisterComplete();
     } catch (e) {
       showToast(message: 'Failed to save parking details: $e');

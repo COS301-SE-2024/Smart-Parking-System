@@ -66,9 +66,9 @@ class _Registration6State extends State<Registration6> {
     final String accountType = _accountTypeController.text;
     final String bank = _bankController.text;
 
-    if(!isValidString(accountNumber, r'^[0-9]{8,12}$')){showToast(message: "Invalid Account Number. Must be 8-12 digits long."); return;}
-    if(!isValidString(billingName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
-    if(!isValidString(accountType, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); return;}
+    if(!isValidString(accountNumber, r'^[0-9]{8,12}$')){showToast(message: "Invalid Account Number. Must be 8-12 digits long."); setState(() => _isLoading = false); return;}
+    if(!isValidString(billingName, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); setState(() => _isLoading = false); return;}
+    if(!isValidString(accountType, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid Holder Name"); setState(() => _isLoading = false); return;}
    
     bool isValidBank = _validBanks.keys.map((k) => k.toLowerCase()).contains(bank.toLowerCase()) ||_validBanks.values.map((v) => v.toLowerCase()).contains(bank.toLowerCase());
 
