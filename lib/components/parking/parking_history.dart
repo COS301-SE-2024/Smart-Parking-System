@@ -167,7 +167,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           await bookingDoc.reference.delete();
 
           // Add to completedsessions list
-          completedsessions.add(CompletedSession(                                                                       //TODO:: CHECK THIS
+          completedsessions.add(CompletedSession(                                                                      
             session.documentId,
             bookingData['date'],
             bookingData['time'],
