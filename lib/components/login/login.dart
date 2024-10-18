@@ -68,6 +68,9 @@ class _LoginPageState extends State<LoginPage> {
     
 
   _signInWithGoogle () async {
+    setState((){
+      _isLoading = true;
+    });
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
@@ -104,6 +107,9 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
         showToast(message: 'Some error occurred: $e');
     }
+    setState((){
+      _isLoading = false;
+    });
   }
 
 

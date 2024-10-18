@@ -40,6 +40,9 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   _signUpWithGoogle () async {
+    setState((){
+      _isLoading = true;
+    });
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -100,6 +103,9 @@ class _SignupPageState extends State<SignupPage> {
         showToast(message: 'An unexpected error occurred: $e');
       }
     }
+    setState((){
+      _isLoading = false;
+    });
   }
    
   Future<void> verification() async {
