@@ -132,8 +132,7 @@ class SplashScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 40),
-                          // Centered "Or Sign up with" section
+                          const SizedBox(height: 80),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -141,31 +140,9 @@ class SplashScreen extends StatelessWidget {
                                 'assets/line.png',
                                 width: 200,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  'Or Sign up with',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: constraints.maxWidth * 0.012,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                              Image.asset(
-                                'assets/line.png',
-                                width: 200,
-                              ),
                             ],
                           ),
-                          const SizedBox(height: 10),
-                          Center(
-                            child: Image.asset(
-                              'assets/google-play.png',
-                              height: constraints.maxHeight * 0.06,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 40),
                           Center(
                             child: Text(
                               '© 2024 DaVinci Code. All rights reserved.',

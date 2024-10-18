@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/top_up.dart';
 import 'package:smart_parking_system/components/payment/payment_successful.dart';
@@ -68,6 +69,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   double _availableFunds = 0.00;
   List<String> appliedCoupons = [];
   bool _isLoading = false;
+  bool _isFetching = true;
 
   //Functions
   Future<void> _topup() async {
@@ -361,6 +363,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -396,6 +401,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     } catch (e) {
       showToast(message: 'ERROR: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -408,7 +416,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -420,7 +429,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                     icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
                   ),

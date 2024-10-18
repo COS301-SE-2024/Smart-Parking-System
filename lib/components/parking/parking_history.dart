@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -101,6 +102,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   List<ReservedSpot> reservedspots = [];
   List<CompletedSession> completedsessions = [];
   User? user = FirebaseAuth.instance.currentUser;
+  bool _isFetching = true;
 
   Timer? _timer;
 
@@ -117,6 +119,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     super.dispose();
   }
   void _startTimer() {
+    setState(() {
+      _isFetching = true;
+    });
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       setState(() {
         List<ActiveSession> finishedSessions = [];
@@ -139,6 +144,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         // Check and update reserved spots
         _checkAndUpdateReservedSpots();
       });
+    });
+    setState(() {
+      _isFetching = false;
     });
   }
   void _moveFinishedSessionsToCompleted(List<ActiveSession> finishedSessions) async {
@@ -341,6 +349,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   }
   // Get details on load
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     // String? userName = user?.displayName;
     String? userId = user?.uid;
 
@@ -540,7 +551,10 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       showToast(message: 'Error retrieving past booking details: $e');
     }
 
-    setState(() {}); // This will trigger a rebuild with the new values
+    
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   void _showDeleteConfirmation(BuildContext context, ReservedSpot reservedspot) {
@@ -555,14 +569,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _deleteBooking(reservedspot);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -637,14 +651,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _endSession(activesession);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -786,7 +800,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -974,16 +989,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }
@@ -1248,24 +1253,5 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         ),
       ]
     );
-  }
-}
-
-class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
-  final double offset;
-
-  CustomCenterDockedFABLocation(this.offset);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Position the FAB slightly higher than centerDocked
-    final double fabX = (scaffoldGeometry.scaffoldSize.width / 2) -
-        (scaffoldGeometry.floatingActionButtonSize.width / 2);
-    final double fabY = scaffoldGeometry.scaffoldSize.height -
-        scaffoldGeometry.bottomSheetSize.height -
-        scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) - 
-        offset;
-    return Offset(fabX, fabY);
   }
 }

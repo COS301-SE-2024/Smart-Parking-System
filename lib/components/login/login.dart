@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscureText = true;
 
   final FireBaseAuthServices _auth = FireBaseAuthServices();
 
@@ -31,20 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   }
    
   Future<void> _signIn() async {
+    setState((){
+      _isLoading = true;
+    });
+    
     final String password = _passwordController.text;
     final String email = _emailController.text;
 
     if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
 
-    setState((){
-      _isLoading = true;
-    });
-
     final User? user = await _auth.signInWithEmailAndPassword(email, password);
-
-    setState((){
-      _isLoading = false;
-    });
 
     if (user != null) {
 
@@ -62,7 +59,11 @@ class _LoginPageState extends State<LoginPage> {
           (Route<dynamic> route) => false,
         );
       }
-    }      
+    }
+
+    setState((){
+      _isLoading = false;
+    });
   }
     
 
@@ -231,11 +232,23 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color(0xFFD9D9D9), // Border color when focused
                           ),
                         ),
+                        // Add suffix icon for visibility toggle
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey.shade700,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                       ),
                       style: TextStyle(
                         color: Colors.grey.shade800, // Dark grey input text color
                       ),
-                      obscureText: true,
+                      obscureText: _obscureText,
                     ),
                     const SizedBox(height: 30),
                     // Login Button

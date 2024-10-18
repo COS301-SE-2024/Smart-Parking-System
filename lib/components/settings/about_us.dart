@@ -37,7 +37,7 @@ class AboutUsPageState extends State<AboutUsPage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => Navigator.of(context).pop(true),
                       ),
                       const Text(
                         'About Us',
@@ -305,16 +305,6 @@ class AboutUsPageState extends State<AboutUsPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

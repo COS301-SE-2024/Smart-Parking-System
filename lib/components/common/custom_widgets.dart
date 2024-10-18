@@ -1,5 +1,28 @@
 import 'package:flutter/material.dart';
 
+Widget loadingWidget (){
+  return const Scaffold(
+      backgroundColor: Color(0xFF35344A),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 20),
+            Text(
+              'Loading',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+}
+
 Widget nextButton ({required String displayText, required void Function() action}){
   return Center(
     child: ElevatedButton(

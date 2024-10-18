@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
@@ -38,10 +39,9 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-   _signUpWithGoogle () async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
+  _signUpWithGoogle () async {
     try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
 
       if (googleSignInAccount != null) {
@@ -60,30 +60,45 @@ class _SignupPageState extends State<SignupPage> {
           final String? username = googleSignInAccount.displayName;
           final String email = googleSignInAccount.email;
 
-          await firestore.collection('users').doc(user.uid).set(
-            {
-              'username': username,
-              'email': email,
-              'phoneNumber': null,
-              'balance': 0,
-              'profileImageUrl': null,
-              'notificationsEnabled': false,
-            }
-          );
+          final querySnapshot = await firestore
+              .collection('users')
+              .where('email', isEqualTo: email)
+              .get();
 
-          if(mounted) { // Check if the widget is still in the tree
-            showToast(message: 'Successfully signed up');
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AddCardRegistrationPage(),
-              ),
+          if (querySnapshot.docs.isEmpty) {
+            await firestore.collection('users').doc(user.uid).set(
+              {
+                'username': username,
+                'email': email,
+                'surname': null,
+                'balance': 0,
+                'profileImageUrl': null,
+                'notificationsEnabled': false,
+              }
             );
+
+            if(mounted) { // Check if the widget is still in the tree
+              showToast(message: 'Successfully signed up');
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AddCardRegistrationPage(),
+                ),
+              );
+            }
+          } else {
+            showToast(message: 'User with this email already exists');
           }
         }
       }
       
     } catch (e) {
-        showToast(message: 'Some error occurred: $e');
+      if (e is FirebaseAuthException) {
+        showToast(message: 'Authentication error: ${e.message}');
+      } else if (e is PlatformException) {
+        showToast(message: 'Platform error: ${e.message}');
+      } else {
+        showToast(message: 'An unexpected error occurred: $e');
+      }
     }
   }
    
@@ -95,38 +110,50 @@ class _SignupPageState extends State<SignupPage> {
     final String password = _passwordController.text;
     final String username = _usernameController.text;
     final String email = _emailController.text;
-    final String phoneNumber = _noController.text;
+    final String surname = _noController.text;
 
-    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
-    if(!isValidString(password, r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')){showToast(message: "Invalid password:\n\nAt least 1 uppercase letter\nAt least 1 lowercase letter\nAt least 1 number\nAt least 1 special character (!@#\$%^&*)\nA minimum length of 8"); return;}
-    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); return;}
-    if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); return;}
+    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(password, r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')){showToast(message: "Invalid password:\n\nAt least 1 uppercase letter\nAt least 1 lowercase letter\nAt least 1 number\nAt least 1 special character (!@#\$%^&*)\nA minimum length of 8"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(surname, r'^[a-zA-Z]+$')){showToast(message: "Invalid surname"); setState((){_isLoading = false;}); return;}
+    if(!isValidString(username, r'^[a-zA-Z]+$')){showToast(message: "Invalid name"); setState((){_isLoading = false;}); return;}
 
     try{
-      final User? user = await _auth.signUpWithEmailAndPassword(email, password);
+      final firestore = FirebaseFirestore.instance;
+      final querySnapshot = await firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
 
-      if (user != null) {
-        if(mounted) { // Check if the widget is still in the tree
-          final firestore = FirebaseFirestore.instance;
+      if (querySnapshot.docs.isEmpty) {
+        final User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
-          await firestore.collection('users').doc(user.uid).set(
-            {
-              'username': username,
-              'email': email,
-              'phoneNumber': phoneNumber,
-            }
-          );
+        if (user != null) {
+          if(mounted) { // Check if the widget is still in the tree
 
-          if (mounted) { // Check if the widget is still in the tree before navigating
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => VerificationPage(user: user, email: email),
-              )
+            await firestore.collection('users').doc(user.uid).set(
+              {
+                'username': username,
+                'email': email,
+                'surname': surname,
+                'balance': 0,
+                'profileImageUrl': null,
+                'notificationsEnabled': false,
+              }
             );
+
+            if (mounted) { // Check if the widget is still in the tree before navigating
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => VerificationPage(user: user, email: email),
+                )
+              );
+            }
           }
+        } else {
+          showToast(message: 'An Error Occured');
         }
       } else {
-        showToast(message: 'An Error Occured');
+        showToast(message: 'User with this email already exists');
       }
     } catch (e) {
       showToast(message: 'Error: $e');
@@ -208,7 +235,7 @@ class _SignupPageState extends State<SignupPage> {
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 22,
                         ),
                         floatingLabelStyle: TextStyle(
                           color: Colors.grey.shade700, // Color for floating label when focused
@@ -243,11 +270,11 @@ class _SignupPageState extends State<SignupPage> {
                     TextField(
                       controller: _noController,
                       decoration: InputDecoration(
-                        labelText: 'Phone',
+                        labelText: 'Surname',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 22,
                         ),
                         floatingLabelStyle: TextStyle(
                           color: Colors.grey.shade700, // Color for floating label when focused
@@ -286,7 +313,7 @@ class _SignupPageState extends State<SignupPage> {
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700, // Darker grey for label text
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 22,
                         ),
                         floatingLabelStyle: TextStyle(
                           color: Colors.grey.shade700, // Color for floating label when focused
@@ -326,7 +353,7 @@ class _SignupPageState extends State<SignupPage> {
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700,
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 22,
                         ),
                         floatingLabelStyle: TextStyle(
                           color: Colors.grey.shade700,

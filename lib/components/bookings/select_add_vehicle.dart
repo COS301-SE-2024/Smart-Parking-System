@@ -36,21 +36,10 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
     }
   }
 
-  // void getInformation(){
-  //   _brandController.text = 'VW';
-  //   _colorController.text = 'Blue';
-  //   _licenseController.text = 'TX029GP';
-  //   _modelController.text = 'Citi Golf';
-  // }
-
   @override
   void initState() {
     super.initState();
-    // getInformation();
   }
-
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +59,7 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
                       icon: const Icon(
                           Icons.arrow_back_ios_new_rounded, color: Colors.white,
                           size: 30.0),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => Navigator.of(context).pop(true),
                     ),
                   ),
                   const Expanded(
@@ -147,7 +136,7 @@ class _CarDetailsPageState extends State<SelectAddVehicle> {
                       onPressed: () {
                         // Handle add button
                         _addVehicleDetails();
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(true);
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF58C6A9),

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/home/sidebar.dart';
+import 'package:smart_parking_system/components/settings/settings.dart';
 // import 'notificationfunction.dart';
 
 class NotificationApp extends StatefulWidget {
@@ -73,7 +75,7 @@ class ReminderNotification extends Notification {
 class _NotificationPageState extends State<NotificationApp> {
   int _selectedIndex = 0;
   late List<Map<String, dynamic>> notificationData = [];
-  bool isLoading = false;
+  bool _isFetching = false;
 
   @override
   void initState() {
@@ -92,7 +94,7 @@ class _NotificationPageState extends State<NotificationApp> {
 
   Future<void> fetchUserNotifications() async {
     setState(() {
-      isLoading = true;
+      _isFetching = true;
     });
     try {
       String currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -169,11 +171,11 @@ class _NotificationPageState extends State<NotificationApp> {
 
       setState(() {
         notificationData = fetchedNotifications;
-        isLoading = false;
+        _isFetching = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
+        _isFetching = false;
       });
     }
   }
@@ -213,7 +215,8 @@ class _NotificationPageState extends State<NotificationApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: SingleChildScrollView(
+      body: _isFetching ? loadingWidget()
+      : SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -361,7 +364,11 @@ class _NotificationPageState extends State<NotificationApp> {
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-      
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsPage(),
+                      ),
+                    );
                 }
               });
             },

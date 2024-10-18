@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
@@ -18,6 +19,7 @@ class _OfferPageState extends State<PromotionCode> {
   int _selectedIndex = 0;
   final Set<int> _appliedCouponIndices = {};
   List<Map<String, dynamic>> coupons = [];
+  bool _isFetching = true;
 
   @override
   void initState() {
@@ -26,6 +28,9 @@ class _OfferPageState extends State<PromotionCode> {
   }
 
   Future<void> fetchCoupons() async {
+    setState(() {
+      _isFetching = true;
+    });
     final user = FirebaseAuth.instance.currentUser; // Get the current user
     if (user != null) {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -46,13 +51,17 @@ class _OfferPageState extends State<PromotionCode> {
         coupons = fetchedCoupons;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(53, 52, 74, 1),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +188,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                         style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop(); // Close the dialog
+                                                        Navigator.of(context).pop(true); // Close the dialog
                                                       },
                                                     ),
                                                     TextButton(
@@ -188,7 +197,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                         style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop(); // Close the confirmation dialog
+                                                        Navigator.of(context).pop(true); // Close the confirmation dialog
                                                         showDialog(
                                                           context: context,
                                                           builder: (BuildContext context) {
@@ -210,7 +219,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                                     ),
                                                                     onPressed: () {
-                                                                      Navigator.of(context).pop(); // Close the success dialog
+                                                                      Navigator.of(context).pop(true); // Close the success dialog
                                                                       setState(() {
                                                                         _appliedCouponIndices.add(index);
                                                                         coupons[index]['applied'] = true;
@@ -288,7 +297,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                     ),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(); // Close the dialog
+                                                      Navigator.of(context).pop(true); // Close the dialog
                                                     },
                                                   ),
                                                   TextButton(
@@ -297,7 +306,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                       style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                     ),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(); // Close the confirmation dialog
+                                                      Navigator.of(context).pop(true); // Close the confirmation dialog
                                                       showDialog(
                                                         context: context,
                                                         builder: (BuildContext context) {
@@ -319,7 +328,7 @@ class _OfferPageState extends State<PromotionCode> {
                                                                     style: TextStyle(color: Color(0xFF58C6A9)), // Change button text color
                                                                   ),
                                                                   onPressed: () {
-                                                                    Navigator.of(context).pop(); // Close the success dialog
+                                                                    Navigator.of(context).pop(true); // Close the success dialog
                                                                     setState(() {
                                                                       _appliedCouponIndices.remove(index);
                                                                       coupons[index]['applied'] = false;
@@ -504,16 +513,6 @@ class _OfferPageState extends State<PromotionCode> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }

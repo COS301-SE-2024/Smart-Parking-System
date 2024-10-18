@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
+import 'package:smart_parking_system/components/payment/top_up.dart';
 import 'package:smart_parking_system/components/settings/about_us.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/parking/parking_history.dart';
@@ -18,7 +20,9 @@ class SettingsPage extends StatefulWidget {
 
 Future<String> getUserName(String userId) async {
   DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-  return userDoc.get('username');
+  String username = userDoc.get('username');
+  String? surname = userDoc.get('surname');
+  return surname == null ? username : '$username $surname';
 }
 
 Future<String?> getProfileImageUrl(String userId) async {
@@ -43,7 +47,8 @@ Future<void> updateNotificationPreference(bool isEnabled) async {
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 3;
   bool _isSwitched = true;
-  String _username = 'Username';
+  bool _isFetching = true;
+  String _username = 'Loading...';
   String? _profileImageUrl;
 
   @override
@@ -53,6 +58,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _setUserData() async {
+    setState(() {
+      _isFetching = true;
+    });
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       String userId = user.uid;
@@ -69,13 +77,17 @@ class _SettingsPageState extends State<SettingsPage> {
         _isSwitched = notificationsEnabled;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -177,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const PaymentMethodPage(),
+                              builder: (_) => const TopUpPage(),
                             ),
                           );
                         },
@@ -287,7 +299,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 } else if (_selectedIndex == 3) {
-                  // Add navigation if necessary
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsPage(),
+                      ),
+                    );
                 }
               });
             },
@@ -298,16 +314,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }

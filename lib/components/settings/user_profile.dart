@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
 
@@ -17,11 +18,11 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _surnameController = TextEditingController();
 
   File? _profileImage; // Holds the selected profile image
   String? _profileImageUrl; // Holds the profile image URL from Firestore
+  bool _isFetching = true;
 
   bool _isUploading = false; // Track the upload state
 
@@ -39,6 +40,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<void> _loadUserProfile() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -49,8 +53,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
           if (userData != null) {
             _nameController.text = userData['username'] ?? '';
-            _emailController.text = userData['email'] ?? '';
-            _phoneController.text = userData['phoneNumber'] ?? '';
+            _surnameController.text = userData['surname'] ?? '';
             _profileImageUrl = userData['profileImageUrl']; // Get the profile image URL
             setState(() {}); // Refresh UI
           }
@@ -59,6 +62,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     } catch (e) {
       showToast(message: 'Error loading profile: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   Future<void> _updateUserProfile() async {
@@ -67,11 +73,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
 
     final String username = _nameController.text;
-    final String email = _emailController.text;
-    final String phoneNumber = _phoneController.text;
+    final String surname = _surnameController.text;
     
-    if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); setState(() {_isUploading = false; }); return;}
-    if(!isValidString(phoneNumber, r'^\d{10}$')){showToast(message: "Invalid phone number"); setState(() {_isUploading = false; }); return;}
+    if(!isValidString(surname, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid surname"); setState(() {_isUploading = false; }); return;}
     if(!isValidString(username, r'^[a-zA-Z/\s]+$')){showToast(message: "Invalid name"); setState(() {_isUploading = false; }); return;}
 
     try {
@@ -85,8 +89,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'username': username,
-          'email': email,
-          'phoneNumber': phoneNumber,
+          'surname': surname,
           'profileImageUrl': profileImageUrl, // Save the profile image URL
         }, SetOptions(merge: true));
 
@@ -155,7 +158,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => Navigator.of(context).pop(true),
                       ),
                       const Text(
                         'User Profile',
@@ -174,7 +177,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
       ),
-      body: Stack(
+      body: _isFetching ? loadingWidget()
+      : Stack(
         children: [
           SingleChildScrollView(
             child: Center(
@@ -242,12 +246,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         controller: _nameController,
                       ),
                       ProfileField(
-                        label: 'Email address',
-                        controller: _emailController,
-                      ),
-                      ProfileField(
-                        label: 'Phone number',
-                        controller: _phoneController,
+                        label: 'Surname',
+                        controller: _surnameController,
                       ),
                       const SizedBox(height: 40),
                       Center(

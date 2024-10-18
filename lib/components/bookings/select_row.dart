@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_parking_system/components/bookings/confirm_booking.dart';
 //Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 
@@ -36,6 +37,7 @@ class SelectRowPageState extends State<SelectRowPage> {
   String? selectedRow;
   int totalSlots = 0;
   late bool futureBooking;
+  bool _isFetching = true;
 
   List<RowSpace> rows = [
     // Add more rows here
@@ -43,6 +45,9 @@ class SelectRowPageState extends State<SelectRowPage> {
 
     // Get details on load
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       // Get a reference to the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -131,7 +136,9 @@ class SelectRowPageState extends State<SelectRowPage> {
       showToast(message: 'Error retrieving row details: $e');
     }
 
-    setState(() {}); // This will trigger a rebuild with the new values
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -144,7 +151,8 @@ class SelectRowPageState extends State<SelectRowPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF2D2F41),
-      body: SingleChildScrollView(
+      body: _isFetching ? loadingWidget()
+      : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -157,7 +165,7 @@ class SelectRowPageState extends State<SelectRowPage> {
                     icon: const Icon(
                         Icons.arrow_back_ios_new_rounded, color: Colors.white,
                         size: 30.0),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.of(context).pop(true),
                   ),
                   const Expanded(
                     child: Text(

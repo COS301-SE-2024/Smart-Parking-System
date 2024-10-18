@@ -16,7 +16,6 @@ class Registration4 extends StatefulWidget {
 }
 
 class _Registration4State extends State<Registration4> {
-  final TextEditingController _noZonesController = TextEditingController();
   final TextEditingController _noBasementLevelsController = TextEditingController();
   final TextEditingController _noUpperLevelsController = TextEditingController();
   final TextEditingController _noRowsController = TextEditingController();
@@ -29,13 +28,11 @@ class _Registration4State extends State<Registration4> {
     });
 
     try {
-      final int noZones = int.parse(_noZonesController.text);
       final int noBasementLevels = int.parse(_noBasementLevelsController.text);
       final int noUpperLevels = int.parse(_noUpperLevelsController.text);
       final int noRows = int.parse(_noRowsController.text);
       final int noSlots = int.parse(_noSlotsController.text);
 
-      widget.ps.noZones = noZones;
       widget.ps.noBasementLevels = noBasementLevels;
       widget.ps.noUpperLevels = noUpperLevels;
       widget.ps.noRows = noRows;
@@ -57,8 +54,6 @@ class _Registration4State extends State<Registration4> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildLabeledTextField('Number of zones *', 'Enter number of zones', _noZonesController),
-          const SizedBox(height: 15),
           _buildLabeledTextField('Number of basement levels in each zone *', 'Enter number of floors', _noBasementLevelsController),
           const SizedBox(height: 15),
           _buildLabeledTextField('Number of upper levels in each zone (including ground) *', 'Enter number of floors', _noUpperLevelsController),
