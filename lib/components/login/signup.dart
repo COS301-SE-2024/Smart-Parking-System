@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
 import 'package:smart_parking_system/components/login/card_registration.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
@@ -79,6 +80,10 @@ class _SignupPageState extends State<SignupPage> {
                 'notificationsEnabled': false,
               }
             );
+
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
+            await prefs.setInt('loginTimestamp', DateTime.now().millisecondsSinceEpoch);
 
             if(mounted) { // Check if the widget is still in the tree
               showToast(message: 'Successfully signed up');
