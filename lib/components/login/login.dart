@@ -32,20 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   }
    
   Future<void> _signIn() async {
+    setState((){
+      _isLoading = true;
+    });
+    
     final String password = _passwordController.text;
     final String email = _emailController.text;
 
     if(!isValidString(email, r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')){showToast(message: "Invalid email address"); return;}
 
-    setState((){
-      _isLoading = true;
-    });
-
     final User? user = await _auth.signInWithEmailAndPassword(email, password);
-
-    setState((){
-      _isLoading = false;
-    });
 
     if (user != null) {
 
@@ -63,7 +59,11 @@ class _LoginPageState extends State<LoginPage> {
           (Route<dynamic> route) => false,
         );
       }
-    }      
+    }
+
+    setState((){
+      _isLoading = false;
+    });
   }
     
 
