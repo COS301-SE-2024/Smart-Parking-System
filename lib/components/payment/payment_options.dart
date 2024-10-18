@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/common/toast.dart';
 import 'package:smart_parking_system/components/payment/add_card.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
@@ -19,8 +20,9 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   int _selectedIndex = 1;
-  double creditAmount = 0.00; // Changed to default 0 and will fetch from database
+  int creditAmount = 0; // Changed to default 0 and will fetch from database
   List<Map<String, String>> cards = [];
+  bool _isFetching = true;
 
   @override
   void initState() {
@@ -30,6 +32,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   }
 
   Future<void> _fetchCards() async {
+    setState(() {
+      _isFetching = true;
+    });
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -62,10 +67,16 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     } catch (e) {
       //print('Error fetching cards: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
 
   Future<void> _fetchCreditAmount() async {
+    setState(() {
+      _isFetching = true;
+    });
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -76,11 +87,14 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
       final data = userDoc.data() as Map<String, dynamic>;
       setState(() {
-        creditAmount = data['balance']?.toDouble() ?? 0.00;
+        creditAmount = data['balance']?.toInt() ?? 0;
       });
     } catch (e) {
       // 这里可以添加更多错误处理逻辑
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   Future<void> _showTopUpDialog() async {
@@ -107,7 +121,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             TextButton(
               child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
@@ -116,7 +130,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 if (isValidString(topUpAmount.toString(), r'^\d+(\.\d+)?$')) {
                   User? user = FirebaseAuth.instance.currentUser;
                   setState(() {
-                    creditAmount += topUpAmount!;
+                    creditAmount += (topUpAmount ?? 0).toInt();
                   });
 
                   // Update credit amount in Firestore
@@ -130,7 +144,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   }
 
                   if(context.mounted) {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   }
                 } else {
                   showToast(message: "Invalid Amount : $topUpAmount");
@@ -147,7 +161,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -220,7 +235,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                         Text(
                           'ZAR ${creditAmount.toStringAsFixed(2)}',
                           style: const TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF58C6A9),
                           ),
@@ -228,7 +243,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
                         onPressed: _showTopUpDialog,
                         style: ElevatedButton.styleFrom(
@@ -431,16 +446,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }

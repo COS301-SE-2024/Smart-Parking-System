@@ -94,7 +94,6 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
 
     if(isToday){
       // Create a DateTime object for today with the given time
-      DateTime now = DateTime.now();
       DateTime checkInDateTime = DateTime(now.year, now.month, now.day, hours, minutes);
 
       // Add the duration to the check-in time
@@ -107,18 +106,19 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
         return;
       }
     }
-    // Create a DateTime object for the check in time
-    DateTime checkInDateTime = DateTime(_checkInDate.year, _checkInDate.month, _checkInDate.day, hours, minutes);
+    if ( widget.futureBooking ) {
+      // Create a DateTime object for the check in time
+      DateTime checkInDateTime = DateTime(_checkInDate.year, _checkInDate.month, _checkInDate.day, hours, minutes);
 
-    // Add the duration to the check-in time
-    DateTime startDateTime = checkInDateTime;
-    if ( widget.futureBooking ) { startDateTime = startDateTime.subtract(const Duration(hours: 24));}
+      // Add the duration to the check-in time
+      DateTime startDateTime = checkInDateTime.subtract(const Duration(hours: 24));
 
-    // if( widget.futureBooking ) { endDateTime = endDateTime.add(const Duration(hours: 24)); }
+      // if( widget.futureBooking ) { endDateTime = endDateTime.add(const Duration(hours: 24)); }
 
-    if(startDateTime.isBefore(now)){
-      showToast(message: "Invalid time");
-      return;
+      if(startDateTime.isBefore(now)){
+        showToast(message: "Invalid time");
+        return;
+      }
     }
 
     if(mounted){
@@ -156,7 +156,7 @@ class _ConfirmBookingState extends State<ConfirmBookingPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                     icon: const Icon(
                       Icons.arrow_back_ios,

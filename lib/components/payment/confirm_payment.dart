@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/payment/offers.dart';
 import 'package:smart_parking_system/components/payment/top_up.dart';
 import 'package:smart_parking_system/components/payment/payment_successful.dart';
@@ -68,6 +69,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   double _availableFunds = 0.00;
   List<String> appliedCoupons = [];
   bool _isLoading = false;
+  bool _isFetching = true;
 
   //Functions
   Future<void> _topup() async {
@@ -99,7 +101,6 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
           DateTime parkingTimeUtc = DateTime.parse(dateTime).toUtc();
           final notificationTimeUtc = parkingTimeUtc.subtract(const Duration(hours: 2));
 
-          double finalPrice = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
           await FirebaseFirestore.instance.collection('bookings').add({
             'userId': user.uid,
             'zone': widget.selectedZone,
@@ -108,7 +109,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             'time': startTime,
             'date': bookingDate,
             'duration': widget.selectedDuration,
-            'price': finalPrice.toDouble(),
+            'price': totalPrice.toDouble(),
+            'discount': discountedPrice.toDouble(),
             'address': widget.bookedAddress,
             'disabled': widget.selectedDisabled,
             'vehicleId': widget.vehicleId,
@@ -129,7 +131,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
             }
           }
 
-          await _updateWallet(finalPrice);
+          await _updateWallet();
           await _updateSlotAvailability();
           await _makeNotifications();
           showToast(message: 'Booked Successfully!');
@@ -154,7 +156,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     }
   }
 
-  Future<void> _updateWallet(double price) async {
+  Future<void> _updateWallet() async {
+    double price = ((totalPrice - discountedPrice) < 0 ? 0.00 : totalPrice - discountedPrice);
     User? user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -193,7 +196,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
       
       setState(() {
         _sufficientFunds = price <= data['balance']?.toDouble();
-        _availableFunds = data['balance']?.toDouble() ?? 0.00;
+        // _availableFunds = data['balance']?.toDouble() ?? 0.00;
+        double balance = data['balance']?.toDouble() ?? 0.0;
+        _availableFunds = (balance * 100).truncateToDouble() / 100;
       });
     } catch (e) {
       //
@@ -358,6 +363,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   }
 
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -393,6 +401,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
     } catch (e) {
       showToast(message: 'ERROR: $e');
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -405,7 +416,8 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -417,7 +429,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
                     },
                     icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
                   ),
@@ -449,17 +461,17 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 100,
+                        width: 90,
                         height: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
                             image: NetworkImage(carLogo),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitWidth,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 25),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -681,7 +693,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         SizedBox(height: 5),
                       ],
                     ),
-                    const SizedBox(width: 80),
+                    const SizedBox(width: 60),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the left
                       children: [

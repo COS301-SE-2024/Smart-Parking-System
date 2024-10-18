@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_parking_system/WebComponents/dashboard/dashboard_screen.dart';
+import 'package:smart_parking_system/webApp/components/splash.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
+
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // Set isLoggedIn to false
+    if (!context.mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SplashScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +39,12 @@ class Sidebar extends StatelessWidget {
           _buildAccountPages(),
           const SizedBox(height: 27),
           _buildProfileMenuItem(),
+          const SizedBox(height: 34),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.white),
+            title: const Text('Logout', style: TextStyle(color: Colors.white)),
+            onTap: () => _logout(context),
+          ),
         ],
       ),
     );

@@ -74,7 +74,7 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(true);
                       },
                       child: const Text(
                         'OK',
@@ -94,8 +94,6 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
     }
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -105,9 +103,6 @@ class _CarDetailsPageState extends State<EditVehiclePage> {
     _licenseController = TextEditingController(text: widget.license);
 
   }
-
-  
-
 
   @override
   Widget build(BuildContext context) {

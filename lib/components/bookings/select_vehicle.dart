@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_parking_system/components/bookings/select_add_vehicle.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/payment/confirm_payment.dart';
 // import 'package:smart_parking_system/components/sidebar.dart';
 
@@ -40,6 +41,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   String? logo;
   bool isLoading = false;
   bool hasCars = false;
+  bool _isFetching = true;
 
   void selectCar(String vehicleId, String vehicleLogo) {
     setState(() {
@@ -116,7 +118,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
             imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
             break;
           case 'toyota':
-            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FSuzuki_Logo.png?alt=media&token=43e5167d-c51f-4345-9479-74ec04c57908';
+            imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FToyota_Logo.png?alt=media&token=e0c4d85e-4a41-4027-b9c2-db13b69f6ef8';
             break;
           case 'volvo':
             imageDirector = 'https://firebasestorage.googleapis.com/v0/b/parkme-c2508.appspot.com/o/vehiclelogo%2FVolvo_Logo.png?alt=media&token=6eb02bdb-2102-47d6-bedc-e28bc0993282';
@@ -152,6 +154,9 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
         isLoading = false;
       });
     }
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   @override
@@ -164,7 +169,8 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -183,7 +189,7 @@ class _ViewVehiclePageState extends State<ChooseVehiclePage> {
                         padding: const EdgeInsets.only(left: 1.0),
                         child: IconButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           },
                           icon: const Icon(
                             Icons.arrow_back_ios,

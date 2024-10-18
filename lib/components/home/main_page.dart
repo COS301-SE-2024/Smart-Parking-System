@@ -61,6 +61,7 @@ class _MainPageState extends State<MainPage> {
   bool _locationPermissionGranted = false;
   final Set<Marker> _markers = {};
   final TextEditingController _destinationController = TextEditingController();
+  PermissionStatus _permissionGranted = PermissionStatus.granted;
 
   bool _isLoading = true; // New variable to manage loading state
 
@@ -250,7 +251,7 @@ class _MainPageState extends State<MainPage> {
     loc.Location location = loc.Location();
 
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
+    // PermissionStatus permissionGranted;
 
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
@@ -260,11 +261,12 @@ class _MainPageState extends State<MainPage> {
       }
     }
 
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      while(_permissionGranted != PermissionStatus.granted) {
+        _permissionGranted = await location.requestPermission();
+        setState(() {});
       }
     }
     _locationPermissionGranted = true;
@@ -305,8 +307,6 @@ class _MainPageState extends State<MainPage> {
         await firestore.collection('parkings').doc(document.id).update({
           'slots_available': '$availableSlots/5',
         });
-
-        showToast(message: 'Updated slots available for EPI-USE Labs to $carCount');
       } else {
         showToast(message: 'Parking location not found');
       }
@@ -480,7 +480,26 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  _permissionGranted != PermissionStatus.granted 
+    ? 
+    Scaffold(
+      body: Container(
+        color: const Color(0xFF35344A), // Background color like the toast
+        child: const Center(
+          child: Text(
+            "Location Permissions are Required",
+            style: TextStyle(
+              fontSize: 24, // Same font size as toast
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF58C6A9), // Same text color as toast
+            ),
+            textAlign: TextAlign.center, // To make sure text is centered
+          ),
+        ),
+      ),
+    )
+    :
+    Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -669,4 +688,3 @@ void main() async {
     home: MainPage(),
   ));
 }
-

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_parking_system/components/common/common_functions.dart';
+import 'package:smart_parking_system/components/common/custom_widgets.dart';
 import 'package:smart_parking_system/components/home/main_page.dart';
 import 'package:smart_parking_system/components/payment/payment_options.dart';
 import 'package:smart_parking_system/components/settings/settings.dart';
@@ -18,7 +20,9 @@ class ParkingHistoryPage extends StatefulWidget {
 
 class ActiveSession {
   final String documentId;
-  final String rate;
+  final String price;
+  final String duration;
+  final String discount;
   final String address;
   final String zone;
   final String level;
@@ -28,7 +32,9 @@ class ActiveSession {
 
   ActiveSession(
     this.documentId,
-    this.rate,
+    this.price,
+    this.duration,
+    this.discount,
     this.address,
     this.zone,
     this.level,
@@ -42,7 +48,9 @@ class ReservedSpot {
   final String documentId;
   final String date;
   final String time;
-  final String amount;
+  final String price;
+  final String duration;
+  final String discount;
   final String address;
   final String zone;
   final String level;
@@ -52,7 +60,9 @@ class ReservedSpot {
     this.documentId,
     this.date,
     this.time,
-    this.amount,
+    this.price,
+    this.duration,
+    this.discount,
     this.address,
     this.zone,
     this.level,
@@ -64,7 +74,9 @@ class CompletedSession {
   final String documentId;
   final String date;
   final String time;
-  final String amount;
+  final String price;
+  final String duration;
+  final String discount;
   final String address;
   final String zone;
   final String level;
@@ -74,7 +86,9 @@ class CompletedSession {
     this.documentId,
     this.date,
     this.time,
-    this.amount,
+    this.price,
+    this.duration,
+    this.discount,
     this.address,
     this.zone,
     this.level,
@@ -88,6 +102,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   List<ReservedSpot> reservedspots = [];
   List<CompletedSession> completedsessions = [];
   User? user = FirebaseAuth.instance.currentUser;
+  bool _isFetching = true;
 
   Timer? _timer;
 
@@ -104,6 +119,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     super.dispose();
   }
   void _startTimer() {
+    setState(() {
+      _isFetching = true;
+    });
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       setState(() {
         List<ActiveSession> finishedSessions = [];
@@ -127,6 +145,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         _checkAndUpdateReservedSpots();
       });
     });
+    setState(() {
+      _isFetching = false;
+    });
   }
   void _moveFinishedSessionsToCompleted(List<ActiveSession> finishedSessions) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -146,11 +167,13 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           await bookingDoc.reference.delete();
 
           // Add to completedsessions list
-          completedsessions.add(CompletedSession(                 //HERE
+          completedsessions.add(CompletedSession(                                                                      
             session.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R ${(bookingData['price'] * bookingData['duration']).toInt()}',
+            'R ${int.parse(bookingData['price'] - bookingData['discount'])}',
+            session.duration,
+            session.discount,
             session.address,
             session.zone,
             session.level,
@@ -198,7 +221,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           // Add to active sessions
           activesessions.add(ActiveSession(
             spot.documentId,
-            spot.amount,
+            spot.price,
+            spot.duration,
+            spot.discount,
             spot.address,
             spot.zone,
             spot.level,
@@ -324,6 +349,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   }
   // Get details on load
   Future<void> getDetails() async {
+    setState(() {
+      _isFetching = true;
+    });
     // String? userName = user?.displayName;
     String? userId = user?.uid;
 
@@ -348,51 +376,41 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           String bookedRow = document.get('row') as String;
           String bookedDate = document.get('date') as String;
           String bookedTime = document.get('time') as String;
+          int bookedPrice = 0;
+          int bookedDuration = 0;
+          int bookedDiscount = 0;
 
-          int totalPrice;
-          int finalBookedDuration = 0;
-          int finalBookedPrice = 0;
-          try{
-            int bookedPrice = document.get('price') as int;
-            int bookedDuration = document.get('duration') as int;
-            // Calculate total price
-            totalPrice = (bookedPrice * bookedDuration).toInt();
-            //final values
-            finalBookedDuration = bookedDuration;
-            finalBookedPrice = bookedPrice;
+          try {
+            bookedPrice = document.get('price') as int;
           } catch (e) {
             try {
-              int bookedPrice = document.get('price') as int;
-              double bookedDuration = document.get('duration') as double;
-              // Calculate total price
-              totalPrice = (bookedPrice * bookedDuration).toInt();
-              //final values
-              finalBookedDuration = bookedDuration.toInt();
-              finalBookedPrice = bookedPrice;
+              bookedPrice = (document.get('price') as double).toInt();
             } catch (e) {
-              try {
-                double bookedPrice = document.get('price') as double;
-                int bookedDuration = document.get('duration') as int;
-                // Calculate total price
-                totalPrice = (bookedPrice * bookedDuration).toInt();
-                //final values
-                finalBookedDuration = bookedDuration;
-                finalBookedPrice = bookedPrice.toInt();
-              } catch (e) {
-                double bookedPrice = document.get('price') as double;
-                double bookedDuration = document.get('duration') as double;
-                // Calculate total price
-                totalPrice = (bookedPrice * bookedDuration).toInt();
-                //final values
-                finalBookedDuration = bookedDuration.toInt();
-                finalBookedPrice = bookedPrice.toInt();
-              }
+              bookedPrice = int.parse(document.get('price') as String);
+            }
+          }
+          try {
+            bookedDuration = document.get('duration') as int;
+          } catch (e) {
+            try {
+              bookedDuration = (document.get('duration') as double).toInt();
+            } catch (e) {
+              bookedDuration = int.parse(document.get('duration') as String);
+            }
+          }
+          try {
+            bookedDiscount = document.get('discount') as int;
+          } catch (e) {
+            try {
+              bookedDiscount = (document.get('discount') as double).toInt();
+            } catch (e) {
+              bookedDiscount = int.parse(document.get('discount') as String);
             }
           }
 
           // Parse booking date and time
           DateTime bookingDateTime = DateTime.parse('$bookedDate $bookedTime');
-          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: finalBookedDuration));
+          DateTime bookingEndDateTime = bookingDateTime.add(Duration(hours: bookedDuration));
           DateTime currentDateTime = DateTime.now();
 
           // Check booking status
@@ -405,7 +423,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             Duration remainingDuration = bookingEndDateTime.difference(currentDateTime);
             activesessions.add(ActiveSession(
               documentId,
-              'R $finalBookedPrice',
+              'R ${bookedPrice/bookedDuration}',
+              bookedDuration.toString(),
+              bookedDiscount.toString(),
               bookedLocation,
               bookedZone,
               bookedLevel,
@@ -419,7 +439,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
               documentId,
               bookedDate,
               bookedTime,
-              'R $totalPrice',
+              'R ${bookedPrice-bookedDiscount}',
+              bookedDuration.toString(),
+              bookedDiscount.toString(),
               bookedLocation,
               bookedZone,
               bookedLevel,
@@ -439,11 +461,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             return a.time.compareTo(b.time);
           }
         });
-      } 
-      // else {
-      //   // No matching document found
-      //   showToast(message: 'No bookings found for user: $userName');
-      // }
+      }
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving booking details: $e');
@@ -470,31 +488,35 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           String bookedRow = document.get('row') as String;
           String bookedDate = document.get('date') as String;
           String bookedTime = document.get('time') as String;
-          // Calculate total price
-          int totalPrice;
-          try{
-            int bookedPrice = document.get('price') as int;
-            int bookedDuration = document.get('duration') as int;
-            // Calculate total price
-            totalPrice = (bookedPrice * bookedDuration).toInt();
+          int bookedPrice = 0;
+          int bookedDuration = 0;
+          int bookedDiscount = 0;
+
+          try {
+            bookedPrice = document.get('price') as int;
           } catch (e) {
             try {
-              int bookedPrice = document.get('price') as int;
-              double bookedDuration = document.get('duration') as double;
-              // Calculate total price
-              totalPrice = (bookedPrice * bookedDuration).toInt();
+              bookedPrice = (document.get('price') as double).toInt();
             } catch (e) {
-              try {
-                double bookedPrice = document.get('price') as double;
-                int bookedDuration = document.get('duration') as int;
-                // Calculate total price
-                totalPrice = (bookedPrice * bookedDuration).toInt();
-              } catch (e) {
-                double bookedPrice = document.get('price') as double;
-                double bookedDuration = document.get('duration') as double;
-                // Calculate total price
-                totalPrice = (bookedPrice * bookedDuration).toInt();
-              }
+              bookedPrice = int.parse(document.get('price') as String);
+            }
+          }
+          try {
+            bookedDuration = document.get('duration') as int;
+          } catch (e) {
+            try {
+              bookedDuration = (document.get('duration') as double).toInt();
+            } catch (e) {
+              bookedDuration = int.parse(document.get('duration') as String);
+            }
+          }
+          try {
+            bookedDiscount = document.get('discount') as int;
+          } catch (e) {
+            try {
+              bookedDiscount = (document.get('discount') as double).toInt();
+            } catch (e) {
+              bookedDiscount = int.parse(document.get('discount') as String);
             }
           }
 
@@ -503,7 +525,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             documentId,
             bookedDate,
             bookedTime,
-            'R $totalPrice',
+            'R ${bookedPrice-bookedDiscount}',
+            bookedDuration.toString(),
+            bookedDiscount.toString(),
             bookedLocation,
             bookedZone,
             bookedLevel,
@@ -521,17 +545,16 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             return a.time.compareTo(b.time);
           }
         });
-      } 
-      // else {
-      //   // No matching document found
-      //   showToast(message: 'No bookings found for user: $userName');
-      // }
+      }
     } catch (e) {
       // Handle any errors
       showToast(message: 'Error retrieving past booking details: $e');
     }
 
-    setState(() {}); // This will trigger a rebuild with the new values
+    
+    setState(() {
+      _isFetching = false;
+    });
   }
 
   void _showDeleteConfirmation(BuildContext context, ReservedSpot reservedspot) {
@@ -546,14 +569,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _deleteBooking(reservedspot);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -571,18 +594,31 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       if (bookingDoc.exists) {
         Map<String, dynamic> bookingData = bookingDoc.data() as Map<String, dynamic>;
         
-        // Calculate the actual duration
-        DateTime startTime = DateTime.parse('${bookingData['date']} ${bookingData['time']}');
-        DateTime endTime = DateTime.now();
-        double actualDurationHours = endTime.difference(startTime).inHours + ((endTime.difference(startTime).inMinutes % 60) / 60);
-        
-        double oldDuration = bookingData['duration'];
-        // Update the duration and calculate the final price
-        bookingData['duration'] = actualDurationHours;
-        double price = bookingData['price'] as double;
-        int finalPrice = (price * actualDurationHours).toInt();
+        int price = 0;
+        try {
+          price = bookingData['price'] as int;
+        } catch (e) {
+          try {
+            price = (bookingData['price'] as double).toInt();
+          } catch (e) {
+            price = int.parse(bookingData['price'] as String);
+          }
+        }
+        int discount = 0;
+        try {
+          discount = bookingData['discount'] as int;
+        } catch (e) {
+          try {
+            discount = (bookingData['discount'] as double).toInt();
+          } catch (e) {
+            discount = int.parse(bookingData['discount'] as String);
+          }
+        }
+        int refundAmount = 0;
+        if (price - discount > 0) {refundAmount = price - discount;}
 
-        _refund(price, oldDuration, finalPrice);
+        _refund(refundAmount);
+        
         _updateSlotAvailability(bookingData['address'], bookingData['zone'], bookingData['level'], bookingData['row']);
 
         // Query the 'bookings' collection to find the document to delete
@@ -615,14 +651,14 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             TextButton(
               child: const Text("No", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
             TextButton(
               child: const Text("Yes", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
               onPressed: () {
                 _endSession(activesession);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -645,13 +681,46 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
         DateTime endTime = DateTime.now();
         double actualDurationHours = endTime.difference(startTime).inHours + ((endTime.difference(startTime).inMinutes % 60) / 60);
         
-        double oldDuration = bookingData['duration'];
         // Update the duration and calculate the final price
+        int price = 0;
+        try {
+          price = bookingData['price'] as int;
+        } catch (e) {
+          try {
+            price = (bookingData['price'] as double).toInt();
+          } catch (e) {
+            price = int.parse(bookingData['price'] as String);
+          }
+        }
+        int duration = 0;
+        try {
+          duration = bookingData['duration'] as int;
+        } catch (e) {
+          try {
+            duration = (bookingData['duration'] as double).toInt();
+          } catch (e) {
+            duration = int.parse(bookingData['duration'] as String);
+          }
+        }
+        int discount = 0;
+        try {
+          discount = bookingData['discount'] as int;
+        } catch (e) {
+          try {
+            discount = (bookingData['discount'] as double).toInt();
+          } catch (e) {
+            discount = int.parse(bookingData['discount'] as String);
+          }
+        }
         bookingData['duration'] = actualDurationHours;
-        double price = bookingData['price'] as double;
-        int finalPrice = (price * actualDurationHours).toInt();
+        double rate = price/duration;
+        double didPaid = (price - discount).toDouble();
+        double shouldPaid = rate * actualDurationHours;
+        int refundAmount = 0;
+        if (didPaid - shouldPaid > 0) {refundAmount = (didPaid - shouldPaid).toInt();}
 
-        _refund(price, oldDuration, finalPrice);
+        _refund(refundAmount);
+        
         _updateSlotAvailability(bookingData['address'], bookingData['zone'], bookingData['level'], bookingData['row']);
         
         // Add the booking to past_bookings
@@ -667,7 +736,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
             activesession.documentId,
             bookingData['date'],
             bookingData['time'],
-            'R $finalPrice',
+            'R ${didPaid-refundAmount}',
+            activesession.duration,
+            activesession.discount,
             activesession.address,
             activesession.zone,
             activesession.level,
@@ -690,9 +761,9 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
     }
   }
   
-  void _refund(double price, double oldDuration, int finalPrice) async {
-    double refundAmount = (price * oldDuration) - finalPrice;
-    showToast(message: "Refund : $refundAmount");
+  // void _refund(double price, double discount, int finalPrice) async {
+  void _refund(int refundAmount) async {
+    // double refundAmount = (price - discount) - finalPrice;
 
     //Refund Amount as credit here
     try {
@@ -710,6 +781,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           amount = amount+refundAmount;
 
           userDocument.reference.update({'balance': amount});
+          showToast(message: "Refund : $refundAmount");
         } else {
           showToast(message: 'No balance found for update: $userId');
         }
@@ -728,7 +800,8 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF35344A),
-      body: Padding(
+      body: _isFetching ? loadingWidget()
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -916,16 +989,6 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF58C6A9),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.near_me,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       drawer: const SideMenu(),
     );
   }
@@ -940,49 +1003,36 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
           BoxShadow(
             color: Colors.white.withOpacity(0.2),
             spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 3), // changes position of shadow
+            blurRadius: 3,
+            offset: const Offset(0, 1), // changes position of shadow
           ),
         ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     const Icon(Icons.check_circle, color: Colors.white, size: 30),
-          //     const SizedBox(width: 10),
-          //     _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
-          //   ],
-          // ),
           Row(
             children: [
+              _locationTextCompleted(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
               const Spacer(),
-              _locationText(completedsession.address, completedsession.zone, completedsession.level, completedsession.row),
-              const Spacer(),
+              Text(
+                completedsession.price,
+                style: const TextStyle(color: Colors.white),
+              ),
             ],
           ),
-          const SizedBox(height: 5),
-          const Divider(
-            color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
-            thickness: 1, // Thickness of the lines
-          ),
+          // const SizedBox(height: 5),
+          // const Divider(
+          //   color: Color.fromARGB(255, 199, 199, 199), // Color of the lines
+          //   thickness: 1, // Thickness of the lines
+          // ),
           const SizedBox(height: 5), 
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                completedsession.date,
+                '${completedsession.date} @ ${completedsession.time}',
                 style: const TextStyle(color: Colors.grey),
-              ),
-              Text(
-                completedsession.time,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              Text(
-                completedsession.amount,
-                style: const TextStyle(color: Colors.white),
               ),
             ],
           ),
@@ -1038,7 +1088,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                 style: const TextStyle(color: Colors.grey),
               ),
               Text(
-                reservedspot.amount,
+                reservedspot.price,
                 style: const TextStyle(color: Colors.white),
               ),
               IconButton(
@@ -1080,7 +1130,7 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  '${activesession.rate}/Hr',
+                  'R ${extractPrice(activesession.price).toString()}/Hr',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -1164,23 +1214,44 @@ class _ParkingHistoryPageState extends State<ParkingHistoryPage> {
       ]
     );
   }
-}
 
-class CustomCenterDockedFABLocation extends FloatingActionButtonLocation {
-  final double offset;
-
-  CustomCenterDockedFABLocation(this.offset);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Position the FAB slightly higher than centerDocked
-    final double fabX = (scaffoldGeometry.scaffoldSize.width / 2) -
-        (scaffoldGeometry.floatingActionButtonSize.width / 2);
-    final double fabY = scaffoldGeometry.scaffoldSize.height -
-        scaffoldGeometry.bottomSheetSize.height -
-        scaffoldGeometry.snackBarSize.height -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) - 
-        offset;
-    return Offset(fabX, fabY);
+  Widget _locationTextCompleted(String location, String zone, String level, String row) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:[
+        Text(
+          location,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
+        ),
+        Row(
+          children: [
+            Text(
+              'Zone:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)), 
+            ),
+            Text(
+              zone,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Level:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              level,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '    Row:',
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            Text(
+              row,
+              style: const TextStyle(color: Color(0xFF58C6A9), fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ]
+    );
   }
 }
