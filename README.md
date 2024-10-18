@@ -30,7 +30,7 @@ Finding parking on a daily basis is a significant hassle for drivers. Precious t
   <tr>
     <td align: "center">
       <h4 align: "center">Mobile App QR Code</h4>
-      <img src="assets/ParkMeQRcode" alt="ParkMe QR Code" title="Mobile App" style="width: 175px; margin: 10px;">
+      <img src="assets/ParkMeQRcode.jpeg" alt="ParkMe QR Code" title="Mobile App" style="width: 175px; margin: 10px;">
     </td>
   </tr>
 </table>
